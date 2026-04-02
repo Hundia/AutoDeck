@@ -171,3 +171,39 @@ Before shipping, verify:
 | Change background | `src/config.ts` → `background` field |
 | Change branding | `src/config.ts` → `branding` field |
 | Deploy to GitHub Pages | `.github/workflows/deploy.yml` + `vite.config.ts` base |
+
+## SDD Development with AutoDeck
+
+AutoDeck is developed using Spec-Driven Development. If you're contributing or extending the framework:
+
+### Running a Sprint
+
+In Claude Code:
+```
+/sprint-run [sprint_number]
+```
+
+This executes the sprint from `specs/backlog.md` end-to-end: plan → implement → QA → docs → close.
+
+### Adding a New Slide Type (Framework Contribution)
+
+1. Create `src/slides/components/MyNewSlide.tsx`
+2. Add the interface to `src/engine/types.ts` (extend `SlideData`)
+3. Register in `src/slides/registry.ts`
+4. Add demo data to `src/slides/slides-en.ts` + `slides-he.ts`
+5. Document in `docs/slides/` with usage examples
+6. Update this SKILL.md with the new type table entry
+
+### Updating the Landing Page
+
+Landing page components live in `src/landing/LandingPage.tsx`. Sections:
+- `HeroSection` — tagline + CTAs
+- `FeaturesSection` — 3-column feature grid
+- `HowItWorksSection` — 3-step guide
+- `SlideTypesSection` — slide type showcase
+- `AIAssistedSection` — AI workflow
+- `FooterSection` — links
+
+### Deployment Changes
+
+See `docs/deployment/` for GitHub Pages, Vercel, and Netlify guides.

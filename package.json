@@ -2,6 +2,8 @@
   "name": "autodeck",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://hundia.github.io/autodeck/",
+  "repository": "https://github.com/Hundia/AutoDeck",
   "description": "Beautiful animated presentations with React + Framer Motion. Clone, define your slides, deploy. Works with any AI coding assistant.",
   "scripts": {
     "dev": "vite",
@@ -9,10 +11,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.330.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "framer-motion": "^11.0.0",
-    "lucide-react": "^0.330.0"
+    "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

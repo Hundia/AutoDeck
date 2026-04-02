@@ -1,118 +1,175 @@
 # AutoDeck
 
-Beautiful, animated presentations built with React + Framer Motion. Clone, define your slides, deploy.
+> Beautiful animated presentations with React + Framer Motion. Clone, customize, deploy.
 
-**[Live Demo](https://hundia.github.io/autodeck/)**
+**Live:** https://hundia.github.io/autodeck/
+
+[![Deploy](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml)
+
+---
 
 ## Features
 
-- **Keyboard navigation** — Arrow keys, Space for scrollable slides
-- **Multi-language** — Built-in bilingual support with automatic RTL detection
-- **8 animated backgrounds** — Particles, circuits, matrix rain, constellation, and more
-- **Progress dots** — Click any dot to jump to a slide
-- **Scroll-mode slides** — Timeline and long-form slides with scroll progress bar
-- **Dark theme** — Slate gradient with glass morphism cards
-- **Responsive** — Works on desktop and mobile
-- **GitHub Pages ready** — One-push deployment via GitHub Actions
-- **AI-assisted** — Feed `SKILL.md` to any AI coding tool for guided slide creation
+- **8 built-in slide types** — title, content, comparison, stats, quote, timeline, closing, final
+- **Keyboard navigation** — ← → arrows, progress dots, space for scrollable slides
+- **Multi-language + RTL** — Hebrew, Arabic, Farsi auto-detected and mirrored
+- **8 animated backgrounds** — particles, circuits, matrix, constellation, hex, waves, gradient, grid
+- **Framer Motion animations** — stagger, scroll-triggered, spring physics
+- **GitHub Pages ready** — CI/CD via GitHub Actions (zero config)
+- **AI-assisted** — feed `SKILL.md` to Claude, Copilot, Cursor, Gemini to build slides instantly
+- **Mobile responsive** — works on phone through 4K display
+- **Dark theme** — glass morphism cards, Inter + JetBrains Mono fonts
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/hundia/autodeck.git
-cd autodeck
-npm install
-npm run dev
-```
+# 1. Fork or clone this repo
+git clone git@github.com:Hundia/AutoDeck.git my-talk
+cd my-talk && npm install
 
-Edit `src/slides/slides-en.ts` to define your slides. Changes hot-reload instantly.
+# 2. Edit your slides
+# src/slides/slides-en.ts
+
+# 3. Run locally
+npm run dev
+# → http://localhost:5173/autodeck/#/presentation
+
+# 4. Deploy
+git push origin main
+# → https://your-username.github.io/autodeck/#/presentation
+```
 
 ## Slide Types
 
-| Type | Purpose | Preview |
-|------|---------|---------|
-| `title` | Hero opening with gradient title, word-by-word tagline | Cinematic entrance |
-| `content` | Icon cards grid + optional metrics bar | Feature showcase |
-| `comparison` | Side-by-side colored panels | Before/after, pros/cons |
-| `stats` | Animated stat counters + optional column lists | Metrics dashboard |
-| `quote` | Typewriter question with staggered sub-points | Thought-provoking pause |
-| `timeline` | Vertical step pipeline (supports scroll mode) | Process walkthrough |
-| `closing` | Terminal install command + links + CTA | Call to action |
-| `final` | Word-by-word tagline reveal | Closing statement |
+| Type | Description | Key Fields |
+|------|-------------|------------|
+| `title` | Hero with animated gradient title | `title`, `subtitle`, `tagline`, `badge?` |
+| `content` | Icon cards grid + optional metrics bar | `title`, `cards[]`, `metrics?[]` |
+| `comparison` | Two colored panels side-by-side | `left`, `right`, `callout?` |
+| `stats` | Animated stat counters + comparison lists | `stats[]`, `leftItems?`, `rightItems?` |
+| `quote` | Typewriter question + staggered bullets | `question`, `points[]` |
+| `timeline` | Vertical step pipeline | `steps[]`, `scrollable?` |
+| `closing` | macOS terminal + CTA links | `install?`, `commands?[]`, `links?[]` |
+| `final` | Word-by-word tagline reveal | `title`, `tagline` |
 
-## Adding Custom Slides
+## Example Slide
 
-1. Create a component in `src/slides/components/MySlide.tsx`
-2. Register it in `src/slides/registry.ts`
-3. Add data entries in your slide data files
+```typescript
+// src/slides/slides-en.ts
+import { SlideData } from '../engine/types'
 
-See `SKILL.md` for the full guide with code examples.
-
-## Multi-Language
-
-Add a new language file (`src/slides/slides-fr.ts`), register it in `src/App.tsx`, and add the language option to `src/config.ts`. RTL languages (Hebrew, Arabic, etc.) are automatically detected.
-
-## Backgrounds
-
-Set `background` in `src/config.ts` to any of: `none`, `grid`, `particles`, `circuits`, `gradient`, `matrix`, `constellation`, `waves`, `hex`.
+export const slidesEN: SlideData[] = [
+  {
+    type: 'title',
+    title: 'My Talk',
+    subtitle: 'A deep dive into something awesome',
+    tagline: 'Built with AutoDeck',
+    badge: 'v1.0',
+  },
+  {
+    type: 'stats',
+    title: 'By The Numbers',
+    stats: [
+      { label: 'Users', value: '12,000+', color: 'blue' },
+      { label: 'Uptime', value: '99.9%', color: 'green' },
+    ],
+  },
+  {
+    type: 'final',
+    title: 'Thank You',
+    tagline: 'Questions? Find me on GitHub → @hundia',
+  },
+]
+```
 
 ## AI-Assisted Slide Creation
 
-Feed `SKILL.md` to your AI coding assistant (Claude Code, GitHub Copilot, Gemini, Cursor, etc.) for step-by-step guidance on creating new slides. The file contains the complete design system, animation patterns, and file map.
+AutoDeck includes `SKILL.md` — a tool-agnostic guide that any AI coding assistant can read:
 
-## Deployment
-
-### GitHub Pages (automatic)
-
-1. Push to `main`
-2. GitHub Actions builds and deploys automatically
-3. Make sure `base` in `vite.config.ts` matches your repo name: `'/autodeck/'`
-
-### Vercel / Netlify
-
-Just connect the repo — zero config needed (set `base: '/'` in `vite.config.ts`).
-
-### Manual
-
-```bash
-npm run build
-# Upload the `dist/` folder to any static host
+```
+# In Claude Code, Cursor, Copilot, Gemini:
+"Read SKILL.md and help me create slides for a talk about [your topic]"
 ```
 
-## Configuration
+The AI will understand all 8 slide types, animations, multi-language patterns, and quality requirements.
 
-All presentation settings live in `src/config.ts`:
+## Backgrounds
 
+| Value | Effect |
+|-------|--------|
+| `particles` | Floating dots with connecting lines |
+| `circuits` | Animated circuit board traces |
+| `matrix` | Matrix rain columns |
+| `constellation` | Star field with constellations |
+| `hex` | Hexagonal grid pulse |
+| `waves` | Sine wave animation |
+| `gradient` | Color-shifting gradient |
+| `grid` | Subtle dot grid |
+
+Set in `src/config.ts`:
 ```typescript
-{
-  title: 'My Presentation',
-  languages: [{ id: 'en', label: 'English' }],
-  defaultLanguage: 'en',
-  background: 'particles',
-  branding: 'My Company',
+export const config: PresentationConfig = {
+  title: 'My Talk',
+  defaultBackground: 'particles', // ← change this
+  languages: [{ code: 'en', label: 'EN' }],
 }
 ```
 
-## Project Structure
+## Multi-Language
 
+```typescript
+// 1. Create src/slides/slides-fr.ts (copy slides-en.ts, translate)
+// 2. In src/config.ts:
+languages: [
+  { code: 'en', label: 'EN' },
+  { code: 'fr', label: 'FR' }, // ← add this
+]
+// 3. In src/App.tsx:
+import { slidesFR } from './slides/slides-fr'
+const slides = { en: slidesEN, fr: slidesFR }
 ```
-src/
-├── engine/              # Framework core (don't modify)
-│   ├── PresentationViewer.tsx
-│   ├── BackgroundEffects.tsx
-│   ├── ScrollProgressBar.tsx
-│   ├── LanguageDropdown.tsx
-│   └── types.ts
-├── slides/              # Your slides (edit these)
-│   ├── slides-en.ts
-│   ├── slides-he.ts
-│   ├── registry.ts
-│   └── components/
-├── config.ts
-├── App.tsx
-└── main.tsx
+
+RTL languages (Hebrew, Arabic, Farsi, Urdu) are auto-detected — the layout mirrors automatically.
+
+## Deploy to GitHub Pages
+
+1. Fork this repo
+2. Go to **Settings → Pages → Source: GitHub Actions**
+3. Push to `main` → auto-deploys to `https://your-username.github.io/autodeck/`
+
+For other platforms: `npm run build` → upload `dist/` to Vercel, Netlify, or any static host.
+
+## Custom Slide Types
+
+```typescript
+// 1. Create src/slides/components/MySlide.tsx
+import { SlideComponentProps } from '../../engine/types'
+
+interface MySlideData extends SlideData {
+  type: 'my-slide'
+  message: string
+}
+
+export function MySlide({ data, lang }: SlideComponentProps<MySlideData>) {
+  return <div className="text-white text-4xl">{data.message}</div>
+}
+
+// 2. Register in src/slides/registry.ts
+import { MySlide } from './components/MySlide'
+export const slideComponents = {
+  ...existing,
+  'my-slide': MySlide,
+}
 ```
+
+## SDD Development
+
+This project uses [Spec-Driven Development](./CLAUDE.md). All development is tracked in `specs/backlog.md` and executed via Claude Code `/sprint-run`.
 
 ## License
 
-MIT
+MIT — use it for any talk, conference, or demo.
+
+---
+
+*Extracted from [AutoSpec](https://github.com/Hundia/autospec) — built across sprints 10–38.*
