@@ -32,7 +32,7 @@ The following sprints in AutoSpec built the presentation engine that became Auto
 ## Sprint 39: AutoDeck Launch — GitHub Pages + SDD Framework (48 pts)
 
 **Theme:** Stand up AutoDeck as a fully independent, top-tier framework with landing page, SDD infrastructure, and self-sustained development environment.  
-**Status:** 🔄 In Progress  
+**Status:** ✅ Done  
 **Date:** 2026-04-02
 
 ### Phase 1: Bootstrap (12 pts)
@@ -41,32 +41,32 @@ The following sprints in AutoSpec built the presentation engine that became Auto
 |----|--------|-------|-------|-----|--------|------|------|
 | 39.1 | Clone `hundia/AutoDeck` → `/opt/autodeck/`, rsync `~/slide-deck/`, push | DevOps | sonnet | 3 | ✅ Done | — | — |
 | 39.2 | Copy SDD infrastructure from AutoSpec (specs/, .claude/commands/, skills/) | DevOps | sonnet | 4 | ✅ Done | 39.1 | — |
-| 39.3 | Create `CLAUDE.md` — SDD rules, structure, commands, design system | PM | sonnet | 2 | 🔄 In Progress | 39.1 | `CLAUDE.md` |
-| 39.4 | Create `specs/backlog.md` — sprint history (10–38) + Sprint 39 | PM | sonnet | 3 | 🔄 In Progress | 39.1 | `specs/backlog.md` |
+| 39.3 | Create `CLAUDE.md` — SDD rules, structure, commands, design system | PM | sonnet | 2 | ✅ Done | 39.1 | `CLAUDE.md` |
+| 39.4 | Create `specs/backlog.md` — sprint history (10–38) + Sprint 39 | PM | sonnet | 3 | ✅ Done | 39.1 | `specs/backlog.md` |
 
 ### Phase 2: Landing Page (14 pts)
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 39.5 | Copy relevant `docs/` from AutoSpec + create engine/slides/landing stubs | DevOps | sonnet | 2 | 🔄 In Progress | 39.2 | `docs/` |
-| 39.6 | Install react-router-dom, create `LandingPage.tsx` (Hero, Features, HowItWorks, SlideTypes, AIAssisted, Footer) | Frontend | sonnet | 8 | 🔲 | 39.1 | `docs/landing/` |
-| 39.7 | Update `App.tsx` for HashRouter: `/` = Landing, `/presentation` = Viewer | Frontend | sonnet | 4 | 🔲 | 39.6 | — |
+| 39.5 | Copy relevant `docs/` from AutoSpec + create engine/slides/landing stubs | DevOps | sonnet | 2 | ✅ Done | 39.2 | `docs/` |
+| 39.6 | Install react-router-dom, create `LandingPage.tsx` (Hero, Features, HowItWorks, SlideTypes, AIAssisted, Footer) | Frontend | sonnet | 8 | ✅ Done | 39.1 | `docs/landing/` |
+| 39.7 | Update `App.tsx` for HashRouter: `/` = Landing, `/presentation` = Viewer | Frontend | sonnet | 4 | ✅ Done | 39.6 | — |
 
 ### Phase 3: Polish + Docs (14 pts)
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 39.8 | Verify `deploy.yml` + add public/404.html if needed for SPA | DevOps | sonnet | 2 | 🔲 | 39.7 | `docs/deployment/` |
-| 39.9 | Update `README.md` — top-tier: live URLs, quick start, slide types, deploy guide | PM | sonnet | 4 | 🔲 | 39.1 | `README.md` |
-| 39.10 | Enhance `SKILL.md` — add landing page creation + SDD workflow sections | PM | sonnet | 3 | 🔲 | 39.3 | `SKILL.md` |
-| 39.11 | `npm run build` passes + push Sprint 39 work to `hundia/AutoDeck` | QA | sonnet | 3 | 🔲 | 39.7, 39.8 | — |
-| 39.12 | Verify `hundia.github.io/autodeck/` (landing) and `#/presentation` load | QA | sonnet | 2 | 🔲 | 39.11 | — |
+| 39.8 | Verify `deploy.yml` + add public/404.html if needed for SPA | DevOps | sonnet | 2 | ✅ Done | 39.7 | `docs/deployment/` |
+| 39.9 | Update `README.md` — top-tier: live URLs, quick start, slide types, deploy guide | PM | sonnet | 4 | ✅ Done | 39.1 | `README.md` |
+| 39.10 | Enhance `SKILL.md` — add landing page creation + SDD workflow sections | PM | sonnet | 3 | ✅ Done | 39.3 | `SKILL.md` |
+| 39.11 | `npm run build` passes + push Sprint 39 work to `hundia/AutoDeck` | QA | sonnet | 3 | ✅ Done | 39.7, 39.8 | — |
+| 39.12 | Verify `hundia.github.io/autodeck/` (landing) and `#/presentation` load | QA | sonnet | 2 | 🧪 QA Review | 39.11 | — |
 
 ### Phase 4: Close (8 pts)
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 39.13 | Sprint 39 summary in `sprints/sprint-39/summary.md` + close backlog | PM | sonnet | 3 | 🔲 | all | `sprints/sprint-39/summary.md` |
+| 39.13 | Sprint 39 summary in `sprints/sprint-39/summary.md` + close backlog | PM | sonnet | 3 | ✅ Done | all | `sprints/sprint-39/summary.md` |
 
 ---
 
