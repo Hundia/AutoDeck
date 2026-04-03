@@ -73,7 +73,7 @@ function HeroSection() {
             GitHub
           </a>
           <a
-            href="/#/presentation"
+            href="#/presentation"
             className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
           >
             Launch Demo
@@ -136,7 +136,7 @@ function HeroSection() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <a
-              href="/#/presentation"
+              href="#/presentation"
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-base transition-all hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5"
             >
               Launch Demo →

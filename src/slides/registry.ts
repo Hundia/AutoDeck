@@ -7,6 +7,7 @@ import QuoteSlide from './components/QuoteSlide';
 import TimelineSlide from './components/TimelineSlide';
 import ClosingSlide from './components/ClosingSlide';
 import FinalSlide from './components/FinalSlide';
+import CodeSlide from './components/CodeSlide';
 
 // Map slide type strings to their React components.
 // Add your custom slide types here.
@@ -19,4 +20,5 @@ export const slideComponents: Record<string, React.ComponentType<SlideComponentP
   timeline: TimelineSlide,
   closing: ClosingSlide,
   final: FinalSlide,
+  code: CodeSlide,
 };

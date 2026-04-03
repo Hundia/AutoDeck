@@ -1,88 +1,208 @@
 import type { SlideData } from '../engine/types';
 
 export const slidesHE: SlideData[] = [
+  // ── 1. TITLE ────────────────────────────────────────────────────────────────
   {
     type: 'title',
     title: 'Acme',
-    subtitle: '\u05D1\u05D5\u05E0\u05D9\u05DD \u05D0\u05EA \u05D4\u05E2\u05EA\u05D9\u05D3 \u05E9\u05DC \u05DB\u05DC\u05D9 \u05E4\u05D9\u05EA\u05D5\u05D7',
-    tagline: '\u05E9\u05DC\u05D7\u05D5 \u05DE\u05D4\u05E8. \u05E9\u05D1\u05E8\u05D5 \u05E4\u05D7\u05D5\u05EA. \u05D9\u05E9\u05E0\u05D5 \u05D9\u05D5\u05EA\u05E8.',
-    presenter: '\u05D2\u05F3\u05D9\u05D9\u05DF \u05E1\u05DE\u05D9\u05EA',
-    badge: '\u05D4\u05D3\u05D2\u05DE\u05D4 \u05D7\u05D9\u05D4',
+    subtitle: 'בונים את עתיד כלי הפיתוח',
+    tagline: 'שלחו מהר. שברו פחות. ישנו יותר.',
+    presenter: "ג'יין סמית'",
+    badge: 'הדגמה חיה',
   },
+
+  // ── 2. QUOTE ────────────────────────────────────────────────────────────────
+  {
+    type: 'quote',
+    title: 'הבעיה',
+    question: 'למה מפתחים מעולים מבזבזים חצי שבוע על פריסות?',
+    points: [
+      '⏳  פריסה ממוצעת לוקחת 47 דקות — 38 מהן המתנה',
+      '🔥  1 מכל 4 תקלות ייצור נגרמות על ידי שינויי קונפיגורציה ידניים',
+      '😴  עייפות on-call היא הסיבה מספר 1 שמפתחים עוזבים',
+    ],
+  },
+
+  // ── 3. CONTENT ──────────────────────────────────────────────────────────────
   {
     type: 'content',
-    title: '\u05EA\u05DB\u05D5\u05E0\u05D5\u05EA \u05DE\u05E8\u05DB\u05D6\u05D9\u05D5\u05EA',
-    subtitle: '\u05DB\u05DC \u05DE\u05D4 \u05E9\u05E6\u05E8\u05D9\u05DA \u05DB\u05D3\u05D9 \u05DC\u05E9\u05DC\u05D5\u05D7 \u05D1\u05D1\u05D9\u05D8\u05D7\u05D5\u05DF',
+    title: 'תכונות מרכזיות',
+    subtitle: 'כל מה שצריך כדי לשלוח בביטחון',
     cards: [
       {
-        icon: '\u26A1',
-        title: '\u05DE\u05D4\u05D9\u05E8 \u05D1\u05E8\u05E7',
-        description: '\u05D1\u05E0\u05D5\u05D9 \u05E2\u05DC \u05E1\u05D8\u05E7 \u05DE\u05D5\u05D3\u05E8\u05E0\u05D9 \u05E2\u05DD \u05D6\u05DE\u05E0\u05D9 \u05EA\u05D2\u05D5\u05D1\u05D4 \u05DE\u05EA\u05D7\u05EA \u05DC-100ms.',
+        icon: '⚡',
+        title: 'מהיר ברק',
+        description: 'בנוי על סטק מודרני עם זמני תגובה מתחת ל-100ms ואפס cold starts.',
       },
       {
-        icon: '\uD83D\uDD12',
-        title: '\u05DE\u05D0\u05D5\u05D1\u05D8\u05D7 \u05DB\u05D1\u05E8\u05D9\u05E8\u05EA \u05DE\u05D7\u05D3\u05DC',
-        description: '\u05D4\u05E6\u05E4\u05E0\u05D4 \u05DE\u05E7\u05E6\u05D4 \u05DC\u05E7\u05E6\u05D4, \u05EA\u05D0\u05D9\u05DE\u05D5\u05EA SOC2, \u05D5\u05E1\u05E8\u05D9\u05E7\u05EA \u05E4\u05D2\u05D9\u05E2\u05D5\u05D9\u05D5\u05EA \u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9\u05EA.',
+        icon: '🔐',
+        title: 'מאובטח כברירת מחדל',
+        description: 'הצפנה מקצה לקצה, תאימות SOC2, וסריקת פגיעויות אוטומטית.',
       },
       {
-        icon: '\uD83C\uDF0D',
-        title: '\u05E7\u05E0\u05D4 \u05DE\u05D9\u05D3\u05D4 \u05D2\u05DC\u05D5\u05D1\u05DC\u05D9',
-        description: '\u05E4\u05E8\u05D9\u05E1\u05D4 \u05DC-40+ \u05D0\u05D6\u05D5\u05E8\u05D9\u05DD \u05D1\u05E2\u05D5\u05DC\u05DD \u05E2\u05DD \u05DE\u05E2\u05D1\u05E8 \u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9.',
+        icon: '🌍',
+        title: 'קנה מידה גלובלי',
+        description: 'פריסה ל-42 אזורים בעולם עם מעבר אוטומטי וקאשינג בשולי הרשת.',
       },
       {
-        icon: '\uD83E\uDDE9',
-        title: '\u05E0\u05D9\u05EA\u05DF \u05DC\u05D4\u05E8\u05D7\u05D1\u05D4',
-        description: '\u05D0\u05E8\u05DB\u05D9\u05D8\u05E7\u05D8\u05D5\u05E8\u05EA \u05EA\u05D5\u05E1\u05E4\u05D9\u05DD \u05E2\u05DD 200+ \u05D0\u05D9\u05E0\u05D8\u05D2\u05E8\u05E6\u05D9\u05D5\u05EA.',
+        icon: '🧩',
+        title: 'ניתן להרחבה',
+        description: 'ארכיטקטורת תוספים עם 200+ אינטגרציות. בנו הרחבות מותאמות תוך דקות.',
       },
     ],
     metrics: [
-      { label: '\u05D6\u05DE\u05D9\u05E0\u05D5\u05EA', value: '99.99%' },
-      { label: '\u05EA\u05D2\u05D5\u05D1\u05D4', value: '<50ms' },
-      { label: '\u05D0\u05D6\u05D5\u05E8\u05D9\u05DD', value: '42' },
-      { label: '\u05EA\u05D5\u05E1\u05E4\u05D9\u05DD', value: '200+' },
+      { label: 'זמינות', value: '99.99%' },
+      { label: 'תגובה', value: '<50ms' },
+      { label: 'אזורים', value: '42' },
+      { label: 'תוספים', value: '200+' },
     ],
   },
+
+  // ── 4. CODE ─────────────────────────────────────────────────────────────────
+  {
+    type: 'code',
+    title: 'פריסה ב-3 שורות',
+    subtitle: 'כל ה-API של Acme — ללא YAML',
+    filename: 'deploy.ts',
+    language: 'TypeScript',
+    lines: [
+      "import { Acme } from '@acme/sdk'",
+      '',
+      'const acme = new Acme({ token: process.env.ACME_TOKEN })',
+      '',
+      '// פריסה עם rollback אוטומטי בכישלון',
+      'const deploy = await acme.deploy({',
+      "  app: 'my-api',",
+      "  image: 'ghcr.io/acme/my-api:latest',",
+      '  replicas: 3,',
+      "  strategy: 'rolling',",
+      '  healthCheck: { path: \'/health\', timeout: 5000 },',
+      '})',
+      '',
+      'console.log(`✅ פעיל ב-${deploy.url} תוך ${deploy.duration}ms`)',
+    ],
+    highlights: [6, 7, 8, 9, 10, 11, 12],
+    output: [
+      '▶  בונה image... הושלם (12.3s)',
+      '▶  בודק health checks... עבר (3/3)',
+      '▶  מעביר תעבורה 0% → 100%... הושלם',
+      '✅ פעיל ב-https://my-api.acme.app תוך 18400ms',
+    ],
+  },
+
+  // ── 5. COMPARISON ───────────────────────────────────────────────────────────
   {
     type: 'comparison',
-    title: '\u05DC\u05E4\u05E0\u05D9 \u05D5\u05D0\u05D7\u05E8\u05D9',
-    subtitle: '\u05E8\u05D0\u05D5 \u05D0\u05EA \u05D4\u05D4\u05D1\u05D3\u05DC \u05E9-Acme \u05E2\u05D5\u05E9\u05D4',
+    title: 'לפני ואחרי',
+    subtitle: 'ראו את ההבדל ש-Acme עושה',
     left: {
-      label: '\u05D1\u05DC\u05D9 Acme',
+      label: 'בלי Acme',
       color: 'red',
       items: [
-        { icon: '\uD83D\uDD25', text: '\u05E4\u05E8\u05D9\u05E1\u05D5\u05EA \u05D9\u05D3\u05E0\u05D9\u05D5\u05EA \u05E9\u05DC\u05D5\u05E7\u05D7\u05D5\u05EA \u05E9\u05E2\u05D5\u05EA' },
-        { icon: '\uD83D\uDCA5', text: '\u05E9\u05D9\u05E0\u05D5\u05D9\u05D9\u05DD \u05E9\u05D5\u05D1\u05E8\u05D9\u05DD \u05D1\u05E4\u05E8\u05D5\u05D3\u05E7\u05E9\u05DF' },
-        { icon: '\uD83D\uDE34', text: '\u05E1\u05D9\u05D5\u05D8\u05D9\u05DD \u05D1\u05DB\u05DC \u05E1\u05E4\u05E8\u05D9\u05E0\u05D8' },
-        { icon: '\uD83D\uDCC9', text: '\u05DE\u05D7\u05D6\u05D5\u05E8\u05D9 \u05D0\u05D9\u05D8\u05E8\u05E6\u05D9\u05D4 \u05D0\u05D9\u05D8\u05D9\u05D9\u05DD' },
+        { icon: '🔥', text: 'פריסות ידניות שלוקחות שעות' },
+        { icon: '💥', text: 'שינויים שוברים בפרודקשן' },
+        { icon: '😴', text: 'סיוטי on-call בכל ספרינט' },
+        { icon: '📉', text: 'מחזורי איטרציה איטיים' },
       ],
     },
     right: {
-      label: '\u05E2\u05DD Acme',
+      label: 'עם Acme',
       color: 'green',
       items: [
-        { icon: '\uD83D\uDE80', text: '\u05E4\u05E8\u05D9\u05E1\u05D4 \u05D1\u05DC\u05D7\u05D9\u05E6\u05D4 \u05D0\u05D7\u05EA \u05EA\u05D5\u05DA \u05E9\u05E0\u05D9\u05D5\u05EA' },
-        { icon: '\uD83D\uDEE1\uFE0F', text: '\u05D7\u05D6\u05E8\u05D4 \u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9\u05EA \u05D1\u05E9\u05D2\u05D9\u05D0\u05D5\u05EA' },
-        { icon: '\uD83D\uDE0C', text: '\u05D4\u05EA\u05E8\u05D0\u05D5\u05EA \u05E4\u05E8\u05D5\u05D0\u05E7\u05D8\u05D9\u05D1\u05D9\u05D5\u05EA' },
-        { icon: '\u26A1', text: '\u05DE\u05D4\u05D9\u05E8\u05D5\u05EA \u05E9\u05DC\u05D9\u05D7\u05D4 \u05E4\u05D9 10' },
+        { icon: '🚀', text: 'פריסה בלחיצה אחת תוך שניות' },
+        { icon: '🛡️', text: 'חזרה אוטומטית בשגיאות' },
+        { icon: '😌', text: 'התראות פרואקטיביות לפני תקלות' },
+        { icon: '⚡', text: 'מהירות שליחה פי 10' },
       ],
     },
-    callout: '\u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05E9\u05DE\u05E9\u05EA\u05DE\u05E9\u05D9\u05DD \u05D1-Acme \u05E9\u05D5\u05DC\u05D7\u05D9\u05DD \u05E4\u05D9 10 \u05DE\u05D4\u05E8 \u05D9\u05D5\u05EA\u05E8 \u05E2\u05DD 90% \u05E4\u05D7\u05D5\u05EA \u05EA\u05E7\u05DC\u05D5\u05EA',
+    callout: 'צוותים שמשתמשים ב-Acme שולחים פי 10 מהר יותר עם 90% פחות תקלות',
   },
+
+  // ── 6. TIMELINE (scrollable) ─────────────────────────────────────────────────
+  {
+    type: 'timeline',
+    scrollable: true,
+    title: 'צינור הפריסה',
+    subtitle: 'מ-git push לתעבורה גלובלית — תוך 30 שניות',
+    steps: [
+      {
+        number: 1,
+        title: 'Git Push',
+        subtitle: 'Webhook מפעיל את תור הבנייה של Acme מיידית',
+        time: '0.1s',
+        output: 'POST /webhooks/github → 202 Accepted',
+      },
+      {
+        number: 2,
+        title: 'בנייה ובדיקות',
+        subtitle: 'במקביל: npm ci, TypeScript, ESLint, בדיקות יחידה',
+        time: '12s',
+        output: '✓ 247 בדיקות עברו  ✓ 0 שגיאות  ✓ types OK',
+      },
+      {
+        number: 3,
+        title: 'בניית Container',
+        subtitle: 'Docker build עם layer cache נדחף ל-registry',
+        time: '8s',
+        output: 'sha256:a3f9...  נדחף ל-registry.acme.app',
+      },
+      {
+        number: 4,
+        title: 'Rolling Deploy',
+        subtitle: 'replicas חדשות פעילות, health checks עברו, תעבורה הועברה',
+        time: '6s',
+        output: 'Replicas: 3/3 בריאים  תעבורה: 0% → 100%',
+      },
+      {
+        number: 5,
+        title: 'פעיל + מנוטר',
+        subtitle: 'מדדים, לוגים ומעקב שגיאות פעילים בכל האזורים',
+        time: '0s',
+        output: '✅ https://my-api.acme.app  p99: 34ms  שגיאות: 0',
+      },
+    ],
+  },
+
+  // ── 7. STATS ────────────────────────────────────────────────────────────────
   {
     type: 'stats',
-    title: '\u05D1\u05DE\u05E1\u05E4\u05E8\u05D9\u05DD',
-    subtitle: '\u05E0\u05D1\u05D7\u05E8 \u05E2\u05DC \u05D9\u05D3\u05D9 \u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05D1\u05E8\u05D7\u05D1\u05D9 \u05D4\u05E2\u05D5\u05DC\u05DD',
+    title: 'במספרים',
+    subtitle: 'נבחר על ידי צוותים ברחבי העולם',
     stats: [
-      { value: '10,000+', label: '\u05E6\u05D5\u05D5\u05EA\u05D9\u05DD \u05E4\u05E2\u05D9\u05DC\u05D9\u05DD' },
-      { value: '99.99%', label: 'SLA \u05D6\u05DE\u05D9\u05E0\u05D5\u05EA' },
-      { value: '2M+', label: '\u05E4\u05E8\u05D9\u05E1\u05D5\u05EA/\u05D7\u05D5\u05D3\u05E9' },
-      { value: '<50ms', label: '\u05EA\u05D2\u05D5\u05D1\u05D4 \u05DE\u05DE\u05D5\u05E6\u05E2\u05EA' },
+      { value: '10,000+', label: 'צוותים פעילים' },
+      { value: '99.99%', label: 'SLA זמינות' },
+      { value: '2M+', label: 'פריסות/חודש' },
+      { value: '<50ms', label: 'תגובה ממוצעת' },
     ],
-    bottomLine: '\u05DE\u05E1\u05D8\u05D0\u05E8\u05D8\u05D0\u05E4 \u05E2\u05D3 \u05D0\u05E0\u05D8\u05E8\u05E4\u05E8\u05D9\u05D9\u05D6 \u2014 Acme \u05D2\u05D3\u05DC \u05D0\u05D9\u05EA\u05DA',
+    leftLabel: 'לפני Acme',
+    rightLabel: 'אחרי Acme',
+    leftItems: ['47 דק׳ פריסה ממוצעת', '1 מ-4 תקלות', '3 שעות MTTR', 'גרסה/שבוע'],
+    rightItems: ['28 שניות פריסה', '90% פחות תקלות', '4 דקות MTTR', '12 גרסאות/שבוע'],
+    bottomLine: 'מסטארטאפ עד אנטרפרייז — Acme גדל איתך',
   },
+
+  // ── 8. CLOSING ──────────────────────────────────────────────────────────────
+  {
+    type: 'closing',
+    title: 'התחילו היום',
+    install: 'npm install @acme/sdk',
+    commands: [
+      { cmd: 'acme init', desc: 'חיברו את ה-repo תוך 60 שניות' },
+      { cmd: 'acme deploy', desc: 'פריסה ראשונה ללא קונפיגורציה' },
+      { cmd: 'acme logs --tail', desc: 'לוגים חיים בכל האזורים' },
+    ],
+    links: [
+      { url: 'https://acme.dev/docs', label: 'תיעוד' },
+      { url: 'https://acme.dev/pricing', label: 'תמחור' },
+      { url: 'https://github.com/acme', label: 'GitHub' },
+    ],
+    tagline: 'הפריסה הבאה שלכם במרחק פקודה אחת.',
+  },
+
+  // ── 9. FINAL ────────────────────────────────────────────────────────────────
   {
     type: 'final',
     title: 'ACME',
-    tagline: '\u05D4\u05E2\u05EA\u05D9\u05D3 \u05E9\u05DC \u05D4\u05E4\u05D9\u05EA\u05D5\u05D7 \u05DE\u05EA\u05D7\u05D9\u05DC \u05DB\u05D0\u05DF.',
+    tagline: 'עתיד הפיתוח מתחיל כאן.',
   },
 ];
