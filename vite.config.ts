@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  // Change '/autodeck/' to match your GitHub repo name for GitHub Pages deployment
-  base: '/autodeck/',
+  // Must match the exact GitHub repo name casing (case-sensitive on GitHub Pages)
+  base: '/AutoDeck/',
 });

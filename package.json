@@ -2,7 +2,7 @@
   "name": "autodeck",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://hundia.github.io/autodeck/",
+  "homepage": "https://hundia.github.io/AutoDeck/",
   "repository": "https://github.com/Hundia/AutoDeck",
   "description": "Beautiful animated presentations with React + Framer Motion. Clone, define your slides, deploy. Works with any AI coding assistant.",
   "scripts": {

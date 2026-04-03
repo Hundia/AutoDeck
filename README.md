@@ -2,7 +2,7 @@
 
 > Beautiful animated presentations with React + Framer Motion. Clone, customize, deploy.
 
-**Live:** https://hundia.github.io/autodeck/
+**Live:** https://hundia.github.io/AutoDeck/
 
 [![Deploy](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml)
 
@@ -32,11 +32,11 @@ cd my-talk && npm install
 
 # 3. Run locally
 npm run dev
-# → http://localhost:5173/autodeck/#/presentation
+# → http://localhost:5173/AutoDeck/#/presentation
 
 # 4. Deploy
 git push origin main
-# → https://your-username.github.io/autodeck/#/presentation
+# → https://your-username.github.io/AutoDeck/#/presentation
 ```
 
 ## Slide Types
@@ -135,7 +135,7 @@ RTL languages (Hebrew, Arabic, Farsi, Urdu) are auto-detected — the layout mir
 
 1. Fork this repo
 2. Go to **Settings → Pages → Source: GitHub Actions**
-3. Push to `main` → auto-deploys to `https://your-username.github.io/autodeck/`
+3. Push to `main` → auto-deploys to `https://your-username.github.io/AutoDeck/`
 
 For other platforms: `npm run build` → upload `dist/` to Vercel, Netlify, or any static host.
 
