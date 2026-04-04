@@ -74,6 +74,9 @@ export const slideComponents = {
 | `timeline` | Vertical step timeline | `title`, `steps[]` (`number`, `title`, `subtitle?`, `time?`, `output?`), `scrollable?` |
 | `closing` | CTA with terminal | `title`, `install?`, `commands?[]`, `links?[]`, `tagline` |
 | `final` | Final tagline | `title`, `tagline` (word-by-word reveal) |
+| `code` | Syntax-highlighted code block | `title`, `language`, `code`, `filename?`, `highlights?[]` |
+| `diagram` | Architecture/sequence/ER diagrams | `mode`, `nodes[]`, `edges[]` |
+| `mockup` | Browser wireframe (block system) | `displayMode`, `blocks[]` or `frames[]` |
 
 ### Available colors for comparison panels
 
@@ -171,6 +174,125 @@ Before shipping, verify:
 | Change background | `src/config.ts` → `background` field |
 | Change branding | `src/config.ts` → `branding` field |
 | Deploy to GitHub Pages | `.github/workflows/deploy.yml` + `vite.config.ts` base |
+
+## Generation Recipes
+
+Use these verbatim prompt templates to generate complete presentations from existing project artifacts.
+
+### Recipe 1: TechBrief (from codebase + spec)
+
+**When to use:** You have a codebase, git log, and/or spec doc and want a 10-slide technical presentation.
+
+**Prompt template:**
+```
+Generate a 10-slide TechBrief presentation for AutoDeck about $PROJECT_NAME.
+
+Context:
+- Git log (last 20 commits): $GIT_LOG
+- Spec summary: $SPEC_SUMMARY
+- Test stats: $TEST_STATS
+
+Follow the TechBrief structure:
+1. title — project name + sprint badge
+2. quote — the core problem your project solves
+3. content — 4 deliverable cards + 4 success metrics
+4. timeline (scrollable) — 5 execution steps
+5. diagram (arch) — key architecture nodes and connections
+6. diagram (sequence) — primary actor flow
+7. diagram (er) — data model entities
+8. code — representative config or API code
+9. stats — before/after comparison metrics
+10. closing — slash commands or install commands + links
+
+Output: a valid src/slides/data/slides-$PROJECT_NAME-en.ts file.
+```
+
+**Slide mapping table:**
+| Source artifact | Maps to |
+|----------------|---------|
+| `git log` feat: commits | Slide 3 content cards |
+| Spec goal statement | Slide 2 quote question |
+| Test pass/fail stats | Slide 9 stats values |
+| ✅ Done tickets | Slide 9 rightItems (After) |
+| 🔲 Open tickets | Slide 10 closing commands |
+| Key components/modules | Slide 5 diagram nodes |
+| API call sequence | Slide 6 sequence actors |
+| DB schema | Slide 7 ER entities |
+
+**Error recovery:**
+| Problem | Fix |
+|---------|-----|
+| Context too large | Summarize spec to 200 words first, then prompt |
+| Spec too vague | Infer slide content from git log + file names |
+| Build error after generation | Paste error to Claude: "Fix this TypeScript error in my slide data file" |
+
+---
+
+### Recipe 2: UIMockup (from design brief + screens)
+
+**When to use:** You have screen descriptions or a design brief and want a mockup presentation.
+
+**Prompt template:**
+```
+Generate a 10-slide UIMockup presentation for AutoDeck about $DESIGN_BRIEF.
+
+Context:
+- Component inventory: $COMPONENT_LIST
+- Screen descriptions: $SCREEN_DESCRIPTIONS
+
+Follow the UIMockup structure:
+1. title — product/DS name + version badge
+2. quote — the design consistency problem
+3. content — 4 design system pillars + token/component counts
+4. stats — key metrics + before/after
+5. timeline (scrollable) — design-to-code workflow steps
+6. mockup (browser) — primary screen wireframe
+7. mockup (browser) — secondary screen wireframe
+8. mockup (flow) — 3-frame user journey
+9. comparison — manual design vs design system
+10. final — tagline
+
+Available block types for mockup slides:
+navbar, hero, card-grid, table, form, chart-bar, sidebar, text-block
+
+Output: a valid src/slides/data/slides-$DESIGN_BRIEF-en.ts file.
+```
+
+**Slide mapping table:**
+| Source artifact | Maps to |
+|----------------|---------|
+| Screen names/routes | Mockup slide `url` fields |
+| Component inventory | Slide 3 content card-grid blocks |
+| User journey steps | Slide 5 timeline steps |
+| Before/after design metrics | Slide 4 stats leftItems/rightItems |
+| Design decisions | Slide 9 comparison items |
+
+**Error recovery:**
+| Problem | Fix |
+|---------|-----|
+| Screen descriptions vague | List 3 UI actions per screen, Claude infers blocks |
+| Too many screens | Focus on 2 primary + 1 flow diagram |
+| Build error | Check BlockType spelling: must be exact from the union |
+
+---
+
+### Iteration Prompts
+
+Use these after generating a first draft:
+
+1. **Add Hebrew translation:** "Translate the presentation to Hebrew. Keep code, filenames, and node labels in English. Export as slides-$NAME-he.ts."
+2. **Sharpen the quote slide:** "Rewrite the quote slide question to be more provocative. Keep points ≤ 12 words each."
+3. **Expand stats:** "Add two more stat cards and flesh out the leftItems/rightItems with real-feeling numbers."
+4. **Adjust diagram:** "In slide 5, add a node for $NEW_COMPONENT at col 3, row 1, color amber, and connect it from $EXISTING_NODE."
+
+---
+
+### Quality Bars
+
+| Presentation type | Minimum requirements |
+|------------------|---------------------|
+| TechBrief | ≥1 diagram slide, ≥1 code slide, 8–12 slides, `npm run build` exits 0 |
+| UIMockup | ≥1 mockup (browser) slide, ≥1 mockup (flow) slide, 8–12 slides, `npm run build` exits 0 |
 
 ## SDD Development with AutoDeck
 

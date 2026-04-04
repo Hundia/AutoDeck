@@ -151,6 +151,33 @@ function HeroSection() {
               View on GitHub →
             </a>
           </motion.div>
+
+          {/* Example presentations */}
+          <motion.div
+            custom={0.55}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-2"
+          >
+            <span className="text-white/30 text-xs font-medium uppercase tracking-widest hidden sm:block">
+              Examples:
+            </span>
+            <a
+              href="#/techbrief"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-sm font-medium rounded-lg transition-all hover:-translate-y-0.5"
+            >
+              TechBrief
+              <span className="text-white/30 text-xs">— Spec-driven project story · 10 slides</span>
+            </a>
+            <a
+              href="#/uimockup"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-sm font-medium rounded-lg transition-all hover:-translate-y-0.5"
+            >
+              UIMockup
+              <span className="text-white/30 text-xs">— Design system wireframes · 10 slides</span>
+            </a>
+          </motion.div>
         </div>
       </div>
 
@@ -175,8 +202,8 @@ const features = [
     icon: Grid3X3,
     color: 'text-blue-400',
     border: 'border-blue-500/20',
-    title: '8 Slide Types',
-    desc: 'Title, stats, comparison, timeline, quote, and more. Pre-animated, ready to use.',
+    title: '10 Slide Types',
+    desc: 'Title, stats, comparison, timeline, diagram, mockup, and more. Pre-animated, ready to use.',
   },
   {
     icon: Globe,
@@ -350,6 +377,8 @@ const slideTypes = [
   { name: 'timeline', desc: 'Vertical step pipeline with scroll', color: 'indigo' },
   { name: 'closing', desc: 'macOS terminal + CTA links', color: 'pink' },
   { name: 'final', desc: 'Word-by-word tagline reveal', color: 'rose' },
+  { name: 'diagram', desc: 'Architecture, sequence, and ER diagrams via pure SVG — no libraries needed.', color: 'teal' },
+  { name: 'mockup', desc: 'Browser-chrome wireframes with 8 block types — no Figma exports required.', color: 'sky' },
 ];
 
 const colorMap: Record<string, string> = {
@@ -361,6 +390,8 @@ const colorMap: Record<string, string> = {
   indigo: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/5',
   pink: 'text-pink-400 border-pink-500/20 bg-pink-500/5',
   rose: 'text-rose-400 border-rose-500/20 bg-rose-500/5',
+  teal: 'text-teal-400 border-teal-500/20 bg-teal-500/5',
+  sky: 'text-sky-400 border-sky-500/20 bg-sky-500/5',
 };
 
 function SlideTypesSection() {
@@ -375,7 +406,7 @@ function SlideTypesSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            8 Built-In Slide Types
+            10 Built-In Slide Types
           </h2>
           <p className="text-white/50 text-lg">
             Every type you need, animated and production-ready.
@@ -483,7 +514,7 @@ function AIAssistedSection() {
               showing before/after microservices migration</span>
             </p>
             <p className="text-white/30 text-xs mt-4">
-              The AI reads all 8 slide types, animation patterns, and quality
+              The AI reads all 10 slide types, animation patterns, and quality
               requirements — then generates ready-to-paste TypeScript.
             </p>
           </div>

@@ -62,11 +62,11 @@ autodeck/
 │   ├── methodology/     # SDD methodology (10 files)
 │   ├── deployment/      # GitHub Pages, Vercel, Netlify
 │   ├── engine/          # PresentationViewer, backgrounds, types
-│   ├── slides/          # All 8 built-in slide types + custom guide
+│   ├── slides/          # All 10 built-in slide types + custom guide
 │   └── landing/         # Landing page components + content guide
 ├── src/
 │   ├── engine/          # PresentationViewer, BackgroundEffects, types
-│   ├── slides/          # 8 built-in slide templates + registry
+│   ├── slides/          # 10 built-in slide templates + registry
 │   ├── landing/         # Landing page components
 │   ├── config.ts        # Presentation config
 │   ├── App.tsx          # Router: / = Landing, /#/presentation = Viewer
@@ -132,7 +132,7 @@ interface PresentationConfig {
 }
 ```
 
-**8 built-in slide types** (registered in `src/slides/registry.ts`):
+**10 built-in slide types** (registered in `src/slides/registry.ts`):
 
 | Type | Key Fields |
 |------|-----------|
@@ -144,6 +144,9 @@ interface PresentationConfig {
 | `timeline` | `steps[]`, `scrollable?` |
 | `closing` | `install?`, `commands?[]`, `links?[]` |
 | `final` | `title`, `tagline` |
+| `code` | `title`, `language`, `code`, `filename?`, `highlights?[]` |
+| `diagram` | `title`, `mode` (arch/sequence/er), `nodes[]`, `edges[]` |
+| `mockup` | `title`, `displayMode` (browser/flow), `blocks[]` or `frames[]` |
 
 ### Adding a Slide
 

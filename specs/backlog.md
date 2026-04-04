@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-03
+**Last Updated:** 2026-04-04
 
 ---
 
@@ -25,7 +25,7 @@ The following sprints in AutoSpec built the presentation engine that became Auto
 | Sprint 37 | LightSpeedSpec (LSS) Framework | ✅ Done | 134 | LSS presentation — engine extracted as AutoDeck |
 | Sprint 38 | LSS Presentation Polish — Enterprise Grade | 🔄 In Progress | 52 | A11y, mobile, 4 new slides, animation upgrades |
 | Sprint 39 | AutoDeck Launch — GitHub Pages + SDD Framework | ✅ Done | 48 | Landing page, SDD bootstrap, GitHub Pages deploy |
-| Sprint 40 | DiagramSlide + MockupSlide + Two Flagship Presentations | 🔲 Planned | 53 | diagram/mockup types, TechBrief, UIMockup, generation recipes |
+| Sprint 40 | DiagramSlide + MockupSlide + Two Flagship Presentations | ✅ Done | 53 | diagram/mockup types, TechBrief, UIMockup, generation recipes |
 
 **Total investment:** ~443 points across 11 AutoSpec sprints
 
@@ -72,12 +72,12 @@ The following sprints in AutoSpec built the presentation engine that became Auto
 
 ---
 
-## 🔲 Sprint 40: DiagramSlide + MockupSlide + Two Flagship Presentations
+## ✅ Sprint 40: DiagramSlide + MockupSlide + Two Flagship Presentations
 
 **Goal:** Add two new reusable slide types (`diagram`, `mockup`), two flagship example presentations (TechBrief at `/#/techbrief`, UIMockup at `/#/uimockup`), and AI generation recipes in SKILL.md so any developer can generate a presentation from a codebase or spec.  
 **Points:** 53  
-**Status:** 🔲 Planned  
-**Date:** 2026-04-03
+**Status:** ✅ Done  
+**Date:** 2026-04-04
 
 ### Problem Statement
 
@@ -106,30 +106,30 @@ AutoDeck has one presentation (Acme) and no slide types for diagrams or wirefram
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 40.1 | **DiagramSlide component** — Create `src/slides/components/DiagramSlide.tsx`. Three modes via `mode: 'arch' \| 'sequence' \| 'er'`. Shared interface: `nodes: [{id, label, sublabel?, col, row, color?}]`, `edges: [{from, to, label?, dashed?}]`. Fixed `viewBox="0 0 800 500"` SVG. Node layout: `x = col * 200 + 80`, `y = row * 120 + 60`. Nodes: `<rect>` + `<text>` color-coded. Edges: cubic bezier `<path>` with Framer Motion `pathLength` 0→1 draw-on (stagger 0.15s). Sequence mode: actor lifelines + horizontal message arrows. ER mode: field-list boxes. No new npm packages. | Frontend | sonnet | 8 | 🔲 | — | `docs/slides/README.md` |
-| 40.2 | **DiagramSlide register** — Add `DiagramSlideData` to `src/engine/types.ts`. Register `diagram: DiagramSlide` in `src/slides/registry.ts`. `npm run build` exits 0. | Frontend | haiku | 2 | 🔲 | 40.1 | — |
-| 40.3 | **MockupSlide component** — Create `src/slides/components/MockupSlide.tsx`. Browser chrome: 3 traffic-light dots + `bg-slate-800` bar + URL field (identical to CodeSlide pattern). Content area: `bg-slate-50 rounded-b-xl`. 8 block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`. `displayMode: 'flow'` renders 3 mini-frames side-by-side with CSS-only arrow connectors (absolutely-positioned divs with border — NO `getBoundingClientRect`, NO SVG overlay, must work inside Framer Motion AnimatePresence). Block stagger 0.1s. | Frontend | sonnet | 8 | 🔲 | — | `docs/slides/README.md` |
-| 40.4 | **MockupSlide register** — Add `MockupSlideData` + `BlockType` union to `src/engine/types.ts`. Register `mockup: MockupSlide` in `src/slides/registry.ts`. `npm run build` exits 0. | Frontend | haiku | 2 | 🔲 | 40.3 | — |
-| 40.5 | **Build gate (Phase 1)** — Add temp `diagram` slide (arch mode, 4 nodes, 3 edges) + `mockup` slide (browser, 3 blocks) to `slides-en.ts`. `npm run build` must exit 0. Confirm both render at `/#/presentation`. Remove temp slides. Hard binary gate — blocks Phase 2 if failing. | QA | haiku | 2 | 🔲 | 40.1–40.4 | — |
-| 40.6 | **Docs: new types** — Update `docs/slides/README.md`: add `diagram` + `mockup` rows + usage examples. Create `src/slides/data/README.md`: naming convention (`{name}-en.ts` / `{name}-he.ts`). Update `CLAUDE.md`: slide count 8→10 in two places. Update `SKILL.md` built-in types table: add `diagram` + `mockup` rows. | PM | haiku | 4 | 🔲 | 40.2, 40.4 | `docs/slides/README.md`, `CLAUDE.md`, `SKILL.md`, `src/slides/data/README.md` |
+| 40.1 | **DiagramSlide component** — Create `src/slides/components/DiagramSlide.tsx`. Three modes via `mode: 'arch' \| 'sequence' \| 'er'`. Shared interface: `nodes: [{id, label, sublabel?, col, row, color?}]`, `edges: [{from, to, label?, dashed?}]`. Fixed `viewBox="0 0 800 500"` SVG. Node layout: `x = col * 200 + 80`, `y = row * 120 + 60`. Nodes: `<rect>` + `<text>` color-coded. Edges: cubic bezier `<path>` with Framer Motion `pathLength` 0→1 draw-on (stagger 0.15s). Sequence mode: actor lifelines + horizontal message arrows. ER mode: field-list boxes. No new npm packages. | Frontend | sonnet | 8 | ✅ Done | — | `docs/slides/README.md` |
+| 40.2 | **DiagramSlide register** — Add `DiagramSlideData` to `src/engine/types.ts`. Register `diagram: DiagramSlide` in `src/slides/registry.ts`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ Done | 40.1 | — |
+| 40.3 | **MockupSlide component** — Create `src/slides/components/MockupSlide.tsx`. Browser chrome: 3 traffic-light dots + `bg-slate-800` bar + URL field (identical to CodeSlide pattern). Content area: `bg-slate-50 rounded-b-xl`. 8 block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`. `displayMode: 'flow'` renders 3 mini-frames side-by-side with CSS-only arrow connectors (absolutely-positioned divs with border — NO `getBoundingClientRect`, NO SVG overlay, must work inside Framer Motion AnimatePresence). Block stagger 0.1s. | Frontend | sonnet | 8 | ✅ Done | — | `docs/slides/README.md` |
+| 40.4 | **MockupSlide register** — Add `MockupSlideData` + `BlockType` union to `src/engine/types.ts`. Register `mockup: MockupSlide` in `src/slides/registry.ts`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ Done | 40.3 | — |
+| 40.5 | **Build gate (Phase 1)** — Add temp `diagram` slide (arch mode, 4 nodes, 3 edges) + `mockup` slide (browser, 3 blocks) to `slides-en.ts`. `npm run build` must exit 0. Confirm both render at `/#/presentation`. Remove temp slides. Hard binary gate — blocks Phase 2 if failing. | QA | haiku | 2 | ✅ Done | 40.1–40.4 | — |
+| 40.6 | **Docs: new types** — Update `docs/slides/README.md`: add `diagram` + `mockup` rows + usage examples. Create `src/slides/data/README.md`: naming convention (`{name}-en.ts` / `{name}-he.ts`). Update `CLAUDE.md`: slide count 8→10 in two places. Update `SKILL.md` built-in types table: add `diagram` + `mockup` rows. | PM | haiku | 4 | ✅ Done | 40.2, 40.4 | `docs/slides/README.md`, `CLAUDE.md`, `SKILL.md`, `src/slides/data/README.md` |
 
 ### Phase 2: Example Presentations (20 pts)
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 40.7 | **TechBrief EN data** — Create `src/slides/data/slides-techbrief-en.ts`. 10 slides themed "AutoSpec": (1) title; (2) quote — spec drift problem; (3) content — 4 deliverable cards + 4 metrics; (4) timeline scrollable — 5 execution steps; (5) diagram `arch` — 5-node architecture; (6) diagram `sequence` — 4-actor flow; (7) diagram `er` — 3-entity model; (8) code — YAML sprint config 15 lines; (9) stats — 4 metrics + before/after columns; (10) closing — slash commands + links. Background: `circuits`. | PM | sonnet | 5 | 🔲 | 40.5 | — |
-| 40.8 | **TechBrief HE translation** — Create `src/slides/data/slides-techbrief-he.ts`. Full Hebrew translation of 40.7. Prose fields translated; code/node labels/filenames stay English. | PM | haiku | 3 | 🔲 | 40.7 | — |
-| 40.9 | **UIMockup EN data** — Create `src/slides/data/slides-uimockup-en.ts`. 10 slides themed "AutoDeck Dashboard DS": (1) title; (2) quote — design system problem; (3) content — 4 DS pillars + token counts; (4) stats — token/component counts + before/after; (5) timeline scrollable — 5-step design-to-code; (6) mockup wireframe — Dashboard (navbar, hero, card-grid, chart-bar); (7) mockup wireframe — Backlog (navbar, sidebar, table); (8) mockup flow — 3 mini-frames + CSS arrows; (9) comparison — Manual vs DS; (10) final. Background: `constellation`. | PM | sonnet | 5 | 🔲 | 40.5 | — |
-| 40.10 | **UIMockup HE translation** — Create `src/slides/data/slides-uimockup-he.ts`. Full Hebrew translation of 40.9. Same English-preservation rule as 40.8. | PM | haiku | 3 | 🔲 | 40.9 | — |
-| 40.11 | **Wire routes in App.tsx** — Import 4 new data files from `src/slides/data/`. Define `techBriefConfig` (background: `circuits`) + `uiMockupConfig` (background: `constellation`). Add `<Route path="/techbrief">` + `<Route path="/uimockup">`. Existing `path="/presentation"` (Acme) unchanged. `npm run build` exits 0. | Frontend | sonnet | 4 | 🔲 | 40.7, 40.9 | — |
+| 40.7 | **TechBrief EN data** — Create `src/slides/data/slides-techbrief-en.ts`. 10 slides themed "AutoSpec": (1) title; (2) quote — spec drift problem; (3) content — 4 deliverable cards + 4 metrics; (4) timeline scrollable — 5 execution steps; (5) diagram `arch` — 5-node architecture; (6) diagram `sequence` — 4-actor flow; (7) diagram `er` — 3-entity model; (8) code — YAML sprint config 15 lines; (9) stats — 4 metrics + before/after columns; (10) closing — slash commands + links. Background: `circuits`. | PM | sonnet | 5 | ✅ Done | 40.5 | — |
+| 40.8 | **TechBrief HE translation** — Create `src/slides/data/slides-techbrief-he.ts`. Full Hebrew translation of 40.7. Prose fields translated; code/node labels/filenames stay English. | PM | haiku | 3 | ✅ Done | 40.7 | — |
+| 40.9 | **UIMockup EN data** — Create `src/slides/data/slides-uimockup-en.ts`. 10 slides themed "AutoDeck Dashboard DS": (1) title; (2) quote — design system problem; (3) content — 4 DS pillars + token counts; (4) stats — token/component counts + before/after; (5) timeline scrollable — 5-step design-to-code; (6) mockup wireframe — Dashboard (navbar, hero, card-grid, chart-bar); (7) mockup wireframe — Backlog (navbar, sidebar, table); (8) mockup flow — 3 mini-frames + CSS arrows; (9) comparison — Manual vs DS; (10) final. Background: `constellation`. | PM | sonnet | 5 | ✅ | 40.5 | — |
+| 40.10 | **UIMockup HE translation** — Create `src/slides/data/slides-uimockup-he.ts`. Full Hebrew translation of 40.9. Same English-preservation rule as 40.8. | PM | haiku | 3 | ✅ | 40.9 | — |
+| 40.11 | **Wire routes in App.tsx** — Import 4 new data files from `src/slides/data/`. Define `techBriefConfig` (background: `circuits`) + `uiMockupConfig` (background: `constellation`). Add `<Route path="/techbrief">` + `<Route path="/uimockup">`. Existing `path="/presentation"` (Acme) unchanged. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 40.7, 40.9 | — |
 
 ### Phase 3: AI Generation Guide + Landing + Close (7 pts)
 
 | ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
 |----|--------|-------|-------|-----|--------|------|------|
-| 40.12 | **SKILL.md Generation Recipes** — Insert `## Generation Recipes` section between `## File Map` and `## SDD Development with AutoDeck`. **Recipe 1 (TechBrief)**: verbatim prompt template with `$PROJECT_NAME`, `$GIT_LOG`, `$SPEC_SUMMARY`, `$TEST_STATS` placeholders; slide-mapping table (feat commits → content cards, spec goal → quote question, test line → stats, done tickets → comparison right, open tickets → closing commands); 3-row error recovery. **Recipe 2 (UIMockup)**: verbatim template with `$DESIGN_BRIEF`, `$COMPONENT_LIST`, `$SCREEN_DESCRIPTIONS`; mapping table; error recovery. **Iteration Prompts**: 4 follow-up patterns. **Quality Bars**: TechBrief (≥1 diagram, ≥1 code, 8–12 slides, build passes); UIMockup (≥1 mockup wireframe, ≥1 mockup flow, 8–12 slides, build passes). | PM | sonnet | 4 | 🔲 | 40.11 | `SKILL.md` |
-| 40.13 | **Landing page updates** — `SlideTypesSection`: add `diagram` + `mockup` cards, heading "8 Built-In Slide Types" → "10 Built-In Slide Types". `AIAssistedSection`: add TechBrief + UIMockup CTA cards linking to `#/techbrief` and `#/uimockup`. `FeaturesSection`: "8 slide types" → "10 slide types". `HowItWorksSection` step 2 path → `src/slides/data/acme-en.ts`. `npm run build`. | Frontend | haiku | 2 | 🔲 | 40.12 | `docs/landing/` |
-| 40.14 | **Sprint close** — Verify `/#/presentation`, `/#/techbrief`, `/#/uimockup` all load, navigate, language-toggle. Verify backgrounds (`circuits`/`constellation`/`particles`) and RTL on all three. No console errors. Write `sprints/sprint-40/summary.md`. Update `specs/backlog.md` (all 40.x → ✅ Done). Commit + push. | QA | haiku | 1 | 🔲 | 40.12, 40.13 | `sprints/sprint-40/summary.md`, `specs/backlog.md` |
+| 40.12 | **SKILL.md Generation Recipes** — Insert `## Generation Recipes` section between `## File Map` and `## SDD Development with AutoDeck`. **Recipe 1 (TechBrief)**: verbatim prompt template with `$PROJECT_NAME`, `$GIT_LOG`, `$SPEC_SUMMARY`, `$TEST_STATS` placeholders; slide-mapping table (feat commits → content cards, spec goal → quote question, test line → stats, done tickets → comparison right, open tickets → closing commands); 3-row error recovery. **Recipe 2 (UIMockup)**: verbatim template with `$DESIGN_BRIEF`, `$COMPONENT_LIST`, `$SCREEN_DESCRIPTIONS`; mapping table; error recovery. **Iteration Prompts**: 4 follow-up patterns. **Quality Bars**: TechBrief (≥1 diagram, ≥1 code, 8–12 slides, build passes); UIMockup (≥1 mockup wireframe, ≥1 mockup flow, 8–12 slides, build passes). | PM | sonnet | 4 | ✅ Done | 40.11 | `SKILL.md` |
+| 40.13 | **Landing page updates** — `SlideTypesSection`: add `diagram` + `mockup` cards, heading "8 Built-In Slide Types" → "10 Built-In Slide Types". `AIAssistedSection`: add TechBrief + UIMockup CTA cards linking to `#/techbrief` and `#/uimockup`. `FeaturesSection`: "8 slide types" → "10 slide types". `HowItWorksSection` step 2 path → `src/slides/data/acme-en.ts`. `npm run build`. | Frontend | haiku | 2 | ✅ Done | 40.12 | `docs/landing/` |
+| 40.14 | **Sprint close** — Verify `/#/presentation`, `/#/techbrief`, `/#/uimockup` all load, navigate, language-toggle. Verify backgrounds (`circuits`/`constellation`/`particles`) and RTL on all three. No console errors. Write `sprints/sprint-40/summary.md`. Update `specs/backlog.md` (all 40.x → ✅ Done). Commit + push. | QA | haiku | 1 | ✅ Done | 40.12, 40.13 | `sprints/sprint-40/summary.md`, `specs/backlog.md` |
 
 ### QA Plan
 
