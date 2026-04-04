@@ -4,13 +4,18 @@
 
 **Live:** https://hundia.github.io/AutoDeck/
 
+**Example Presentations:**
+- [Acme — Developer Tools](https://hundia.github.io/AutoDeck/#/presentation) (particles background)
+- [AutoSpec TechBrief](https://hundia.github.io/AutoDeck/#/techbrief) (circuits background)
+- [AutoDeck Dashboard DS](https://hundia.github.io/AutoDeck/#/uimockup) (constellation background)
+
 [![Deploy](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml)
 
 ---
 
 ## Features
 
-- **8 built-in slide types** — title, content, comparison, stats, quote, timeline, closing, final
+- **10 built-in slide types** — title, content, comparison, stats, quote, timeline, closing, final, code, diagram, mockup
 - **Keyboard navigation** — ← → arrows, progress dots, space for scrollable slides
 - **Multi-language + RTL** — Hebrew, Arabic, Farsi auto-detected and mirrored
 - **8 animated backgrounds** — particles, circuits, matrix, constellation, hex, waves, gradient, grid
@@ -51,6 +56,9 @@ git push origin main
 | `timeline` | Vertical step pipeline | `steps[]`, `scrollable?` |
 | `closing` | macOS terminal + CTA links | `install?`, `commands?[]`, `links?[]` |
 | `final` | Word-by-word tagline reveal | `title`, `tagline` |
+| `code` | Syntax-highlighted code + output panel | `filename`, `lines[]`, `highlights?[]`, `output?[]` |
+| `diagram` | Architecture/sequence/ER via pure SVG | `mode` (arch/sequence/er), `nodes[]`, `edges[]` |
+| `mockup` | Browser-chrome wireframe (8 block types) | `displayMode` (browser/flow), `blocks[]` or `frames[]` |
 
 ## Example Slide
 
@@ -91,7 +99,7 @@ AutoDeck includes `SKILL.md` — a tool-agnostic guide that any AI coding assist
 "Read SKILL.md and help me create slides for a talk about [your topic]"
 ```
 
-The AI will understand all 8 slide types, animations, multi-language patterns, and quality requirements.
+The AI will understand all 10 slide types, animations, multi-language patterns, and quality requirements. `SKILL.md` also includes generation recipes to produce a full TechBrief or UIMockup presentation from a codebase or design brief.
 
 ## Backgrounds
 
