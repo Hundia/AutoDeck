@@ -8,6 +8,8 @@ import { slidesTechbriefEN } from './slides/data/slides-techbrief-en';
 import { slidesTechbriefHE } from './slides/data/slides-techbrief-he';
 import { slidesUimockupEN } from './slides/data/slides-uimockup-en';
 import { slidesUimockupHE } from './slides/data/slides-uimockup-he';
+import { slidesHowtoEN } from './slides/data/slides-howto-en';
+import { slidesHowtoHE } from './slides/data/slides-howto-he';
 import { slideComponents } from './slides/registry';
 import type { PresentationConfig } from './engine/types';
 
@@ -27,10 +29,19 @@ const uiMockupConfig: PresentationConfig = {
   branding: 'Built with AutoDeck',
 };
 
+const howToConfig: PresentationConfig = {
+  title: 'AutoDeck How-To',
+  languages: [{ id: 'en', label: 'English' }, { id: 'he', label: 'עברית' }],
+  defaultLanguage: 'en',
+  background: 'hex',
+  branding: 'Built with AutoDeck',
+};
+
 export default function App() {
   const acmeSlides = { en: slidesEN, he: slidesHE };
   const techBriefSlides = { en: slidesTechbriefEN, he: slidesTechbriefHE };
   const uiMockupSlides = { en: slidesUimockupEN, he: slidesUimockupHE };
+  const howToSlides = { en: slidesHowtoEN, he: slidesHowtoHE };
 
   return (
     <HashRouter>
@@ -47,6 +58,10 @@ export default function App() {
         <Route
           path="/uimockup"
           element={<PresentationViewer config={uiMockupConfig} slides={uiMockupSlides} slideComponents={slideComponents} />}
+        />
+        <Route
+          path="/howto"
+          element={<PresentationViewer config={howToConfig} slides={howToSlides} slideComponents={slideComponents} />}
         />
       </Routes>
     </HashRouter>

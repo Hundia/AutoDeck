@@ -177,6 +177,13 @@ function HeroSection() {
               UIMockup
               <span className="text-white/30 text-xs">— Design system wireframes · 10 slides</span>
             </a>
+            <a
+              href="#/howto"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-sm font-medium rounded-lg transition-all hover:-translate-y-0.5"
+            >
+              HowTo
+              <span className="text-white/30 text-xs">— Build a deck with AI · 10 slides</span>
+            </a>
           </motion.div>
         </div>
       </div>

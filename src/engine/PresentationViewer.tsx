@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Globe } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Globe, Layers } from 'lucide-react';
 import BackgroundEffect from './BackgroundEffects';
 import LanguageDropdown from './LanguageDropdown';
 import ScrollProgressBar from './ScrollProgressBar';
 import type { SlideData, SlideComponentProps, PresentationConfig } from './types';
 
 const RTL_LANGUAGES = ['he', 'ar', 'fa', 'ur'];
+
+const BG_OPTIONS = [
+  { id: 'particles',     label: 'Particles' },
+  { id: 'circuits',      label: 'Circuits' },
+  { id: 'matrix',        label: 'Matrix' },
+  { id: 'constellation', label: 'Constellation' },
+  { id: 'hex',           label: 'Hex Grid' },
+  { id: 'waves',         label: 'Waves' },
+  { id: 'gradient',      label: 'Gradient' },
+  { id: 'grid',          label: 'Grid' },
+];
 
 interface PresentationViewerProps {
   config: PresentationConfig;
@@ -20,6 +31,7 @@ export default function PresentationViewer({
   slideComponents,
 }: PresentationViewerProps) {
   const [lang, setLang] = useState(config.defaultLanguage);
+  const [bg, setBg] = useState(config.background);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -101,11 +113,18 @@ export default function PresentationViewer({
     >
       <style>{`@keyframes floatingGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }`}</style>
 
-      <BackgroundEffect activeId={config.background} />
+      <BackgroundEffect activeId={bg} />
 
       {/* Language Selector */}
-      {config.languages.length > 1 && (
-        <div className={`fixed top-4 z-50 ${isRTL ? 'left-4' : 'right-4'}`}>
+      <div className={`fixed top-4 z-50 flex items-center gap-2 ${isRTL ? 'left-4' : 'right-4'}`}>
+        <LanguageDropdown
+          value={bg}
+          onChange={setBg}
+          icon={<Layers size={14} />}
+          align="right"
+          options={BG_OPTIONS}
+        />
+        {config.languages.length > 1 && (
           <LanguageDropdown
             value={lang}
             onChange={setLang}
@@ -114,8 +133,8 @@ export default function PresentationViewer({
             align="right"
             options={config.languages}
           />
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Slide Counter */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 text-sm text-white/60">

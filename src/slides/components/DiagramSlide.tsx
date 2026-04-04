@@ -63,6 +63,17 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
 
   const nodeMap = new Map<string, DiagramNode>(data.nodes.map(n => [n.id, n]));
 
+  // Dynamic viewBox — prevents nodes clipping outside fixed bounds
+  const PADDING = 48;
+  const nodeHForLayout = isER ? NODE_H_ER : NODE_H;
+  const maxNodeRight = Math.max(...data.nodes.map(n => n.col * 200 + 80 + NODE_W)) + PADDING;
+  const maxNodeBottom = Math.max(...data.nodes.map(n => n.row * 120 + 60 + nodeHForLayout)) + PADDING;
+  const seqBottom = isSequence
+    ? 60 + NODE_H + data.edges.length * 80 + 60 + PADDING
+    : 0;
+  const svgW = Math.max(760, maxNodeRight);
+  const svgH = Math.max(340, Math.max(maxNodeBottom, seqBottom));
+
   return (
     <div className="max-w-5xl mx-auto w-full">
       <motion.h2
@@ -97,7 +108,7 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
           transition={{ delay: 0.2 }}
           className="bg-slate-900/80 rounded-xl border border-slate-700/60 overflow-hidden"
         >
-          <svg viewBox="0 0 800 500" className="w-full h-auto">
+          <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-auto">
             <defs>
               <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L0,6 L8,3 z" fill="#64748b" />
@@ -112,7 +123,7 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
                 <line
                   key={`lifeline-${node.id}`}
                   x1={cx} y1={topY}
-                  x2={cx} y2={topY + 400}
+                  x2={cx} y2={svgH - 20}
                   stroke="#475569"
                   strokeWidth="1"
                   strokeDasharray="6 4"
