@@ -142,13 +142,20 @@ function HeroSection() {
               Launch Demo →
             </a>
             <a
+              href="#/howto"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-violet-600/80 hover:bg-violet-500/90 border border-violet-500/40 text-white font-semibold rounded-xl text-base transition-all hover:shadow-lg hover:shadow-violet-500/20 hover:-translate-y-0.5"
+            >
+              <Sparkles size={18} />
+              Build with AI →
+            </a>
+            <a
               href="https://github.com/Hundia/AutoDeck"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl text-base transition-all hover:-translate-y-0.5"
             >
               <Github size={18} />
-              View on GitHub →
+              GitHub →
             </a>
           </motion.div>
 
@@ -176,13 +183,6 @@ function HeroSection() {
             >
               UIMockup
               <span className="text-white/30 text-xs">— Design system wireframes · 10 slides</span>
-            </a>
-            <a
-              href="#/howto"
-              className="inline-flex items-center gap-2 px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-sm font-medium rounded-lg transition-all hover:-translate-y-0.5"
-            >
-              HowTo
-              <span className="text-white/30 text-xs">— Build a deck with AI · 10 slides</span>
             </a>
           </motion.div>
         </div>
@@ -368,6 +368,158 @@ function HowItWorksSection() {
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── QuickStartSection ───────────────────────────────────────────────────────
+
+const promptSteps = [
+  {
+    step: '1',
+    color: 'border-blue-500/30 bg-blue-500/5',
+    badge: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    label: 'Brief your AI',
+    hint: 'Works in Claude, Copilot, Cursor, Gemini',
+    lines: [
+      { text: 'Read ', dim: false },
+      { text: 'SKILL.md', dim: false, mono: true, highlight: true },
+      { text: ' and create a 10-slide deck', dim: false },
+      { text: ' about our Q2 launch.', dim: false },
+      { text: '\n\nInclude a timeline, a code slide,', dim: true },
+      { text: '\nand before/after stats.', dim: true },
+    ],
+  },
+  {
+    step: '2',
+    color: 'border-violet-500/30 bg-violet-500/5',
+    badge: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
+    label: 'Get your slides',
+    hint: 'AI generates typed TypeScript — no hallucination',
+    lines: [
+      { text: '{ type: ', dim: true },
+      { text: "'title'", dim: false, highlight: true },
+      { text: ', title: ', dim: true },
+      { text: "'Q2 Launch'", dim: false },
+      { text: ' }\n', dim: true },
+      { text: '{ type: ', dim: true },
+      { text: "'timeline'", dim: false, highlight: true },
+      { text: ', scrollable: true … }\n', dim: true },
+      { text: '{ type: ', dim: true },
+      { text: "'stats'", dim: false, highlight: true },
+      { text: ', leftItems: … }', dim: true },
+    ],
+  },
+  {
+    step: '3',
+    color: 'border-emerald-500/30 bg-emerald-500/5',
+    badge: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    label: 'Push to deploy',
+    hint: 'GitHub Actions → GitHub Pages, 2 minutes',
+    lines: [
+      { text: '$ git push origin main\n', dim: false },
+      { text: '\n▶  Building…  ', dim: true },
+      { text: 'done', dim: false },
+      { text: '\n▶  Deploying… ', dim: true },
+      { text: 'done', dim: false },
+      { text: '\n✅ ', dim: false },
+      { text: 'https://you.github.io/AutoDeck/', dim: false, highlight: true },
+    ],
+  },
+];
+
+function QuickStartSection() {
+  return (
+    <section className="py-24 px-6 bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-violet-500/10 border border-violet-500/20 rounded-full text-sm text-violet-400 font-medium">
+            <Sparkles size={14} />
+            AI-first workflow
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            From Prompt to Live Deck
+          </h2>
+          <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            Three messages to any AI assistant.
+            No design skills. No slide software.
+          </p>
+        </motion.div>
+
+        {/* Three terminal cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {promptSteps.map((s, i) => (
+            <motion.div
+              key={s.step}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.12 }}
+              className={`border rounded-xl overflow-hidden ${s.color}`}
+            >
+              {/* Card header */}
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-white/5">
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${s.badge}`}>
+                  {s.step}
+                </span>
+                <span className="text-white/80 text-sm font-semibold">{s.label}</span>
+              </div>
+              {/* Code area */}
+              <div className="px-5 py-4 min-h-[100px]">
+                <p
+                  className="text-sm leading-relaxed whitespace-pre-wrap"
+                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  {s.lines.map((l, li) => (
+                    <span
+                      key={li}
+                      className={
+                        l.highlight
+                          ? 'text-white font-semibold'
+                          : l.dim
+                          ? 'text-white/35'
+                          : 'text-white/80'
+                      }
+                    >
+                      {l.text}
+                    </span>
+                  ))}
+                </p>
+              </div>
+              {/* Hint */}
+              <div className="px-5 pb-4">
+                <span className="text-white/25 text-xs">{s.hint}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <a
+            href="#/howto"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-violet-600/80 hover:bg-violet-500/90 border border-violet-500/40 text-white font-semibold rounded-xl text-base transition-all hover:shadow-xl hover:shadow-violet-500/20 hover:-translate-y-0.5"
+          >
+            <Sparkles size={18} />
+            See the Full How-To Guide — 10 slides
+          </a>
+          <p className="text-white/25 text-sm mt-4">
+            AI-framework agnostic · EN + Hebrew · hex background
+          </p>
+        </motion.div>
       </div>
     </section>
   );
@@ -601,6 +753,7 @@ export default function LandingPage() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <QuickStartSection />
       <SlideTypesSection />
       <AIAssistedSection />
       <FooterSection />
