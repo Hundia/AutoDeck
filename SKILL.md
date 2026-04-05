@@ -74,13 +74,56 @@ export const slideComponents = {
 | `timeline` | Vertical step timeline | `title`, `steps[]` (`number`, `title`, `subtitle?`, `time?`, `output?`), `scrollable?` |
 | `closing` | CTA with terminal | `title`, `install?`, `commands?[]`, `links?[]`, `tagline` |
 | `final` | Final tagline | `title`, `tagline` (word-by-word reveal) |
-| `code` | Syntax-highlighted code block | `title`, `language`, `code`, `filename?`, `highlights?[]` |
-| `diagram` | Architecture/sequence/ER diagrams | `mode`, `nodes[]`, `edges[]` |
+| `code` | Syntax-highlighted code block | `title`, `language`, `code`, `filename?`, `lines[]`, `highlights?[]`, `output?[]`, `outputCommand?` |
+| `diagram` | Architecture/sequence/ER diagrams | `mode`, `nodes[]`, `edges[]`, `autoEdges?` |
 | `mockup` | Browser wireframe (block system) | `displayMode`, `blocks[]` or `frames[]` |
 
 ### Available colors for comparison panels
 
 `red`, `green`, `blue`, `amber`, `purple`, `cyan`
+
+### MockupSlide Block Types
+
+| Block type | Renders as | Key fields |
+|-----------|-----------|-----------|
+| `navbar` | App nav bar | `label?` |
+| `hero` | Gradient banner with CTA | `label?` |
+| `card-grid` | 3-column placeholder cards | — |
+| `table` | 4-column data table | — |
+| `form` | Email + password form | — |
+| `chart-bar` | 5-bar bar chart | — |
+| `sidebar` | Left nav rail + content | — |
+| `text-block` | Skeleton text lines | — |
+| `image` | Real image from URL | `src` (required), `alt` (required), `caption?`, `aspectRatio?` (`'16/9'`\|`'4/3'`\|`'square'`) |
+
+> ⚠️ **`src` must be a publicly accessible URL.**
+> - ✅ `https://images.unsplash.com/photo-abc?w=800` (public CDN)
+> - ✅ `/screenshots/dashboard.png` (file in `public/` folder)
+> - ❌ `https://company.sharepoint.com/sites/…` (requires authentication — will not load)
+
+### DiagramSlide autoEdges
+
+**`autoEdges?: boolean`** — When `true`, nodes are automatically connected left-to-right in column order. Use for simple sequential flows. Non-empty `edges` always override autoEdges.
+
+> ⚠️ **ALWAYS include both `nodes` AND `edges` (or use `autoEdges: true`).** An empty `edges: []` draws zero connections and shows no error.
+
+Example with autoEdges:
+```typescript
+{
+  type: 'diagram', mode: 'arch', title: 'System Flow',
+  autoEdges: true,
+  nodes: [
+    { id: 'client', label: 'Client',   col: 0, row: 0 },
+    { id: 'api',    label: 'API',      col: 1, row: 0, color: 'blue' },
+    { id: 'db',     label: 'Database', col: 2, row: 0, color: 'emerald' },
+  ],
+  edges: [], // autoEdges fills this in
+}
+```
+
+### CodeSlide outputCommand
+
+`outputCommand?: string` — The shell command shown as `$ [command]` in the terminal output header. E.g. `outputCommand: 'npm test'` renders as `$ npm test`.
 
 ## Design System
 
@@ -253,7 +296,7 @@ Follow the UIMockup structure:
 10. final — tagline
 
 Available block types for mockup slides:
-navbar, hero, card-grid, table, form, chart-bar, sidebar, text-block
+navbar, hero, card-grid, table, form, chart-bar, sidebar, text-block, image
 
 Output: a valid src/slides/data/slides-$DESIGN_BRIEF-en.ts file.
 ```
@@ -293,6 +336,69 @@ Use these after generating a first draft:
 |------------------|---------------------|
 | TechBrief | ≥1 diagram slide, ≥1 code slide, 8–12 slides, `npm run build` exits 0 |
 | UIMockup | ≥1 mockup (browser) slide, ≥1 mockup (flow) slide, 8–12 slides, `npm run build` exits 0 |
+
+## Creation Story
+
+Every presentation can ship with a "How This Was Built" drawer that surfaces the exact prompts, slide decisions, and framework comparisons used to create it.
+
+### Interfaces
+
+```typescript
+interface StoryPrompt {
+  label: string;       // short name for the prompt, e.g. "Initial Brief"
+  prompt: string;      // the full prompt text (displayed in monospace, copyable)
+  framework?: string;  // "Claude Code" | "Copilot" | "Cursor" | "Gemini"
+}
+
+interface SlideDecision {
+  slide: number;       // 1-indexed slide number
+  decision: string;    // one-sentence rationale for that slide's design choice
+}
+
+interface CreationStory {
+  totalPrompts: number;              // shown as a stat pill in the header
+  totalMinutes: number;              // shown as a stat pill in the header
+  prompts: StoryPrompt[];            // always rendered; one card per prompt
+  decisions?: SlideDecision[];       // optional; shown as collapsible section
+  frameworkNotes?: Record<string, string>; // optional; shown as comparison table
+}
+```
+
+### Wiring a Creation Story
+
+1. Create `src/slides/data/creation-story-{name}.ts` and export a `CreationStory` object
+2. Import it in `src/App.tsx`
+3. Pass it as `creationStory={myStory}` to the `<PresentationViewer>` for that route
+4. Omit the prop entirely to hide the feature (opt-in per presentation)
+
+```typescript
+// src/App.tsx
+import { myCreationStory } from './slides/data/creation-story-myname';
+
+<PresentationViewer
+  config={myConfig}
+  slides={mySlides}
+  slideComponents={slideComponents}
+  creationStory={myCreationStory}   // ← add this line
+/>
+```
+
+### Keyboard + UI
+
+| Action | Trigger |
+|--------|---------|
+| Toggle drawer | Press `I` key, or click "Creation Story" pill (bottom-right / bottom-left in RTL) |
+| Close drawer | Press `Escape`, or click the `×` button, or click the backdrop |
+| Arrow keys while open | Suppressed — won't advance slides |
+
+### Quality Bar
+
+- ≥ 4 prompts (the drawer content should feel substantive, not a demo stub)
+- All 4 framework badge colors used if `framework` field is populated: Claude Code = orange-400, Copilot = blue-400, Cursor = violet-400, Gemini = cyan-400
+- RTL presentations: pill appears bottom-left, drawer slides in from the left edge
+- `npm run build` exits 0 after adding the story file
+
+---
 
 ## SDD Development with AutoDeck
 

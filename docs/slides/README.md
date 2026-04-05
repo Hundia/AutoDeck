@@ -14,8 +14,8 @@ All built-in slide types live in `src/slides/components/`. Register new types in
 | `timeline` | `TimelineSlide` | `title`, `steps[]`, `scrollable?` |
 | `closing` | `ClosingSlide` | `title`, `install?`, `commands?[]`, `links?[]`, `tagline` |
 | `final` | `FinalSlide` | `title`, `tagline` |
-| `code` | `CodeSlide` | `title`, `language`, `code`, `filename?`, `highlights?[]` |
-| `diagram` | `DiagramSlide` | `title`, `mode` (arch/sequence/er), `nodes[]`, `edges[]` |
+| `code` | `CodeSlide` | `title`, `language`, `code`, `filename?`, `highlights?[]`, `output?[]`, `outputCommand?` |
+| `diagram` | `DiagramSlide` | `title`, `mode` (arch/sequence/er), `nodes[]`, `edges[]`, `autoEdges?` |
 | `mockup` | `MockupSlide` | `title`, `displayMode` (browser/flow), `blocks[]` or `frames[]` |
 
 ## Usage Examples
@@ -76,7 +76,17 @@ Modes:
 }
 ```
 
-Available block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`.
+Available block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`, `image`.
+
+The `image` block renders a real image from a URL. Fields: `src` (required), `alt` (required), `caption?`, `aspectRatio?` (`'16/9'` | `'4/3'` | `'square'`).
+
+### DiagramSlide fields
+
+**`autoEdges?: boolean`** — When `true`, nodes are automatically chained left-to-right in column order. Useful for simple sequential flows where you don't want to enumerate every edge manually. Non-empty `edges` always override autoEdges.
+
+### CodeSlide fields
+
+**`outputCommand?: string`** — The shell command displayed in the terminal output header as `$ [command]`. For example, `outputCommand: 'npm test'` renders as `$ npm test` above the output lines.
 
 ## Creating Custom Slide Types
 

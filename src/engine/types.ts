@@ -1,5 +1,24 @@
 export type Language = string;
 
+export interface StoryPrompt {
+  label: string;
+  prompt: string;
+  framework?: string; // "Claude Code" | "Copilot" | "Cursor" | "Gemini"
+}
+
+export interface SlideDecision {
+  slide: number;
+  decision: string;
+}
+
+export interface CreationStory {
+  totalPrompts: number;
+  totalMinutes: number;
+  prompts: StoryPrompt[];
+  decisions?: SlideDecision[];
+  frameworkNotes?: Record<string, string>;
+}
+
 export interface SlideData {
   type: string;
   scrollable?: boolean;
@@ -48,13 +67,24 @@ export interface DiagramSlideData extends SlideData {
   subtitle?: string;
   nodes: DiagramNode[];
   edges: DiagramEdge[];
+  autoEdges?: boolean;
 }
 
-export type BlockType = 'navbar' | 'hero' | 'card-grid' | 'table' | 'form' | 'chart-bar' | 'sidebar' | 'text-block';
+export type BlockType = 'navbar' | 'hero' | 'card-grid' | 'table' | 'form' | 'chart-bar' | 'sidebar' | 'text-block' | 'image';
 
-export interface MockupBlock {
-  type: BlockType;
-  label?: string;
+export type MockupBlock =
+  | { type: Exclude<BlockType, 'image'>; label?: string }
+  | { type: 'image'; src: string; alt: string; caption?: string; aspectRatio?: '16/9' | '4/3' | 'square' };
+
+export interface CodeSlideData extends SlideData {
+  type: 'code';
+  title: string;
+  language: string;
+  code: string;
+  filename?: string;
+  highlights?: number[];
+  output?: string[];
+  outputCommand?: string;
 }
 
 export interface MockupFrame {

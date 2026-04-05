@@ -1,30 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { SlideComponentProps } from '../../engine/types';
-
-type BlockType = 'navbar' | 'hero' | 'card-grid' | 'table' | 'form' | 'chart-bar' | 'sidebar' | 'text-block';
-
-interface MockupBlock {
-  type: BlockType;
-  label?: string;
-}
-
-interface MockupFrame {
-  url?: string;
-  blocks: MockupBlock[];
-}
-
-interface MockupSlideData {
-  type: 'mockup';
-  title: string;
-  subtitle?: string;
-  displayMode: 'browser' | 'flow';
-  // browser mode: single frame
-  url?: string;
-  blocks?: MockupBlock[];
-  // flow mode: multiple frames
-  frames?: MockupFrame[];
-}
+import type { SlideComponentProps, MockupBlock, MockupFrame, MockupSlideData } from '../../engine/types';
 
 function renderBlock(block: MockupBlock, index: number) {
   const delay = 0.3 + index * 0.1;
@@ -199,6 +175,43 @@ function renderBlock(block: MockupBlock, index: number) {
           <div className="bg-slate-200 h-2 rounded w-3/4" />
         </motion.div>
       );
+
+    case 'image': {
+      return (
+        <motion.figure
+          key={index}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 + index * 0.1, duration: 0.3 }}
+          className="w-full m-0"
+        >
+          <img
+            src={block.src}
+            alt={block.alt}
+            className="w-full object-cover rounded"
+            style={{
+              maxHeight: block.aspectRatio === '4/3' ? '180px' : block.aspectRatio === 'square' ? '160px' : '160px',
+            }}
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                const fallback = document.createElement('div');
+                fallback.className = 'w-full h-32 bg-slate-200 rounded flex items-center justify-center';
+                fallback.innerHTML = '<span class="text-slate-500 text-xs font-mono">image unavailable</span>';
+                parent.appendChild(fallback);
+              }
+            }}
+          />
+          {block.caption && (
+            <figcaption className="text-xs text-slate-400 text-center mt-1 px-2">
+              {block.caption}
+            </figcaption>
+          )}
+        </motion.figure>
+      );
+    }
 
     default:
       return null;

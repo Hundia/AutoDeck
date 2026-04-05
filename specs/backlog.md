@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-04
+**Last Updated:** 2026-04-05 (Sprint 45 complete)
 
 ---
 
@@ -194,9 +194,412 @@ AutoDeck has one presentation (Acme) and no slide types for diagrams or wirefram
 | Add `UseCasesSlide` and `ArchitectureSlide` types | Feature | SVG pipeline, 3-column use cases |
 | Add `LiveDemoSlide` with terminal typing simulation | Feature | macOS chrome, typing animation |
 | Add speaker notes view | Feature | `notes` field, press S to toggle |
-| Add light/dark theme switcher | Feature | Currently dark-only |
+| ~~Add light/dark theme switcher~~ | ~~Feature~~ | Completed in Sprint 42 — three themes (Aurora/Sivania/Noir) |
 | Add copy-to-clipboard on ClosingSlide terminal | Enhancement | Clipboard button + tooltip |
 | Full keyboard nav (Tab, Home, End) | Enhancement | Currently arrow keys only |
 | Word-by-word animation on all text fields | Enhancement | Currently only TitleSlide tagline |
 | Vitest unit tests for engine | Feature | Test navigation, RTL detection |
 | Storybook for slide components | Feature | Visual dev environment |
+
+---
+
+## 🔲 Sprint 41: Creation Story Panel
+
+**Goal:** Add an opt-in "How This Was Built" side drawer to every presentation — surfacing the exact prompts, slide decisions, and framework comparisons (Claude Code / Copilot / Cursor / Gemini) that generated each deck.
+**Points:** 44
+**Status:** 🔲 Planned
+
+### Problem Statement
+
+AutoDeck presentations are AI-generated, but viewers have no window into how each deck was built. Engineers and PMs who want to replicate or iterate on a deck cannot see which prompts were used, what decisions were made per-slide, or how different AI frameworks compare. Sprint 41 surfaces this metadata as an opt-in Creation Story drawer accessible from any presentation.
+
+### User Stories
+
+- As a presentation viewer, I can open a Creation Story panel from any slide with a single click (or `I` key) and read the prompts that generated the deck.
+- As a developer evaluating AI tools, I can read a framework comparison table showing how Claude Code, Copilot, Cursor, and Gemini performed on the same task.
+- As a presentation author, I can opt in by passing `creationStory` to `PresentationViewer`; omitting it hides the feature entirely.
+- As an RTL user, the drawer mounts on the left edge and the trigger pill button flips correctly.
+
+### Technical Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| `creationStory` placement | Separate prop on `PresentationViewerProps`, NOT `PresentationConfig` | Keeps config a pure presentation descriptor; story is viewer-level opt-in |
+| Drawer mount side | `isRTL ? 'left-0' : 'right-0'` fixed panel | RTL-correct mirror |
+| Keyboard | `I` toggles, `Escape` closes; `drawerOpen` guard before arrow/space | Avoids arrow key conflicts |
+| Accordion | CSS `max-height` transition — no new npm deps | Zero-dep policy |
+| Data location | Inline objects in `App.tsx` (or `src/slides/data/stories.ts`) | Adjacent to config/slides declarations |
+
+### Phase 1: Types (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.1 | **Types** — Add `StoryPrompt`, `SlideDecision`, `CreationStory` interfaces to `src/engine/types.ts`. Add `creationStory?: CreationStory` to `PresentationViewerProps` (NOT PresentationConfig). `npm run build` exits 0. | PM | sonnet | 3 | ✅ | — | `src/engine/types.ts` |
+| 41.2 | **Build gate** — Verify TypeScript compile exits 0 after types added. Hard binary gate. | QA | haiku | 1 | ✅ | 41.1 | — |
+
+### Phase 2: Drawer Component (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.3a | **Drawer shell** — Create `src/engine/CreationStoryDrawer.tsx`. Fixed full-height panel `w-80 sm:w-96`, `right-0` (LTR) or `left-0` (RTL). Framer Motion spring slide-in (`x: '100%'→0` LTR / `x: '-100%'→0` RTL). Backdrop `bg-black/40` closes on click. Close button top-right (LTR) / top-left (RTL). Scrollable inner area. Props: `story: CreationStory`, `isRTL: boolean`, `onClose: () => void`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 41.1 | — |
+| 41.3b | **Prompts + Decisions sections** — Header stats pills (`totalPrompts` + `totalMinutes`). Collapsible Prompts accordion: each `StoryPrompt` renders label, framework badge (Claude Code=blue, Copilot=emerald, Cursor=violet, Gemini=amber), monospace prompt text. Collapsible Slide Decisions (if `decisions` defined): slide number chip + decision text. CSS `max-height` transitions. | Frontend | sonnet | 3 | ✅ | 41.3a | — |
+| 41.3c | **Framework comparison** — Collapsible section (if `frameworkNotes` defined). Two-column table: framework name (color-coded) + note text. `npm run build` exits 0. | Frontend | sonnet | 2 | ✅ | 41.3a | — |
+
+### Phase 3: PresentationViewer Integration (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.7 | **Trigger pill + drawer state** — In `PresentationViewer.tsx`: accept `creationStory?: CreationStory` prop. Add `drawerOpen` state. Render trigger pill fixed `bottom-8`, `isRTL ? 'left-4' : 'right-4'` only when `creationStory` defined — label "Creation Story", `BookOpen` icon. Render `<CreationStoryDrawer>` inside `<AnimatePresence>`. `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | 41.3a, 41.3b, 41.3c | — |
+| 41.8 | **Keyboard guard** — `I` key toggles drawer; `Escape` closes; when `drawerOpen` is true arrow/space do not advance slides. Add `drawerOpen` to `useEffect` dep array. Verify backdrop click closes. No console errors. | QA | sonnet | 3 | ✅ | 41.7 | — |
+
+### Phase 4: Data Files (12 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.9 | **Acme creation story** — `acmeStory: CreationStory` with 6–8 prompts, SlideDecisions, frameworkNotes for Claude Code + Copilot. | PM | sonnet | 3 | ✅ | 41.1 | — |
+| 41.10 | **TechBrief creation story** — `techBriefStory: CreationStory` with 8–10 prompts referencing diagrams + YAML code. All 4 frameworks in frameworkNotes. | PM | sonnet | 3 | ✅ | 41.1 | — |
+| 41.11 | **UIMockup creation story** — `uiMockupStory: CreationStory` with 8–10 prompts referencing mockup wireframe + flow. | PM | sonnet | 3 | ✅ | 41.1 | — |
+| 41.12 | **HowTo creation story** — `howToStory: CreationStory` with 4–6 prompts. No `frameworkNotes` (single-framework deck). | PM | haiku | 3 | ✅ | 41.1 | — |
+
+### Phase 5: App.tsx Wiring (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.13 | **Wire all four presentations** — Pass `creationStory={acmeStory}` / `techBriefStory` / `uiMockupStory` / `howToStory` to each `<PresentationViewer>`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 41.7, 41.9–41.12 | — |
+
+### Phase 6: Docs + Close (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 41.14 | **SKILL.md** — Add `## Creation Story` section: interface fields, wiring snippet, quality bar (≥4 prompts, RTL passes, `I` key works). | PM | sonnet | 3 | ✅ | 41.13 | `SKILL.md` |
+| 41.15 | **Sprint close** — Smoke test all 4 presentations (drawer opens/closes, RTL, keyboard guard, mobile). Write `sprints/sprint-41/summary.md`. Update `specs/backlog.md` all 41.x → ✅ Done. Commit + push. | QA | haiku | 2 | ✅ | 41.14 | `sprints/sprint-41/summary.md` |
+| 41.16 | **Landing page callout** — Add Creation Story feature callout card to `AIAssistedSection` in `LandingPage.tsx`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | 41.7 | `src/landing/LandingPage.tsx` |
+| 41.17 | **docs/engine/creation-story-drawer.md** — Interface reference, keyboard table, RTL behaviour, accordion sections, framework color map. | PM | haiku | 1 | ✅ | 41.14 | `docs/engine/creation-story-drawer.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|---------------|
+| Build gate Phase 1 | `npm run build` exits 0 after types added |
+| Build gate full | `npm run build` exits 0 after all implementation |
+| Trigger pill visible (LTR) | Pill renders bottom-right on all 4 presentations when `creationStory` prop provided |
+| Trigger pill absent | No pill when `creationStory` prop omitted |
+| Drawer opens via pill | Click pill → spring slide-in from right (LTR) |
+| Drawer opens via `I` key | Press `I` → drawer opens |
+| Drawer closes — Escape | Press `Escape` → drawer closes, slide unchanged |
+| Drawer closes — backdrop | Click backdrop → drawer closes |
+| Arrow keys suppressed when open | `→` while drawer open → no slide advance |
+| Arrow keys resume | After close → arrows advance slides normally |
+| RTL pill position | Hebrew (HE): pill appears bottom-left |
+| RTL drawer side | Hebrew (HE): drawer slides in from left edge |
+| Prompts accordion | All prompts render label + framework badge + monospace text |
+| Framework badge colors | Claude Code=blue, Copilot=emerald, Cursor=violet, Gemini=amber |
+| Decisions accordion | Renders only when `decisions` defined; default collapsed |
+| Framework comparison | Renders only when `frameworkNotes` defined |
+| HowTo — no comparison section | `howToStory` has no `frameworkNotes` → section absent |
+| Mobile 375px | `w-80` drawer fits; no overflow; pill visible |
+| No new npm deps | `git diff package.json` zero new entries |
+| Landing callout | Creation Story card visible in AIAssistedSection |
+
+### Docs Impact
+
+| File | Action | Ticket |
+|------|--------|--------|
+| `src/engine/types.ts` | Update — 3 new interfaces + PresentationViewerProps.creationStory | 41.1 |
+| `src/engine/CreationStoryDrawer.tsx` | Create | 41.3a–c |
+| `src/engine/PresentationViewer.tsx` | Update — drawerOpen state, trigger pill, keyboard guard | 41.7, 41.8 |
+| `src/App.tsx` | Update — pass creationStory to all 4 routes | 41.13 |
+| `src/landing/LandingPage.tsx` | Update — Creation Story callout card | 41.16 |
+| `SKILL.md` | Update — ## Creation Story section | 41.14 |
+| `docs/engine/creation-story-drawer.md` | Create | 41.17 |
+| `sprints/sprint-41/summary.md` | Create | 41.15 |
+| `specs/backlog.md` | Update — all 41.x → ✅ Done | 41.15 |
+
+**Total: 44 points, 17 tickets**
+
+---
+
+## ✅ Sprint 42: Three Design Systems — Theme Switcher
+
+**Goal:** Introduce a CSS-custom-property theme system with three named themes (Aurora, Sivania, Noir), wire a live theme-switcher into PresentationViewer, and migrate every hardcoded colour in slides and engine to semantic tokens.
+**Points:** 49
+**Status:** ✅ Complete
+
+### Problem Statement
+
+Every colour in AutoDeck is hardcoded: `bg-blue-500`, `text-purple-400`, `rgba(59,130,246,…)`. Switching visual style requires editing dozens of files. Sprint 42 introduces a 16-token CSS-variable contract, three pre-built themes, and a runtime switcher — so any presentation can be re-skinned instantly without touching slide data or component logic.
+
+### User Stories
+
+- As a presenter, I can select Aurora, Sivania, or Noir from a palette dropdown — deck re-skins instantly.
+- As a presenter, my chosen theme persists via localStorage across sessions.
+- As a slide author, I change nothing in slide data files — theming is CSS-only.
+- As a developer, adding a fourth theme requires only one new `[data-theme="x"]` block in `index.css`.
+
+### Technical Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Token delivery | `[data-theme]` CSS custom properties on `document.documentElement` | Zero JS overhead; inherited by all children |
+| ThemeProvider placement | Above `<HashRouter>` in App.tsx — single shared instance | No per-route flicker; theme persists across route changes |
+| SVG colours | React inline `style={{ fill: 'var(--theme-…)' }}` | SVG presentation attributes do NOT inherit CSS vars — critical rule |
+| ScrollProgressBar | `style={{ background: 'var(--theme-gradient)' }}` inline | Tailwind gradient utilities cannot reference CSS vars |
+| Theme toggle UI | Third `<LanguageDropdown>` with `<Palette>` icon in existing cluster | Zero new UI primitives |
+| Sivania font | Cormorant Garamond via Google Fonts CDN `@import` | CDN, not npm — allowed |
+
+### CSS Token Reference
+
+| Token | Aurora | Sivania | Noir |
+|-------|--------|---------|------|
+| `--theme-bg` | `#0f172a` | `#1a1a1a` | `#0a0a0a` |
+| `--theme-surface` | `rgba(255,255,255,0.05)` | `#252525` | `#111111` |
+| `--theme-surface-border` | `rgba(255,255,255,0.1)` | `#333333` | `#1e1e1e` |
+| `--theme-text-primary` | `#ffffff` | `#f5f0e8` | `#f0f0f0` |
+| `--theme-text-secondary` | `rgba(255,255,255,0.6)` | `#9a8c7e` | `#666666` |
+| `--theme-accent-primary` | `#60a5fa` | `#698472` | `#00d9ff` |
+| `--theme-accent-secondary` | `#a78bfa` | `#8e6a59` | `#0099b8` |
+| `--theme-accent-glow` | `rgba(96,165,250,0.4)` | `rgba(105,132,114,0.3)` | `rgba(0,217,255,0.3)` |
+| `--theme-nav-bg` | `rgba(255,255,255,0.1)` | `rgba(105,132,114,0.15)` | `rgba(0,217,255,0.08)` |
+| `--theme-nav-border` | `rgba(255,255,255,0.06)` | `rgba(105,132,114,0.2)` | `rgba(0,217,255,0.15)` |
+| `--theme-dot-active` | `#3b82f6` | `#698472` | `#00d9ff` |
+| `--theme-font-display` | `'Inter' sans-serif` | `'Cormorant Garamond' serif` | `'JetBrains Mono' monospace` |
+| `--theme-font-body` | `'Inter' sans-serif` | `'Inter' sans-serif` | `'JetBrains Mono' monospace` |
+| `--theme-bg-effect-color-1` | `rgba(96,165,250,0.3)` | `rgba(105,132,114,0.2)` | `rgba(0,217,255,0.2)` |
+| `--theme-bg-effect-color-2` | `rgba(139,92,246,0.2)` | `rgba(142,106,89,0.15)` | `rgba(0,153,184,0.12)` |
+| `--theme-gradient` | `linear-gradient(to bottom, #60a5fa, #a78bfa)` | `linear-gradient(to bottom, #698472, #8e6a59)` | `linear-gradient(to bottom, #00d9ff, #0099b8)` |
+
+### Phase 1: Theme Foundation (12 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 42.1 | **`src/engine/themes.ts`** — Export `ThemeId = 'aurora' \| 'sivania' \| 'noir'`, `THEMES` array `[{id, label}]`, `DEFAULT_THEME = 'aurora'`. No logic, pure constants. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | — |
+| 42.2 | **`src/engine/ThemeContext.tsx`** — `ThemeContext`, `ThemeProvider` (reads/writes `localStorage.getItem('autodeck-theme')`, sets `document.documentElement.dataset.theme` on change), `useTheme()` hook. `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 42.1 | — |
+| 42.3 | **`src/index.css` CSS tokens** — Add Cormorant Garamond to Google Fonts `@import`. Add three `[data-theme="aurora"]`, `[data-theme="sivania"]`, `[data-theme="noir"]` blocks with all 16 tokens from table above. Add `:root` Aurora fallback. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | — | — |
+| 42.4 | **`src/App.tsx` ThemeProvider** — Import `ThemeProvider`. Wrap `<HashRouter>` (above `<Routes>`) with single `<ThemeProvider>` — NOT inside individual route elements. LandingPage receives NO ThemeProvider. `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 42.2, 42.3 | — |
+
+### Phase 2: PresentationViewer Integration (13 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 42.5 | **Apply `data-theme` + remove hardcoded bg** — In `PresentationViewer.tsx`: `useTheme()` → `data-theme={theme}` on root div. Replace `bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900` with `style={{ background: 'var(--theme-bg)' }}`. Replace active nav dot `bg-blue-500` with `style={{ background: 'var(--theme-dot-active)' }}`. `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 42.3, 42.4 | — |
+| 42.6 | **Palette theme dropdown** — Import `Palette` from lucide-react (add to existing import). Define `THEME_OPTIONS` from `THEMES`. Add third `<LanguageDropdown>` (leftmost in cluster): icon=`<Palette size={14} />`, options=THEME_OPTIONS with `previewColors` arrays per theme. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 42.2, 42.5 | — |
+| 42.6b | **`DropdownOption.previewColors`** — In `LanguageDropdown.tsx`, add `previewColors?: string[]` to `DropdownOption` interface. Render small color swatch circles next to label when present. Existing BG_OPTIONS/language options unaffected. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | 42.6 | — |
+| 42.7 | **ScrollProgressBar gradient** — Replace Tailwind gradient class with `style={{ background: 'var(--theme-gradient)' }}`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | 42.3, 42.4 | — |
+| 42.8 | **LanguageDropdown active-dot** — Replace `bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.5)]` with `style={{ background: 'var(--theme-dot-active)', boxShadow: '0 0 6px var(--theme-accent-glow)' }}`. `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 42.3, 42.4 | — |
+
+### Phase 3: Slide Component Theming (12 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 42.9 | **TitleSlide** — Replace: title gradient (`linear-gradient(135deg, var(--theme-accent-primary)…)`), drop-shadow hex → `var(--theme-accent-glow)`, ambient dots `bg-blue-400/20` → inline style, tagline `text-cyan-300` → `style={{ color: 'var(--theme-accent-secondary)' }}`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 42.3, 42.4 | — |
+| 42.10 | **ClosingSlide** — Replace tagline gradient with `var(--theme-gradient)` inline style; `text-blue-400` command code → `var(--theme-accent-primary)`; `text-white/60` links → `var(--theme-text-secondary)`. `npm run build` exits 0. | Frontend | haiku | 4 | ✅ | 42.3, 42.4 | — |
+| 42.11 | **QuoteSlide + StatsSlide + ComparisonSlide + TimelineSlide** — Replace hardcoded `text-purple-400`, `text-blue-400`, `bg-cyan-500/10` etc. with CSS var equivalents. TimelineSlide connecting line gradient → `var(--theme-gradient)`. ComparisonSlide title gradient → `var(--theme-gradient)`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 42.3, 42.4 | — |
+
+### Phase 4: BackgroundEffects + DiagramSlide (6 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 42.12 | **BackgroundEffects SVG → inline style** — CRITICAL: SVG attributes `fill="rgba(…)"` do NOT inherit CSS vars. Convert all hardcoded fill/stroke rgba literals in CircuitLines, HexGrid, GradientPulse, WaveMesh, ParticleField to React `style={{ fill: 'var(--theme-bg-effect-color-1)' }}`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 42.3, 42.4 | — |
+| 42.13 | **DiagramSlide colorMap** — Replace blue/cyan colorMap entries with `{ fill: 'var(--theme-surface)', stroke: 'var(--theme-accent-primary/secondary)' }`. Convert `fill={colors.fill}` / `stroke={colors.stroke}` SVG attributes to `style={{ fill: colors.fill, stroke: colors.stroke }}` inline style. `npm run build` exits 0. | Frontend | sonnet | 2 | ✅ | 42.3, 42.4 | — |
+
+### Phase 5: QA + Docs + Close (6 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 42.14 | **QA pass** — `npm run build` exits 0. Smoke-test all 3 themes on all 4 routes. Verify: ThemeProvider above Routes, no per-route flicker, localStorage persists, SVG fills use inline style (no `fill="rgba(…)"` remaining), BackgroundEffects tint shifts, ScrollProgressBar gradient tracks theme. | QA | haiku | 3 | ✅ | 42.1–42.13 | — |
+| 42.15 | **Docs** — Update `CLAUDE.md`: add Theme System section (16 tokens, SVG inline-style rule, `useTheme()` hook). Update `docs/engine/` README: ThemeContext, themes.ts, token contract. | PM | haiku | 2 | ✅ | 42.14 | `CLAUDE.md`, `docs/engine/` |
+| 42.16 | **Sprint close** — Write `sprints/sprint-42/summary.md`. Update `specs/backlog.md` all 42.x → ✅ Done. Commit + push. | PM | haiku | 1 | ✅ | 42.15 | `sprints/sprint-42/summary.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|---------------|
+| Build gate | `npm run build` exits 0, zero TS errors |
+| ThemeProvider placement | Single provider wraps `<HashRouter>`; no per-route providers |
+| Aurora default | Fresh browser → `data-theme="aurora"`, visual matches current prod |
+| Sivania switch | Bg `#1a1a1a`, Cormorant Garamond display font, sage/terracotta gradient |
+| Noir switch | Bg `#0a0a0a`, cyan `#00d9ff` accent, JetBrains Mono display font |
+| localStorage persist | Switch theme, refresh → same theme; `localStorage.getItem('autodeck-theme')` correct |
+| Cross-route persistence | Switch theme on `/techbrief`, navigate to `/uimockup` → same theme |
+| Landing isolation | No `data-theme` attribute on landing page DOM |
+| Nav dot color | Active dot tracks `--theme-dot-active` in all 3 themes |
+| ScrollProgressBar | Gradient tracks `--theme-gradient` (not Tailwind gradient class) |
+| TitleSlide gradient | Title colors shift between blue/violet → sage/terracotta → cyan |
+| BackgroundEffects | No `fill="rgba(…)"` SVG attributes; all use `style={{ fill: 'var(…)' }}` |
+| DiagramSlide rects | `fill`/`stroke` via `style` prop, not SVG presentation attributes |
+| Control cluster order | Theme | Background | Language pills left-to-right |
+| No new npm packages | `git diff package.json` — zero new entries |
+| Mobile 375px | All 3 pills visible; no overflow |
+
+### Docs Impact
+
+| File | Action | Ticket |
+|------|--------|--------|
+| `src/engine/themes.ts` | Create | 42.1 |
+| `src/engine/ThemeContext.tsx` | Create | 42.2 |
+| `src/index.css` | Update — Cormorant Garamond + 3× [data-theme] CSS blocks | 42.3 |
+| `src/App.tsx` | Update — ThemeProvider above HashRouter | 42.4 |
+| `src/engine/PresentationViewer.tsx` | Update — data-theme, hardcoded bg removal, Palette dropdown | 42.5, 42.6 |
+| `src/engine/LanguageDropdown.tsx` | Update — previewColors field + active-dot CSS var | 42.6b, 42.8 |
+| `src/engine/ScrollProgressBar.tsx` | Update — inline style gradient | 42.7 |
+| `src/slides/components/TitleSlide.tsx` | Update | 42.9 |
+| `src/slides/components/ClosingSlide.tsx` | Update | 42.10 |
+| `src/slides/components/QuoteSlide.tsx` | Update | 42.11 |
+| `src/slides/components/StatsSlide.tsx` | Update | 42.11 |
+| `src/slides/components/ComparisonSlide.tsx` | Update | 42.11 |
+| `src/slides/components/TimelineSlide.tsx` | Update | 42.11 |
+| `src/engine/BackgroundEffects.tsx` | Update — SVG attrs → inline style | 42.12 |
+| `src/slides/components/DiagramSlide.tsx` | Update — colorMap + SVG attrs | 42.13 |
+| `CLAUDE.md` | Update — Theme System section | 42.15 |
+| `docs/engine/README.md` | Update | 42.15 |
+| `sprints/sprint-42/summary.md` | Create | 42.16 |
+| `specs/backlog.md` | Update — all 42.x → ✅ Done | 42.16 |
+
+**Total: 49 points, 16 tickets**
+
+---
+
+## Sprint 43: Polish + E2E Verification (18 pts)
+
+**Theme:** Four targeted fixes — Creation Story discoverability, Acme closing slide whitespace, landing 3-steps alignment, hero CTA label — plus clean-folder E2E verification of all 4 presentations.  
+**Status:** 🔄 In Progress  
+**Date:** 2026-04-04
+
+### Phase 1: Fixes (14 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 43.1 | **Creation Story pill prominence** — Remove `hidden sm:inline` from pill label so "Creation Story" text is always visible. Add subtle pulse animation on first render to draw attention. Keep bottom-right/left position, `z-50`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ Done | — | — |
+| 43.2 | **Acme ClosingSlide whitespace** — In `ClosingSlide.tsx`, fix the commands layout: change `flex items-center justify-between` to a two-column grid (`grid grid-cols-[auto_1fr]`) so code and description don't have excessive gap. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ Done | — | — |
+| 43.3 | **Landing 3-steps Deploy alignment** — In `LandingPage.tsx`, shorten step 3 `desc` to `'GitHub Actions auto-deploys to Pages.'` so it fits one line like steps 1 & 2. Verify all three code chips are vertically aligned at same position. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ Done | — | — |
+| 43.4 | **Hero CTA rename** — In `LandingPage.tsx`, rename `'Build with AI →'` button to `'How to Build with AI →'`. Keep the violet-600 styling and Sparkles icon. Same href `#/howto`. Also update the QuickStart section if it has a duplicate CTA. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ Done | — | — |
+| 43.5 | **Backlog + sprint close** — Mark 43.1–43.4 ✅ Done. Write `sprints/sprint-43/summary.md`. | PM | haiku | 1 | ✅ Done | 43.1–43.4 | — |
+
+### Phase 2: E2E Verification (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 43.6 | **Clean-folder E2E (run 1)** — `npm run build && npm run preview &`. Write and run Playwright script: verify all 4 presentations (/ → #/presentation, #/techbrief, #/uimockup, #/howto). Each: (a) slides render, (b) Creation Story pill visible + label text readable, (c) drawer opens on click, (d) no JS errors. Screenshots to `e2e-screenshots/run1/`. | QA | sonnet | 2 | ✅ Done | 43.1–43.4 | — |
+| 43.7 | **Clean-folder E2E (run 2)** — Kill preview, rebuild from scratch. Re-run same Playwright script to `e2e-screenshots/run2/`. Both runs must pass 0 errors. | QA | sonnet | 2 | ✅ Done | 43.6 | — |
+
+**Total: 18 points, 7 tickets**
+
+---
+
+## Sprint 44: Community Personas + Testimonials + E2E Verification (30 pts)
+
+**Theme:** Three persona presentations from realistic users (EdTech founder, Rust OSS developer, PM), a "From the Community" testimonials section on the landing page, and Playwright E2E verification of all 7 presentations.  
+**Status:** ✅ Done  
+**Date:** 2026-04-05
+
+### Phase 1: Slide Data (15 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status |
+|----|--------|-------|-------|-----|--------|
+| 44.1 | LearnFlow slides + creation story (9 slides, Noa Ben-David persona) | Frontend | sonnet | 5 | ✅ Done |
+| 44.2 | Ferric slides + creation story (9 slides, Marcus Webb persona) | Frontend | sonnet | 5 | ✅ Done |
+| 44.3 | Q2 Review slides + creation story (9 slides, Sarah Kim persona) | Frontend | sonnet | 5 | ✅ Done |
+
+### Phase 2: Wiring + UI (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status |
+|----|--------|-------|-------|-----|--------|
+| 44.4 | App.tsx — 6 imports + 3 PresentationConfig objects + 3 Route elements | Frontend | sonnet | 3 | ✅ Done |
+| 44.5 | LandingPage.tsx — TestimonialsSection + insert between AIAssisted/Footer | Frontend | sonnet | 5 | ✅ Done |
+
+### Phase 3: QA + Close (7 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status |
+|----|--------|-------|-------|-----|--------|
+| 44.6 | E2E Playwright script — all 7 routes, 28 screenshots, 0 JS errors | QA | sonnet | 5 | ✅ Done |
+| 44.7 | Build gate + QA smoke + sprint summary | QA | sonnet | 2 | ✅ Done |
+
+**Total: 30 points, 7 tickets**
+
+---
+
+## Sprint 45: Image Blocks + DiagramSlide autoEdges + CodeSlide Terminal Chrome (32 pts)
+
+**Theme:** Three slide-engine enhancements — image blocks in MockupSlide, autoEdges in DiagramSlide, and terminal chrome in CodeSlide — plus two updated showcase presentations, full documentation, and E2E verification.  
+**Status:** ✅ Done  
+**Date:** 2026-04-05
+
+### Problem Statement
+
+MockupSlide has no way to embed real screenshots or product images — it is wireframe-only, limiting its use for polished demos. DiagramSlide requires authors to manually specify every edge, a tedious and error-prone chore for well-structured node grids. CodeSlide renders code in a floating box but lacks the terminal/editor chrome that gives code slides visual authority. These three gaps are the most-requested enhancements from the Sprint 44 community persona presentations, and all three are additive — no existing slide data is broken.
+
+### Phase 1: Types (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 45.1 | **`MockupBlock` image variant in `src/engine/types.ts`** — Extend `BlockType` union to include `'image'`. Add an `ImageBlock` sub-interface (or discriminated union member) with fields: `type: 'image'`, `src: string`, `alt: string` (required — TypeScript must enforce this at the data layer, not optional), `caption?: string`, `aspectRatio?: '16/9' \| '4/3' \| 'square'`. Ensure `MockupBlock` correctly covers all block types including the new image variant. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | `src/engine/types.ts` |
+| 45.2 | **`DiagramSlideData.autoEdges` flag in `src/engine/types.ts`** — Add optional boolean field `autoEdges?: boolean` to `DiagramSlideData`. When `true`, the renderer should connect adjacent nodes in grid order (left-to-right within a row, then row-to-row), synthesizing edges automatically. The field is optional and defaults to `false` — all existing diagram slide data remains valid with zero changes. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | `src/engine/types.ts` |
+
+### Phase 2: Components (16 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 45.3 | **MockupSlide image block renderer** — In `src/slides/components/MockupSlide.tsx`: (1) Delete all locally-declared types (`BlockType`, `MockupBlock`, `MockupFrame`) and replace with imports from `../../engine/types` — no duplicate type declarations. (2) Add a new `case 'image':` branch in `renderBlock()` that renders a `<figure>` element containing `<img alt={block.alt} />` styled to fill the block according to `block.aspectRatio` (default to `16/9` if omitted); when `block.caption` is present, render `<figcaption>` below the image. (3) `alt: string` is required — TypeScript must enforce this, so any image block missing `alt` must produce a compile-time error. `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | 45.1 | `src/slides/components/MockupSlide.tsx` |
+| 45.4 | **DiagramSlide `autoEdges` computation** — In `src/slides/components/DiagramSlide.tsx`: (1) Delete locally-declared `DiagramNode`, `DiagramEdge`, `DiagramSlideData` interfaces and replace with imports from `../../engine/types`. (2) When `data.autoEdges === true`, compute a synthetic edge list before rendering: for each node, add an edge to the node with the next `col` in the same `row` (left-to-right), and to the node with the same `col` in the next `row` (top-to-bottom), skipping pairs where no such node exists. Merge synthesized edges with any explicitly provided `data.edges`. (3) Animate synthesized edges identically to manual edges (Framer Motion `pathLength` 0→1, stagger 0.15 s). `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | 45.2 | `src/slides/components/DiagramSlide.tsx` |
+| 45.5 | **CodeSlide terminal/editor chrome** — In `src/slides/components/CodeSlide.tsx`: (1) Delete the locally-declared `CodeSlideData` interface and replace with an import from `../../engine/types` (add `CodeSlideData` there if not yet exported). (2) Wrap the existing code block in a terminal chrome frame: a top bar with three macOS-style traffic-light dots (red `#ff5f57`, yellow `#febc2e`, green `#28c840`) and, when `data.filename` is set, a centered filename pill in `text-xs text-slate-400`. The frame border and background must use CSS vars (`--theme-surface`, `--theme-surface-border`) so it themes correctly. (3) When `data.language` equals `'terminal'` or `'bash'`, prefix lines with a `$` prompt glyph in `--theme-accent-secondary`. `npm run build` exits 0. | Frontend | sonnet | 6 | ✅ | — | `src/slides/components/CodeSlide.tsx`, `src/engine/types.ts` |
+
+### Phase 3: Showcase (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 45.6 | **Update LearnFlow + Q2 Review showcase presentations** — In `src/slides/data/slides-learnflow-en.ts` and `src/slides/data/slides-q2review-en.ts`: add at least one `mockup` slide per presentation that uses an `image` block (with a realistic placeholder `src` URL, required `alt` text, and `caption`). In `src/slides/data/slides-learnflow-en.ts` and/or `src/slides/data/slides-techbrief-en.ts`, add at least one `diagram` slide that uses `autoEdges: true`. Also update `src/slides/data/creation-story-learnflow.ts` and `src/slides/data/creation-story-q2review.ts` to add a prompt entry noting the new image block and/or autoEdges usage. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 45.3, 45.4, 45.5 | `src/slides/data/slides-learnflow-en.ts`, `src/slides/data/slides-q2review-en.ts`, `src/slides/data/creation-story-learnflow.ts`, `src/slides/data/creation-story-q2review.ts` |
+
+### Phase 4: Docs (6 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 45.7 | **`SKILL.md` — image block + autoEdges + terminal chrome authoring guide** — Add or update three sub-sections in `SKILL.md`: (1) MockupSlide `image` block — block-types table row with all four fields (`src`, `alt`, `caption`, `aspectRatio`), a copy-paste example, and a warning that `alt` is required (TS error if omitted); include an "authenticated URLs will not load" warning with a positive example (public CDN URL) and a negative example (private/signed URL). (2) DiagramSlide `autoEdges` flag — explain grid-layout prerequisite (nodes must have distinct `col`/`row` coords), copy-paste example, and note that explicit `edges` are merged with generated ones. (3) CodeSlide terminal chrome — explain the `language: 'terminal'` prompt-glyph behavior and the filename pill. | PM | sonnet | 4 | ✅ | 45.3, 45.4, 45.5 | `SKILL.md` |
+| 45.8 | **`docs/slides/README.md` — update slide type reference** — Update the MockupSlide, DiagramSlide, and CodeSlide sections of `docs/slides/README.md` (or equivalent docs file) to document the new fields: `image` block with all four properties, `autoEdges` boolean, and CodeSlide terminal chrome behavior. Ensure the block-types table for MockupSlide includes the `image` row. | PM | haiku | 2 | ✅ | 45.7 | `docs/slides/README.md` |
+
+### Phase 5: QA + Close (2 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 45.9 | **E2E Playwright verification** — Run `npm run build && npm run preview`. Write and run a Playwright script that visits all active routes (`/`, `#/presentation`, `#/techbrief`, `#/uimockup`, `#/howto`, `#/learnflow`, `#/ferric`, `#/q2review`) and: (a) verifies zero JS console errors; (b) on LearnFlow and Q2 Review routes, navigates to the mockup slide with an image block and asserts that `<figure>` is present in the DOM and `<img>` has a non-empty `alt` attribute; (c) on any diagram slide with `autoEdges: true`, asserts that at least one `<path>` edge element is rendered; (d) on any CodeSlide with `language: 'terminal'`, asserts the `$` prompt glyph is present. Screenshots to `e2e-screenshots/sprint-45/`. | QA | haiku | 1 | ✅ | 45.6 | — |
+| 45.10 | **Sprint close** — Mark all 45.x tickets ✅ Done. Write `sprints/sprint-45/summary.md` covering: what shipped, key architectural decisions (image block semantic HTML, autoEdges grid algorithm, terminal chrome theming), and any follow-on ideas. Update `specs/backlog.md` header `Last Updated` date. Commit + push. | PM | haiku | 1 | ✅ | 45.9 | `sprints/sprint-45/summary.md`, `specs/backlog.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|----------------|
+| Build gate | `npm run build` exits 0, zero TypeScript errors |
+| `alt` required enforcement | Omitting `alt` from an image block in slide data produces a TS compile error |
+| `<figure>` wrapper present | Image block in MockupSlide renders `<figure>` in the DOM; no bare `<img>` without wrapper |
+| `<figcaption>` conditional | `<figcaption>` is present in DOM when `caption` set; absent when `caption` omitted |
+| autoEdges path count | A diagram slide with 4 nodes in a 2×2 grid and `autoEdges: true`, no explicit edges → renders ≥ 3 `<path>` elements |
+| autoEdges + explicit edges merge | A diagram with `autoEdges: true` plus 1 explicit extra edge → renders more paths than autoEdges alone would produce |
+| autoEdges animation | Synthesized edge paths animate `pathLength` 0→1 with stagger (same as manual edges) |
+| Terminal chrome dots | CodeSlide with any `language` value renders three traffic-light dots in the top bar |
+| Terminal `$` glyph | CodeSlide with `language: 'terminal'` or `'bash'` renders `$` glyph prefix on code lines |
+| Filename pill | CodeSlide with `filename` set renders the filename in the top chrome bar |
+| Chrome theming | CodeSlide frame border and background use `--theme-surface` / `--theme-surface-border`; visually correct in all 3 themes |
+| SKILL.md `image` row | SKILL.md MockupSlide block-types table includes `image` row with all four fields (`src`, `alt`, `caption`, `aspectRatio`) |
+| SKILL.md auth URL warning | SKILL.md includes "authenticated URLs will not load" warning with positive + negative URL examples |
+| LearnFlow/Q2 image block E2E | Playwright visits LearnFlow and Q2 Review routes, finds `<figure>` + non-empty `alt` in image block slide |
+| autoEdges E2E | Playwright visits a route with `autoEdges: true` diagram slide, asserts `<path>` elements present |
+| No new npm deps | `git diff package.json` — zero new entries |
+| All 8 routes load | Zero JS console errors on all routes in Playwright run |
+
+### Docs Impact
+
+| File | Action |
+|------|--------|
+| `src/engine/types.ts` | Update — `BlockType` extended with `'image'`; `ImageBlock` interface added; `autoEdges?: boolean` on `DiagramSlideData`; `CodeSlideData` exported |
+| `src/slides/components/MockupSlide.tsx` | Update — local types deleted, imported from engine; `case 'image'` block renderer with `<figure>`/`<img>`/`<figcaption>` |
+| `src/slides/components/DiagramSlide.tsx` | Update — local types deleted, imported from engine; `autoEdges` grid computation + merge logic |
+| `src/slides/components/CodeSlide.tsx` | Update — local types deleted, imported from engine; terminal chrome frame + traffic-light dots + filename pill + `$` glyph |
+| `src/slides/data/slides-learnflow-en.ts` | Update — add mockup slide with image block + diagram slide with `autoEdges: true` |
+| `src/slides/data/slides-q2review-en.ts` | Update — add mockup slide with image block |
+| `src/slides/data/creation-story-learnflow.ts` | Update — add prompt entry for new image block / autoEdges usage |
+| `src/slides/data/creation-story-q2review.ts` | Update — add prompt entry for new image block usage |
+| `SKILL.md` | Update — image block section, autoEdges section, terminal chrome section |
+| `docs/slides/README.md` | Update — MockupSlide image block, DiagramSlide autoEdges, CodeSlide terminal chrome |
+| `sprints/sprint-45/summary.md` | Create |
+| `specs/backlog.md` | Update — all 45.x → ✅ Done, header date updated |
+
+**Total: 32 points, 10 tickets**

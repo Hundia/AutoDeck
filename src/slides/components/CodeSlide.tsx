@@ -9,6 +9,7 @@ interface CodeSlideData {
   language?: string;
   lines: string[];
   output?: string[];
+  outputCommand?: string;
   highlights?: number[]; // 1-indexed line numbers to highlight
 }
 
@@ -52,6 +53,13 @@ function tokenizeLine(line: string): { text: string; className: string }[] {
   return tokens;
 }
 
+function getOutputLineColor(line: string): string {
+  if (/^[✅✓]/.test(line)) return 'text-emerald-400';
+  if (/^[❌]|^error/i.test(line)) return 'text-red-400';
+  if (/^[⚠]|^warn/i.test(line)) return 'text-amber-400';
+  return 'text-slate-300';
+}
+
 export default function CodeSlide({ data }: SlideComponentProps<CodeSlideData>) {
   const highlights = new Set(data.highlights ?? []);
 
@@ -85,11 +93,14 @@ export default function CodeSlide({ data }: SlideComponentProps<CodeSlideData>) 
         className="rounded-xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-black/40"
       >
         {/* Title bar */}
-        <div className="bg-slate-800 px-4 py-3 flex items-center gap-3 border-b border-slate-700/60">
+        <div
+          className="px-4 py-3 flex items-center gap-3 border-b"
+          style={{ background: 'var(--theme-surface)', borderColor: 'var(--theme-surface-border)' }}
+        >
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <div className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
           </div>
           <div className="flex-1 flex items-center justify-center">
             <span className="text-xs text-slate-400 font-mono bg-slate-700/50 px-3 py-1 rounded">
@@ -108,6 +119,7 @@ export default function CodeSlide({ data }: SlideComponentProps<CodeSlideData>) 
               {data.lines.map((line, idx) => {
                 const lineNum = idx + 1;
                 const isHighlighted = highlights.has(lineNum);
+                const isTerminal = data.language === 'terminal' || data.language === 'bash';
                 return (
                   <motion.tr
                     key={idx}
@@ -120,6 +132,9 @@ export default function CodeSlide({ data }: SlideComponentProps<CodeSlideData>) 
                       {lineNum}
                     </td>
                     <td className="pr-6 py-0.5 whitespace-pre">
+                      {isTerminal && line !== '' && (
+                        <span className="select-none text-slate-500 mr-1" aria-hidden="true">$</span>
+                      )}
                       {line === '' ? (
                         <span>&nbsp;</span>
                       ) : (
@@ -139,22 +154,26 @@ export default function CodeSlide({ data }: SlideComponentProps<CodeSlideData>) 
 
         {/* Output panel */}
         {data.output && data.output.length > 0 && (
-          <div className="bg-black/70 border-t border-slate-700/60 px-4 py-3">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs text-slate-500 font-mono">OUTPUT</span>
+          <div className="bg-black/70 border-t border-emerald-900/40" aria-label="Terminal output">
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-slate-700/40">
+              <span className="text-emerald-500 font-mono text-xs select-none" aria-hidden="true">$</span>
+              <span className="text-slate-400 font-mono text-xs">
+                {data.outputCommand ?? 'output'}
+              </span>
             </div>
-            {data.output.map((out, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 + data.lines.length * 0.04 + idx * 0.15 }}
-                className="font-mono text-xs text-green-400 leading-5"
-              >
-                {out}
-              </motion.div>
-            ))}
+            <div className="px-4 py-3">
+              {data.output.map((out, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 + data.lines.length * 0.04 + idx * 0.15 }}
+                  className={`font-mono text-xs leading-5 ${getOutputLineColor(out)}`}
+                >
+                  {out}
+                </motion.div>
+              ))}
+            </div>
           </div>
         )}
       </motion.div>

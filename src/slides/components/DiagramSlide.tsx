@@ -1,29 +1,13 @@
 import { motion } from 'framer-motion';
-import type { SlideComponentProps } from '../../engine/types';
+import type { SlideComponentProps, DiagramNode, DiagramEdge, DiagramSlideData } from '../../engine/types';
 
-interface DiagramNode {
-  id: string;
-  label: string;
-  sublabel?: string;
-  col: number;
-  row: number;
-  color?: 'blue' | 'violet' | 'emerald' | 'amber' | 'cyan' | 'slate';
-}
-
-interface DiagramEdge {
-  from: string;
-  to: string;
-  label?: string;
-  dashed?: boolean;
-}
-
-interface DiagramSlideData {
-  type: 'diagram';
-  mode: 'arch' | 'sequence' | 'er';
-  title: string;
-  subtitle?: string;
-  nodes: DiagramNode[];
-  edges: DiagramEdge[];
+function deriveEdges(nodes: DiagramNode[]): DiagramEdge[] {
+  const sorted = [...nodes].sort((a, b) => a.col !== b.col ? a.col - b.col : a.row - b.row);
+  const edges: DiagramEdge[] = [];
+  for (let i = 0; i < sorted.length - 1; i++) {
+    edges.push({ from: sorted[i].id, to: sorted[i + 1].id });
+  }
+  return edges;
 }
 
 const NODE_W = 140;
@@ -31,11 +15,11 @@ const NODE_H = 50;
 const NODE_H_ER = 80;
 
 const colorMap: Record<string, { fill: string; stroke: string }> = {
-  blue:    { fill: '#1e3a5f', stroke: '#3b82f6' },
+  blue:    { fill: 'var(--theme-surface)',  stroke: 'var(--theme-accent-primary)' },
   violet:  { fill: '#2d1b4e', stroke: '#8b5cf6' },
   emerald: { fill: '#064e3b', stroke: '#10b981' },
   amber:   { fill: '#451a03', stroke: '#f59e0b' },
-  cyan:    { fill: '#0c3344', stroke: '#06b6d4' },
+  cyan:    { fill: 'var(--theme-surface)',  stroke: 'var(--theme-accent-secondary)' },
   slate:   { fill: '#1e293b', stroke: '#475569' },
 };
 
@@ -63,13 +47,18 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
 
   const nodeMap = new Map<string, DiagramNode>(data.nodes.map(n => [n.id, n]));
 
+  const effectiveEdges: DiagramEdge[] =
+    (data.autoEdges && (!data.edges || data.edges.length === 0))
+      ? deriveEdges(data.nodes)
+      : (data.edges ?? []);
+
   // Dynamic viewBox — prevents nodes clipping outside fixed bounds
   const PADDING = 48;
   const nodeHForLayout = isER ? NODE_H_ER : NODE_H;
   const maxNodeRight = Math.max(...data.nodes.map(n => n.col * 200 + 80 + NODE_W)) + PADDING;
   const maxNodeBottom = Math.max(...data.nodes.map(n => n.row * 120 + 60 + nodeHForLayout)) + PADDING;
   const seqBottom = isSequence
-    ? 60 + NODE_H + data.edges.length * 80 + 60 + PADDING
+    ? 60 + NODE_H + effectiveEdges.length * 80 + 60 + PADDING
     : 0;
   const svgW = Math.max(760, maxNodeRight);
   const svgH = Math.max(340, Math.max(maxNodeBottom, seqBottom));
@@ -157,32 +146,28 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
                       x={rx} y={ry}
                       width={NODE_W} height={totalH}
                       rx={6}
-                      fill={colors.fill}
-                      stroke={colors.stroke}
                       strokeWidth="1.5"
+                      style={{ fill: colors.fill, stroke: colors.stroke }}
                     />
                     {/* Header bar */}
                     <rect
                       x={rx} y={ry}
                       width={NODE_W} height={headerH}
                       rx={6}
-                      fill={colors.stroke}
-                      fillOpacity="0.25"
+                      style={{ fill: colors.stroke, fillOpacity: 0.25 }}
                     />
                     {/* Fix rounded bottom of header bar */}
                     <rect
                       x={rx} y={ry + headerH - 4}
                       width={NODE_W} height={4}
-                      fill={colors.stroke}
-                      fillOpacity="0.25"
+                      style={{ fill: colors.stroke, fillOpacity: 0.25 }}
                     />
                     {/* Header divider */}
                     <line
                       x1={rx} y1={ry + headerH}
                       x2={rx + NODE_W} y2={ry + headerH}
-                      stroke={colors.stroke}
                       strokeWidth="1"
-                      strokeOpacity="0.5"
+                      style={{ stroke: colors.stroke, strokeOpacity: 0.5 }}
                     />
                     {/* Entity label */}
                     <text
@@ -224,9 +209,8 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
                     x={rx} y={ry}
                     width={NODE_W} height={nodeH}
                     rx={8}
-                    fill={colors.fill}
-                    stroke={colors.stroke}
                     strokeWidth="1.5"
+                    style={{ fill: colors.fill, stroke: colors.stroke }}
                   />
                   <text
                     x={cx} y={ry + nodeH / 2 + (node.sublabel ? -6 : 5)}
@@ -254,7 +238,7 @@ export default function DiagramSlide({ data }: SlideComponentProps<DiagramSlideD
             })}
 
             {/* Edges */}
-            {data.edges.map((edge, idx) => {
+            {effectiveEdges.map((edge, idx) => {
               const fromNode = nodeMap.get(edge.from);
               const toNode = nodeMap.get(edge.to);
               if (!fromNode || !toNode) return null;
