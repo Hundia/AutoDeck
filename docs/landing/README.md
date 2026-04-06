@@ -1,6 +1,6 @@
 # Landing Page Documentation
 
-`src/landing/LandingPage.tsx` — single-file landing page composed of six sections.
+`src/landing/LandingPage.tsx` — single-file landing page composed of nine sections.
 
 ---
 
@@ -41,6 +41,47 @@ To add a card: append an entry to the `slideTypes` array and add its color key t
 
 ### AIAssistedSection
 Prompt-card demo showing how to use SKILL.md with Claude/Copilot/Cursor/Gemini.
+
+### TestimonialsSection
+Social proof quote cards from hypothetical users.
+
+### GallerySection
+Responsive thumbnail grid of all available presentations, driven by `src/landing/galleryConfig.ts`.
+
+**Position:** After TestimonialsSection, before FooterSection.
+
+**Layout:** 4-column desktop (`lg:grid-cols-4`) / 2-column tablet (`sm:grid-cols-2`) / 1-column mobile.
+
+**Thumbnail path:** Thumbnails are resolved using `import.meta.env.BASE_URL` so that forks with a different repo name work without code changes:
+```tsx
+src={`${import.meta.env.BASE_URL}thumbnails/${entry.thumbnail}`}
+```
+`BASE_URL` is set by the `base` field in `vite.config.ts` (currently `/AutoDeck/`).
+
+**onError fallback:** If a thumbnail fails to load, `onError` replaces the `<img>` with a placeholder `<div>` showing the presentation title's initials. No layout shift occurs because the placeholder occupies the same fixed dimensions as the image.
+
+**Config file:** `src/landing/galleryConfig.ts` — exports a `GalleryEntry` interface and the `galleryConfig` array:
+```typescript
+export interface GalleryEntry {
+  id: string;         // slug, e.g. 'techbrief'
+  title: string;      // display name
+  slideCount: number; // verified from source
+  route: string;      // full hash route, e.g. '#/techbrief'
+  thumbnail: string;  // PNG filename, e.g. 'techbrief.png'
+}
+```
+
+**How to add a card:**
+1. Add a new `GalleryEntry` to `galleryConfig` in `src/landing/galleryConfig.ts`
+2. Regenerate the thumbnail:
+   ```bash
+   npm run build
+   npm run preview &
+   sleep 4
+   npm run gallery:capture
+   pkill -f "vite preview"
+   git add public/thumbnails/{id}.png
+   ```
 
 ### FooterSection
 Brand mark, external doc links (GitHub, SKILL.md, CLAUDE.md, Issues), and copyright.

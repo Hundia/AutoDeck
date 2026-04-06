@@ -428,9 +428,56 @@ Landing page components live in `src/landing/LandingPage.tsx`. Sections:
 - `HeroSection` — tagline + CTAs
 - `FeaturesSection` — 3-column feature grid
 - `HowItWorksSection` — 3-step guide
+- `QuickStartSection` — quick-start code snippet
 - `SlideTypesSection` — slide type showcase
 - `AIAssistedSection` — AI workflow
+- `TestimonialsSection` — social proof quotes
+- `GallerySection` — presentation thumbnail gallery
 - `FooterSection` — links
+
+### GallerySection
+
+`src/landing/GallerySection.tsx` renders a responsive thumbnail grid of all available presentations, driven by `src/landing/galleryConfig.ts`.
+
+#### How to add a new presentation to the gallery
+
+Add a new `GalleryEntry` object to the `galleryConfig` array in `src/landing/galleryConfig.ts`:
+
+```typescript
+import type { GalleryEntry } from './galleryConfig';
+
+// In galleryConfig array:
+{ id: 'myslides', title: 'My New Presentation', slideCount: 10, route: '#/myslides', thumbnail: 'myslides.png' },
+```
+
+Then regenerate the thumbnail (see below).
+
+#### How to regenerate thumbnails
+
+```bash
+npm run build
+npm run preview &
+sleep 4
+npm run gallery:capture
+pkill -f "vite preview"
+git add public/thumbnails/{id}.png
+```
+
+#### Thumbnail path convention — CRITICAL
+
+Always use `import.meta.env.BASE_URL` when constructing thumbnail `src` paths. This value is set by the `base` field in `vite.config.ts` (currently `/AutoDeck/`) so forks with a different repo name will resolve paths correctly without any code changes.
+
+```tsx
+// CORRECT — works on any fork or deployment base
+src={`${import.meta.env.BASE_URL}thumbnails/${entry.thumbnail}`}
+
+// WRONG — breaks any fork not hosted at /AutoDeck/
+src={`/AutoDeck/thumbnails/${entry.thumbnail}`}
+```
+
+#### onError fallback
+
+If a thumbnail image fails to load, the `onError` handler on the `<img>` element replaces it with a styled placeholder `<div>` that shows the presentation title's initials. This prevents broken-image icons and avoids any layout shift because the placeholder occupies the same dimensions as the image.
 
 ### Deployment Changes
 

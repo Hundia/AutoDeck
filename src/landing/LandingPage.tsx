@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import GallerySection from './GallerySection';
 import {
   Grid3X3,
   Globe,
@@ -9,6 +10,7 @@ import {
   Github,
   Terminal,
   ExternalLink,
+  BookOpen,
 } from 'lucide-react';
 
 // ─── Animation helpers ───────────────────────────────────────────────────────
@@ -146,7 +148,7 @@ function HeroSection() {
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-violet-600/80 hover:bg-violet-500/90 border border-violet-500/40 text-white font-semibold rounded-xl text-base transition-all hover:shadow-lg hover:shadow-violet-500/20 hover:-translate-y-0.5"
             >
               <Sparkles size={18} />
-              Build with AI →
+              How to Build with AI →
             </a>
             <a
               href="https://github.com/Hundia/AutoDeck"
@@ -311,7 +313,7 @@ const steps = [
     label: 'Deploy',
     color: 'bg-emerald-500',
     cmd: 'git push',
-    desc: 'GitHub Actions deploys to GitHub Pages automatically.',
+    desc: 'GitHub Actions auto-deploys to Pages.',
   },
 ];
 
@@ -645,6 +647,27 @@ function AIAssistedSection() {
           ))}
         </motion.div>
 
+        {/* Creation Story callout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-black/60 border border-white/10 rounded-xl p-5 mb-6 flex items-start gap-4"
+        >
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+            <BookOpen size={16} className="text-amber-400" />
+          </div>
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-1">Creation Story</h3>
+            <p className="text-white/50 text-sm leading-relaxed">
+              Every AI-generated deck ships with a <span className="text-white/80">Creation Story</span> — see the exact prompts, slide decisions, and framework comparisons. Press{' '}
+              <kbd className="px-1.5 py-0.5 bg-white/10 border border-white/20 rounded text-xs text-white/70 font-mono">I</kbd>{' '}
+              on any presentation.
+            </p>
+          </div>
+        </motion.div>
+
         {/* Prompt card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -678,6 +701,130 @@ function AIAssistedSection() {
             </p>
           </div>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── TestimonialsSection ──────────────────────────────────────────────────────
+
+const testimonials = [
+  {
+    initials: 'NB',
+    avatarColor: 'bg-emerald-500',
+    name: 'Noa Ben-David',
+    role: 'Founder & CEO',
+    company: 'LearnFlow',
+    route: '#/learnflow',
+    deckLabel: 'LearnFlow Pitch Deck',
+    rating: 5,
+    quote:
+      'RTL Hebrew worked perfectly out of the box — our investors read the comparison slide in their own language and it closed the round. Had to ask Claude twice to get the diagram connections right, but the result was worth every prompt.',
+  },
+  {
+    initials: 'MW',
+    avatarColor: 'bg-amber-500',
+    name: 'Marcus Webb',
+    role: 'Senior Rust Engineer',
+    company: 'Open Source',
+    route: '#/ferric',
+    deckLabel: 'Ferric v1.0 Release Deck',
+    rating: 4,
+    quote:
+      'The code slide with Rust syntax highlighting was exactly what I needed for my release announcement. Timeline mapped perfectly to my changelog milestones. Only wish: a way to show actual terminal output inline with the code block.',
+  },
+  {
+    initials: 'SK',
+    avatarColor: 'bg-violet-500',
+    name: 'Sarah Kim',
+    role: 'Product Manager',
+    company: 'SaaS Co.',
+    route: '#/q2review',
+    deckLabel: 'Q2 2026 Business Review',
+    rating: 5,
+    quote:
+      'No coding background at all — fed SKILL.md to Claude, got TypeScript back, pasted it in and it just worked. The animated stats counters made my leadership team sit up straight. Would love an image embed block for product screenshots.',
+  },
+];
+
+function TestimonialsSection() {
+  return (
+    <section className="py-24 px-6 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-sm text-emerald-400 font-medium">
+            <span>★</span>
+            From the Community
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            Built by Real People
+          </h2>
+          <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            Founders, engineers, and PMs using AutoDeck with AI to ship faster.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col gap-4 hover:bg-white/[0.08] transition-colors"
+            >
+              {/* Header row */}
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-10 h-10 rounded-full ${t.avatarColor} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}
+                >
+                  {t.initials}
+                </div>
+                <div>
+                  <p className="text-white font-semibold text-sm">{t.name}</p>
+                  <p className="text-white/40 text-xs">
+                    {t.role} · {t.company}
+                  </p>
+                </div>
+              </div>
+
+              {/* Star rating */}
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, si) => (
+                  <span
+                    key={si}
+                    className={si < t.rating ? 'text-amber-400' : 'text-white/15'}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="text-white/65 text-sm leading-relaxed flex-1">
+                "{t.quote}"
+              </p>
+
+              {/* Deck link */}
+              <a
+                href={t.route}
+                className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors mt-auto"
+              >
+                View Deck →
+                <span className="text-white/30 text-xs font-normal">
+                  {t.deckLabel}
+                </span>
+              </a>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -756,6 +903,8 @@ export default function LandingPage() {
       <QuickStartSection />
       <SlideTypesSection />
       <AIAssistedSection />
+      <TestimonialsSection />
+      <GallerySection />
       <FooterSection />
     </div>
   );

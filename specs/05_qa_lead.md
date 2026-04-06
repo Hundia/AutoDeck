@@ -30,6 +30,7 @@
 | TC-UI-06 | `/environments` | 6×10 matrix renders |
 | TC-UI-07 | `/design-system` | Button/Card/Badge components visible |
 | TC-UI-08 | Build output | `npm run build` exits 0, no TS errors |
+| TC-UI-09 | `/` Gallery section | All 7 thumbnail cards render, links resolve, onError fallback present, mobile layout collapses correctly |
 
 ## QA Rules
 - No ticket is ✅ Done without relevant test passing

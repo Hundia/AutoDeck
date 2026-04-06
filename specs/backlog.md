@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-05 (Sprint 45 complete)
+**Last Updated:** 2026-04-06 (Sprint 46 complete)
 
 ---
 
@@ -603,3 +603,83 @@ MockupSlide has no way to embed real screenshots or product images — it is wir
 | `specs/backlog.md` | Update — all 45.x → ✅ Done, header date updated |
 
 **Total: 32 points, 10 tickets**
+
+---
+
+## Sprint 46: Presentation Gallery Section (25 pts)
+
+**Theme:** Add a Presentation Gallery section to the landing page — a responsive grid of Playwright-captured thumbnail cards (one per showcase presentation) that lets visitors preview all 7 AutoDeck demos at a glance, with slide count, "View →" link, and `onError` fallback for resilience.
+**Status:** ✅ Done
+**Date:** 2026-04-05
+
+### Problem Statement
+
+The landing page describes AutoDeck's capabilities but never shows the actual presentations. A first-time visitor reads "Beautiful animated presentations" but must click blindly into `#/presentation` to see one. The Gallery section closes this gap: a responsive grid of thumbnail cards immediately after the Testimonials section answers "what does this look like?" for all 7 showcase presentations in one scan. Thumbnails are captured once via Playwright and committed to `public/thumbnails/`; all paths use `import.meta.env.BASE_URL` so any fork or GitHub Pages deployment works correctly without path changes.
+
+### Phase 1: Config + Types (3 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 46.1 | **`galleryConfig.ts` — `GalleryEntry` interface + 7-entry static array** — Create `src/landing/galleryConfig.ts`. Define and export a `GalleryEntry` interface with fields: `id: string`, `title: string`, `slideCount: number`, `route: string` (hash route, e.g. `'#/techbrief'`), `thumbnail: string` (PNG filename, e.g. `'techbrief.png'`). Export `galleryConfig: GalleryEntry[]` with all 7 presentations: acme (9 slides, `#/presentation`), techbrief (10 slides), uimockup (verify count from `slidesUimockupEN.length`), howto (10 slides), learnflow (9 slides), ferric (9 slides), q2review (verify count from `slidesQ2ReviewEN.length`). `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | — | `src/landing/galleryConfig.ts` |
+
+### Phase 2: Component + Wiring (5 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 46.2 | **`GallerySection.tsx` — responsive gallery grid component** — Create `src/landing/GallerySection.tsx`. Import `galleryConfig`. Render a `<section>` with heading ("Presentation Gallery") and responsive grid (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6`). Per card: (1) `<img src={${import.meta.env.BASE_URL}thumbnails/${entry.thumbnail}} alt={${entry.title} — ${entry.slideCount} slides}` with `onError` handler that injects a styled placeholder div (slate bg + title initials — no layout shift); (2) title (`text-white font-semibold`); (3) slide count (`text-white/50 text-xs`); (4) `<a href={entry.route}>View →</a>` in blue. Cards animate with Framer Motion `whileInView`, `viewport={{ once: true }}`, stagger `delay: i * 0.08`. Card hover: `whileHover={{ y: -4 }}`. No new npm deps. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 46.1 | `src/landing/GallerySection.tsx` |
+| 46.3 | **Wire `GallerySection` into `LandingPage.tsx`** — In `src/landing/LandingPage.tsx`: add `import GallerySection from './GallerySection'`; insert `<GallerySection />` between `<TestimonialsSection />` and `<FooterSection />` in the JSX return (do NOT modify `src/landing/index.ts` — it only re-exports `LandingPage` and needs no change). `npm run build` exits 0. | Frontend | haiku | 1 | ✅ | 46.2 | `src/landing/LandingPage.tsx` |
+
+### Phase 3: Thumbnails (3 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 46.4 | **`scripts/gallery-capture.js` — Playwright thumbnail capture script** — Create `scripts/gallery-capture.js`. Model on `e2e-sprint44.js` (same route list, same viewport 1440×900). Output dir: `public/thumbnails/` (create with `fs.mkdirSync`). For each route: `goto`, `waitForLoadState('networkidle')`, `waitForTimeout(1500)`, then `page.screenshot({ path: \`public/thumbnails/${name}.png\` })`. Names: `acme`, `techbrief`, `uimockup`, `howto`, `learnflow`, `ferric`, `q2review`. Script exits 0. | QA | haiku | 2 | ✅ | 46.3 | `scripts/gallery-capture.js` |
+| 46.5 | **Add `gallery:capture` npm script + run + commit 7 PNGs** — In `package.json` add `"gallery:capture": "node scripts/gallery-capture.js"` to `scripts`. Start `npm run preview` (port 4173), run `npm run gallery:capture`, verify 7 PNG files exist in `public/thumbnails/`. Commit the PNGs as static assets (they are deployed verbatim to GitHub Pages). `npm run build` exits 0. | Frontend | haiku | 1 | ✅ | 46.4 | `package.json`, `public/thumbnails/` |
+
+### Phase 4: QA + Verification (3 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 46.6 | **E2E Playwright verification** — Write and run `e2e-sprint46.js` (model on `e2e-sprint45.js`). Assertions: (1) landing page `#/` — `GallerySection` present in DOM (check for 7 card `<a>` elements pointing to gallery routes); (2) each card `<img>` has non-empty `alt`; (3) zero JS console errors on `#/`; (4) programmatically set one `<img src>` to an invalid URL and assert the `onError` placeholder div appears (no broken-image icon, no layout collapse); (5) run at mobile viewport 390×844 — gallery section visible, cards stack correctly. Screenshots to `e2e-screenshots/sprint-46/`. Add **TC-UI-09** to `specs/05_qa_lead.md`: `\| TC-UI-09 \| \`/\` Gallery section \| All 7 thumbnail cards render, links resolve, onError fallback present, mobile layout collapses correctly \|`. Both runs must exit 0. | QA | sonnet | 3 | ✅ | 46.5 | `specs/05_qa_lead.md` |
+
+### Phase 5: Docs + Close (3 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 46.7 | **`SKILL.md` — GallerySection authoring guide** — Add a sub-section under the landing page documentation in `SKILL.md` titled "### GallerySection". Document: (1) how to add a new presentation to `galleryConfig.ts` (copy-paste `GalleryEntry` example); (2) how to regenerate thumbnails (`npm run build && npm run preview &` then `npm run gallery:capture`); (3) thumbnail path convention — `${import.meta.env.BASE_URL}thumbnails/{id}.png` — with a positive example (`${BASE_URL}thumbnails/techbrief.png`) and a negative example (hardcoded `/AutoDeck/thumbnails/techbrief.png` — breaks forks); (4) `onError` fallback behavior. | PM | haiku | 1 | ✅ | 46.6 | `SKILL.md` |
+| 46.8 | **`docs/landing/README.md` — add GallerySection entry** — Add a `### GallerySection` entry documenting: layout (4-col desktop / 2-col tablet / 1-col mobile), thumbnail path convention (`import.meta.env.BASE_URL`), `onError` fallback, and how to add a card (update `galleryConfig.ts` + run `npm run gallery:capture`). Update the section inventory at the top of the file to include `GallerySection` (after TestimonialsSection). | PM | haiku | 1 | ✅ | 46.7 | `docs/landing/README.md` |
+| 46.9 | **Sprint close** — Mark all 46.x tickets ✅ Done in `specs/backlog.md`. Write `sprints/sprint-46/summary.md` following Sprint 45 format: what shipped, key decisions (BASE_URL thumbnail path, onError fallback, gallery placement), E2E results, follow-on ideas. Update `specs/backlog.md` Sprint 46 status to ✅ Done. Update header `Last Updated`. | PM | haiku | 1 | ✅ | 46.8 | `sprints/sprint-46/summary.md`, `specs/backlog.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|----------------|
+| Build gate | `npm run build` exits 0, zero TypeScript errors |
+| All 7 cards render | Landing page DOM contains 7 gallery card `<a>` elements |
+| `<img>` alt attributes | Each card `<img>` has non-empty `alt` matching `"{title} — {N} slides"` |
+| Thumbnail `BASE_URL` path | Each `<img src>` is prefixed with `import.meta.env.BASE_URL` — not hardcoded `/AutoDeck/` |
+| `onError` fallback | Programmatically broken `<img src>` → placeholder div renders; no layout shift |
+| Mobile layout (390×844) | Gallery section visible; cards stack to ≤2 columns; no horizontal overflow |
+| Gallery links correct | Each card `href` matches one of the 7 known hash routes |
+| Zero JS console errors | `page.on('pageerror')` array empty after landing page load + 2s settle |
+| 7 PNG thumbnails committed | `public/thumbnails/` contains all 7 `.png` files, each >1 KB |
+| TC-UI-09 added | `specs/05_qa_lead.md` contains TC-UI-09 row |
+| SKILL.md `BASE_URL` example | SKILL.md includes both positive and negative thumbnail path examples |
+
+### Docs Impact
+
+| Doc File | Action | Description |
+|----------|--------|-------------|
+| `src/landing/galleryConfig.ts` | Create | `GalleryEntry` interface + 7-entry static metadata array |
+| `src/landing/GallerySection.tsx` | Create | Responsive gallery grid component |
+| `src/landing/LandingPage.tsx` | Update | Import + insert `<GallerySection />` between Testimonials and Footer |
+| `scripts/gallery-capture.js` | Create | Playwright thumbnail capture script |
+| `package.json` | Update | Add `gallery:capture` npm script |
+| `public/thumbnails/` | Create | 7 PNG files committed as static assets |
+| `specs/05_qa_lead.md` | Update | Add TC-UI-09 |
+| `SKILL.md` | Update | GallerySection authoring guide + BASE_URL convention |
+| `docs/landing/README.md` | Update | Add `### GallerySection` entry + update section inventory |
+| `sprints/sprint-46/summary.md` | Create | Sprint summary |
+| `specs/backlog.md` | Update | All 46.x → ✅ Done; header date |
+
+**Total: 25 points, 9 tickets**
