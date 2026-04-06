@@ -118,6 +118,56 @@ Note: `HashRouter` is used for GitHub Pages SPA compatibility — the `#` in the
 - **NO shadcn/ui, NO @radix-ui** — raw Tailwind + Framer Motion only
 - **Background effects (8):** `particles`, `circuits`, `matrix`, `constellation`, `hex`, `waves`, `gradient`, `grid` — set via `src/config.ts` → `background` field
 
+## Theme System
+
+AutoDeck presentations support three runtime themes: **Aurora** (blue-violet, default), **Sivania** (sage-terracotta, Cormorant Garamond), and **Noir** (monochrome-cyan, JetBrains Mono).
+
+### How It Works
+
+- 16 CSS custom-property tokens per theme set on `document.documentElement` via `[data-theme="aurora|sivania|noir"]`
+- `ThemeProvider` above `<HashRouter>` in `App.tsx` reads/writes `localStorage.getItem('autodeck-theme')`
+- `useTheme()` hook gives any engine component access to `{ theme, setTheme }`
+- Theme switcher is the Palette dropdown (leftmost in the PresentationViewer top-right cluster)
+- Landing page is intentionally unthemed
+
+### Adding a Fourth Theme
+
+1. Add a new `[data-theme="mytheme"]` block to `src/index.css` with all 16 tokens
+2. Add `{ id: 'mytheme', label: 'My Theme', previewColors: ['#...', '#...', '#...'] }` to `THEMES` in `src/engine/themes.ts`
+3. That's it — no code changes needed
+
+### SVG Critical Rule
+
+SVG presentation attributes (`fill="rgba(…)"`, `stroke="rgba(…)"`) do NOT inherit CSS custom properties. Always use React inline style:
+```tsx
+// WRONG — CSS vars don't work as SVG attributes
+<circle fill="var(--theme-accent-primary)" />
+
+// CORRECT
+<circle style={{ fill: 'var(--theme-accent-primary)' }} />
+```
+
+### Token Reference
+
+| Token | Purpose |
+|-------|---------|
+| `--theme-bg` | Page/presentation background |
+| `--theme-surface` | Card/panel surface color |
+| `--theme-surface-border` | Card border color |
+| `--theme-text-primary` | Primary text |
+| `--theme-text-secondary` | Secondary/muted text |
+| `--theme-accent-primary` | Primary accent (links, highlights) |
+| `--theme-accent-secondary` | Secondary accent (taglines, sub-accents) |
+| `--theme-accent-glow` | Glow/shadow color for accent elements |
+| `--theme-nav-bg` | Navigation background |
+| `--theme-nav-border` | Navigation border |
+| `--theme-dot-active` | Active slide dot + active dropdown item dot |
+| `--theme-font-display` | Display/heading font family |
+| `--theme-font-body` | Body font family |
+| `--theme-bg-effect-color-1` | Background effect primary tint |
+| `--theme-bg-effect-color-2` | Background effect secondary tint |
+| `--theme-gradient` | Gradient for progress bar, taglines, connecting lines |
+
 ## Slide Engine API
 
 ```typescript

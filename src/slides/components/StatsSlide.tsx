@@ -48,8 +48,8 @@ export default function StatsSlide({ data }: SlideComponentProps<StatsSlideData>
             transition={{ delay: 0.3 }}
             className="flex-1"
           >
-            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 w-full">
-              <p className="text-cyan-400 font-bold text-center mb-3 text-sm uppercase tracking-wide">
+            <div className="rounded-xl p-4 w-full border" style={{ background: 'var(--theme-surface)', borderColor: 'var(--theme-surface-border)' }}>
+              <p className="font-bold text-center mb-3 text-sm uppercase tracking-wide" style={{ color: 'var(--theme-accent-primary)' }}>
                 {data.leftLabel || 'Left'}
               </p>
               <ul className="space-y-2">
@@ -59,7 +59,8 @@ export default function StatsSlide({ data }: SlideComponentProps<StatsSlideData>
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 + idx * 0.2 }}
-                    className="flex items-center gap-2 text-cyan-300 text-sm"
+                    className="flex items-center gap-2 text-sm"
+                    style={{ color: 'var(--theme-accent-primary)' }}
                   >
                     <span className="w-2 h-2 rounded-full bg-cyan-400 flex-shrink-0" />
                     {item}

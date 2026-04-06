@@ -50,8 +50,8 @@ export default function ClosingSlide({ data }: SlideComponentProps<ClosingSlideD
         >
           <div className="space-y-3">
             {data.commands.map((cmd, idx) => (
-              <div key={idx} className="flex items-center justify-between gap-4 text-left">
-                <code className="text-blue-400 font-mono bg-black/30 px-3 py-2 rounded">
+              <div key={idx} className="grid grid-cols-[minmax(0,auto)_1fr] items-center gap-6 text-left">
+                <code className="font-mono bg-black/30 px-3 py-2 rounded whitespace-nowrap" style={{ color: 'var(--theme-accent-primary)' }}>
                   {cmd.cmd}
                 </code>
                 <span className="text-white/60 text-sm">{cmd.desc}</span>
@@ -89,7 +89,13 @@ export default function ClosingSlide({ data }: SlideComponentProps<ClosingSlideD
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="text-2xl sm:text-3xl text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text font-bold"
+        className="text-2xl sm:text-3xl font-bold"
+        style={{
+          background: 'var(--theme-gradient)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}
       >
         {data.tagline}
       </motion.p>

@@ -6,6 +6,7 @@ interface DropdownOption {
   id: string;
   label: string;
   icon?: React.ReactNode;
+  previewColors?: string[];
 }
 
 interface LanguageDropdownProps {
@@ -107,11 +108,24 @@ export default function LanguageDropdown({
                   }`}
                 >
                   <span
-                    className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
-                      isActive ? 'bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.5)]' : 'bg-transparent'
-                    }`}
+                    className="w-1.5 h-1.5 rounded-full transition-all duration-200"
+                    style={isActive ? {
+                      background: 'var(--theme-dot-active)',
+                      boxShadow: '0 0 6px var(--theme-accent-glow)',
+                    } : {}}
                   />
                   {option.icon && <span className="flex items-center">{option.icon}</span>}
+                  {option.previewColors && option.previewColors.length > 0 && (
+                    <span className="flex items-center gap-0.5">
+                      {option.previewColors.map((c, i) => (
+                        <span
+                          key={i}
+                          className="w-2 h-2 rounded-full inline-block flex-shrink-0"
+                          style={{ background: c }}
+                        />
+                      ))}
+                    </span>
+                  )}
                   <span>{option.label}</span>
                 </motion.button>
               );

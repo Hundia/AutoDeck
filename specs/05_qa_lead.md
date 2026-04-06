@@ -31,6 +31,9 @@
 | TC-UI-07 | `/design-system` | Button/Card/Badge components visible |
 | TC-UI-08 | Build output | `npm run build` exits 0, no TS errors |
 | TC-UI-09 | `/` Gallery section | All 7 thumbnail cards render, links resolve, onError fallback present, mobile layout collapses correctly |
+| TC-UI-10 | #/meta | Meta presentation loads 8 slides, branding renders as button (opens Creation Story drawer), Share button present |
+| TC-UI-11 | Share modal | Share button visible on all routes, modal opens with Link/Embed/Social tabs, iframe note present in Embed tab (data-testid="share-embed-note") |
+| TC-UI-12 | / ByTheNumbers + Deploy | 4 stat tiles present (GitHub Stars, Showcase Decks, Slide Types, Sprint Points), Deploy to Vercel link present, GitHubStarCounter renders or shows dash |
 
 ## QA Rules
 - No ticket is ✅ Done without relevant test passing

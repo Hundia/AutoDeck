@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "gallery:capture": "node scripts/gallery-capture.js"
+    "gallery:capture": "node scripts/gallery-capture.js",
+    "og:capture": "node scripts/og-capture.js"
   },
   "dependencies": {
     "framer-motion": "^11.0.0",

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -107,4 +108,82 @@ button, a {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Theme CSS Custom Properties */
+
+:root {
+  --theme-bg: #0f172a;
+  --theme-surface: rgba(255,255,255,0.05);
+  --theme-surface-border: rgba(255,255,255,0.1);
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: rgba(255,255,255,0.6);
+  --theme-accent-primary: #60a5fa;
+  --theme-accent-secondary: #a78bfa;
+  --theme-accent-glow: rgba(96,165,250,0.4);
+  --theme-nav-bg: rgba(255,255,255,0.1);
+  --theme-nav-border: rgba(255,255,255,0.06);
+  --theme-dot-active: #3b82f6;
+  --theme-font-display: 'Inter', sans-serif;
+  --theme-font-body: 'Inter', sans-serif;
+  --theme-bg-effect-color-1: rgba(96,165,250,0.3);
+  --theme-bg-effect-color-2: rgba(139,92,246,0.2);
+  --theme-gradient: linear-gradient(to bottom, #60a5fa, #a78bfa);
+}
+
+[data-theme="aurora"] {
+  --theme-bg: #0f172a;
+  --theme-surface: rgba(255,255,255,0.05);
+  --theme-surface-border: rgba(255,255,255,0.1);
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: rgba(255,255,255,0.6);
+  --theme-accent-primary: #60a5fa;
+  --theme-accent-secondary: #a78bfa;
+  --theme-accent-glow: rgba(96,165,250,0.4);
+  --theme-nav-bg: rgba(255,255,255,0.1);
+  --theme-nav-border: rgba(255,255,255,0.06);
+  --theme-dot-active: #3b82f6;
+  --theme-font-display: 'Inter', sans-serif;
+  --theme-font-body: 'Inter', sans-serif;
+  --theme-bg-effect-color-1: rgba(96,165,250,0.3);
+  --theme-bg-effect-color-2: rgba(139,92,246,0.2);
+  --theme-gradient: linear-gradient(to bottom, #60a5fa, #a78bfa);
+}
+
+[data-theme="sivania"] {
+  --theme-bg: #1a1a1a;
+  --theme-surface: #252525;
+  --theme-surface-border: #333333;
+  --theme-text-primary: #f5f0e8;
+  --theme-text-secondary: #9a8c7e;
+  --theme-accent-primary: #698472;
+  --theme-accent-secondary: #8e6a59;
+  --theme-accent-glow: rgba(105,132,114,0.3);
+  --theme-nav-bg: rgba(105,132,114,0.15);
+  --theme-nav-border: rgba(105,132,114,0.2);
+  --theme-dot-active: #698472;
+  --theme-font-display: 'Cormorant Garamond', serif;
+  --theme-font-body: 'Inter', sans-serif;
+  --theme-bg-effect-color-1: rgba(105,132,114,0.2);
+  --theme-bg-effect-color-2: rgba(142,106,89,0.15);
+  --theme-gradient: linear-gradient(to bottom, #698472, #8e6a59);
+}
+
+[data-theme="noir"] {
+  --theme-bg: #0a0a0a;
+  --theme-surface: #111111;
+  --theme-surface-border: #1e1e1e;
+  --theme-text-primary: #f0f0f0;
+  --theme-text-secondary: #666666;
+  --theme-accent-primary: #00d9ff;
+  --theme-accent-secondary: #0099b8;
+  --theme-accent-glow: rgba(0,217,255,0.3);
+  --theme-nav-bg: rgba(0,217,255,0.08);
+  --theme-nav-border: rgba(0,217,255,0.15);
+  --theme-dot-active: #00d9ff;
+  --theme-font-display: 'JetBrains Mono', monospace;
+  --theme-font-body: 'JetBrains Mono', monospace;
+  --theme-bg-effect-color-1: rgba(0,217,255,0.2);
+  --theme-bg-effect-color-2: rgba(0,153,184,0.12);
+  --theme-gradient: linear-gradient(to bottom, #00d9ff, #0099b8);
 }

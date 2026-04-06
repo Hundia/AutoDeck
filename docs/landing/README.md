@@ -83,6 +83,36 @@ export interface GalleryEntry {
    git add public/thumbnails/{id}.png
    ```
 
+### ByTheNumbersSection
+Social proof stats section immediately after `GallerySection`.
+
+- **Position:** Between `GallerySection` and `FooterSection`
+- **Layout:** 2×2 grid on mobile (`grid-cols-2`) → 4-column on medium+ (`md:grid-cols-4`)
+- **Tiles (left to right):**
+  1. **GitHub Stars** — live count via `<GitHubStarCounter />` (animated spring counter, yellow star icon, skeleton pulse while loading, `'—'` on error)
+  2. **7 Showcase Decks** — static tile
+  3. **10 Slide Types** — static tile
+  4. **443 Sprint Points** — static tile
+- **Animation:** Framer Motion `whileInView` entrance on each card
+- **Component:** Defined as `ByTheNumbersSection` function inside `src/landing/LandingPage.tsx`
+- **Import:** `GitHubStarCounter` imported from `./GitHubStarCounter`
+
+### DeployButtonsSection
+One-click deploy buttons section positioned before `QuickStartSection`.
+
+- **Position:** Between `HowItWorksSection` and `QuickStartSection`
+- **Content:** Four deploy buttons — Vercel, Netlify, Stackblitz, Codespaces
+- **data-testid:** `"deploy-buttons-section"`
+- **Button targets:**
+  | Platform | URL |
+  |----------|-----|
+  | Vercel | `https://vercel.com/new/clone?repository-url=https://github.com/Hundia/AutoDeck` |
+  | Netlify | `https://app.netlify.com/start/deploy?repository=https://github.com/Hundia/AutoDeck` |
+  | Stackblitz | `https://stackblitz.com/github/Hundia/AutoDeck` |
+  | Codespaces | `https://github.com/codespaces/new?repo=Hundia/AutoDeck` |
+- **Button style:** `motion.a` with `whileHover={{ y: -2 }}`, `border border-white/10`, `rounded-xl`; each shows platform name and a Lucide icon
+- **Component:** Defined as `DeployButtonsSection` function inside `src/landing/LandingPage.tsx`
+
 ### FooterSection
 Brand mark, external doc links (GitHub, SKILL.md, CLAUDE.md, Issues), and copyright.
 

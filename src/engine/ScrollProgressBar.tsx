@@ -30,8 +30,11 @@ export default function ScrollProgressBar({ containerRef, visible }: ScrollProgr
   return (
     <div className="fixed right-2 top-16 bottom-16 w-1.5 z-40 rounded-full bg-white/10">
       <motion.div
-        className="w-full rounded-full bg-gradient-to-b from-blue-400 via-amber-400 to-green-400"
-        style={{ height: `${Math.max(progress * 100, 2)}%` }}
+        className="w-full rounded-full"
+        style={{
+          background: 'var(--theme-gradient)',
+          height: `${Math.max(progress * 100, 2)}%`
+        }}
         transition={{ duration: 0.1 }}
       />
     </div>

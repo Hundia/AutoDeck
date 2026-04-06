@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import GallerySection from './GallerySection';
+import GitHubStarCounter from './GitHubStarCounter';
 import {
   Grid3X3,
   Globe,
@@ -370,6 +371,47 @@ function HowItWorksSection() {
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── DeployButtonsSection ────────────────────────────────────────────────────
+
+function DeployButtonsSection() {
+  const buttons = [
+    { label: 'Deploy to Vercel', href: 'https://vercel.com/new/clone?repository-url=https://github.com/Hundia/AutoDeck', icon: '▲' },
+    { label: 'Deploy to Netlify', href: 'https://app.netlify.com/start/deploy?repository=https://github.com/Hundia/AutoDeck', icon: '◆' },
+    { label: 'Open in Stackblitz', href: 'https://stackblitz.com/github/Hundia/AutoDeck', icon: '⚡' },
+    { label: 'Open in Codespaces', href: 'https://github.com/codespaces/new?repo=Hundia/AutoDeck', icon: '⎔' },
+  ];
+
+  return (
+    <section className="py-20 px-6 bg-slate-900">
+      <div className="max-w-4xl mx-auto text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+          <h2 className="text-3xl font-bold text-white mb-3">One Click to Your Own AutoDeck</h2>
+          <p className="text-white/50 mb-10">Fork and deploy in under 60 seconds. No config needed.</p>
+          <div className="flex flex-wrap justify-center gap-4" data-testid="deploy-buttons-section">
+            {buttons.map((b, i) => (
+              <motion.a
+                key={b.label}
+                href={b.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                whileHover={{ y: -2 }}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl text-white/80 hover:text-white text-sm font-medium transition-colors"
+              >
+                <span>{b.icon}</span>
+                {b.label}
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -830,6 +872,46 @@ function TestimonialsSection() {
   );
 }
 
+// ─── ByTheNumbersSection ─────────────────────────────────────────────────────
+
+const numberCards = [
+  { value: <GitHubStarCounter />, label: 'GitHub Stars' },
+  { value: '7', label: 'Showcase Decks' },
+  { value: '10', label: 'Built-In Slide Types' },
+  { value: '443', label: 'Sprint Points Invested' },
+];
+
+function ByTheNumbersSection() {
+  return (
+    <section className="py-20 px-6 bg-slate-800">
+      <motion.h2
+        className="text-3xl font-bold text-white text-center"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        By the Numbers
+      </motion.h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-10">
+        {numberCards.map((card, i) => (
+          <motion.div
+            key={card.label}
+            className="bg-white/5 border border-white/10 rounded-xl p-6 text-center"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+          >
+            <div className="text-4xl font-bold text-white mb-2">{card.value}</div>
+            <div className="text-white/50 text-sm">{card.label}</div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 // ─── FooterSection ────────────────────────────────────────────────────────────
 
 function FooterSection() {
@@ -900,11 +982,13 @@ export default function LandingPage() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <DeployButtonsSection />
       <QuickStartSection />
       <SlideTypesSection />
       <AIAssistedSection />
       <TestimonialsSection />
       <GallerySection />
+      <ByTheNumbersSection />
       <FooterSection />
     </div>
   );

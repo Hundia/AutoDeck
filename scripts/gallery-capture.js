@@ -7,6 +7,7 @@ const OUT = path.join(__dirname, '..', 'public', 'thumbnails');
 fs.mkdirSync(OUT, { recursive: true });
 
 const PRESENTATIONS = [
+  { route: '#/meta',         name: 'meta' },
   { route: '#/presentation', name: 'acme' },
   { route: '#/techbrief',    name: 'techbrief' },
   { route: '#/uimockup',     name: 'uimockup' },

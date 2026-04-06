@@ -15,7 +15,7 @@ export default function GallerySection() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-blue-500/10 border border-blue-500/20 rounded-full text-sm text-blue-400 font-medium">
             <span className="w-2 h-2 rounded-full bg-blue-400 inline-block" />
-            7 Presentations
+            8 Presentations
           </div>
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             See It in Action
@@ -35,7 +35,7 @@ export default function GallerySection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
               whileHover={{ y: -4 }}
-              className="bg-white/5 border border-white/10 rounded-xl overflow-hidden group cursor-pointer"
+              className={`bg-white/5 border border-white/10 rounded-xl overflow-hidden group cursor-pointer${entry.featured ? ' ring-2 ring-blue-500' : ''}`}
             >
               {/* 16:9 thumbnail */}
               <div className="aspect-[16/9] bg-slate-800 overflow-hidden relative">
@@ -56,6 +56,9 @@ export default function GallerySection() {
                     }
                   }}
                 />
+                {entry.featured && (
+                  <span className="absolute top-2 right-2 px-2 py-0.5 bg-blue-500 text-white text-xs font-semibold rounded-full">★ Featured</span>
+                )}
               </div>
 
               {/* Card body */}

@@ -1,48 +1,66 @@
 # AutoDeck
 
-> Beautiful animated presentations with React + Framer Motion. Clone, customize, deploy.
+![Build](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml/badge.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Stars](https://img.shields.io/github/stars/Hundia/AutoDeck?style=social)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://hundia.github.io/AutoDeck/)
 
-**Live:** https://hundia.github.io/AutoDeck/
-
-**Example Presentations:**
-- [Acme — Developer Tools](https://hundia.github.io/AutoDeck/#/presentation) (particles background)
-- [AutoSpec TechBrief](https://hundia.github.io/AutoDeck/#/techbrief) (circuits background)
-- [AutoDeck Dashboard DS](https://hundia.github.io/AutoDeck/#/uimockup) (constellation background)
-
-[![Deploy](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hundia/AutoDeck/actions/workflows/deploy.yml)
+**AI-generated. Framework-ready. Open source. Build stunning animated presentations with React + Framer Motion.**
 
 ---
 
 ## Features
 
 - **10 built-in slide types** — title, content, comparison, stats, quote, timeline, closing, final, code, diagram, mockup
-- **Keyboard navigation** — ← → arrows, progress dots, space for scrollable slides
-- **Multi-language + RTL** — Hebrew, Arabic, Farsi auto-detected and mirrored
-- **8 animated backgrounds** — particles, circuits, matrix, constellation, hex, waves, gradient, grid
-- **Framer Motion animations** — stagger, scroll-triggered, spring physics
-- **GitHub Pages ready** — CI/CD via GitHub Actions (zero config)
-- **AI-assisted** — feed `SKILL.md` to Claude, Copilot, Cursor, Gemini to build slides instantly
-- **Mobile responsive** — works on phone through 4K display
-- **Dark theme** — glass morphism cards, Inter + JetBrains Mono fonts
+- **3 runtime themes** — Aurora (blue-violet), Sivania (sage-terracotta), Noir (monochrome-cyan) — switchable live
+- **Framer Motion animations** — stagger, scroll-triggered, spring physics, word-by-word reveals
+- **Creation Story drawer** — every presentation ships with an AI creation narrative
+- **Multi-language + RTL** — Hebrew, Arabic, Farsi, Urdu auto-detected and layout-mirrored
+- **Zero backend** — pure static React, deploy anywhere in under 2 minutes
+- **GitHub Pages CI/CD** — push to `main` → auto-deploy via GitHub Actions
+- **TypeScript-native** — fully typed slide data, engine API, and component props
+
+---
 
 ## Quick Start
 
 ```bash
-# 1. Fork or clone this repo
-git clone git@github.com:Hundia/AutoDeck.git my-talk
-cd my-talk && npm install
-
-# 2. Edit your slides
-# src/slides/slides-en.ts
-
-# 3. Run locally
+git clone https://github.com/Hundia/AutoDeck
+npm install
 npm run dev
-# → http://localhost:5173/AutoDeck/#/presentation
-
-# 4. Deploy
-git push origin main
-# → https://your-username.github.io/AutoDeck/#/presentation
 ```
+
+Open http://localhost:5173/AutoDeck/ and start editing `src/slides/slides-en.ts`.
+
+---
+
+## One-Click Deploy
+
+| Platform | Deploy |
+|----------|--------|
+| **Vercel** | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Hundia/AutoDeck) |
+| **Netlify** | [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Hundia/AutoDeck) |
+| **StackBlitz** | [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Hundia/AutoDeck) |
+| **Codespaces** | [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Hundia/AutoDeck) |
+
+---
+
+## Presentations
+
+Eight live presentations ship in the repo — each one a working example of a different use case:
+
+| Presentation | Route | Description |
+|--------------|-------|-------------|
+| AutoDeck — The Framework | [#/meta](https://hundia.github.io/AutoDeck/#/meta) | AutoDeck pitching itself |
+| Acme Corp Demo | [#/presentation](https://hundia.github.io/AutoDeck/#/presentation) | Enterprise SaaS pitch deck |
+| AutoSpec TechBrief | [#/techbrief](https://hundia.github.io/AutoDeck/#/techbrief) | Technical architecture overview |
+| Dashboard Design System | [#/uimockup](https://hundia.github.io/AutoDeck/#/uimockup) | UI component showcase |
+| How to Build with AI | [#/howto](https://hundia.github.io/AutoDeck/#/howto) | AI-assisted development guide |
+| LearnFlow Pitch Deck | [#/learnflow](https://hundia.github.io/AutoDeck/#/learnflow) | EdTech startup pitch |
+| Ferric CLI v1.0 | [#/ferric](https://hundia.github.io/AutoDeck/#/ferric) | Rust CLI tool launch |
+| Q2 2026 Business Review | [#/q2review](https://hundia.github.io/AutoDeck/#/q2review) | Quarterly business metrics |
+
+---
 
 ## Slide Types
 
@@ -60,119 +78,26 @@ git push origin main
 | `diagram` | Architecture/sequence/ER via pure SVG | `mode` (arch/sequence/er), `nodes[]`, `edges[]` |
 | `mockup` | Browser-chrome wireframe (8 block types) | `displayMode` (browser/flow), `blocks[]` or `frames[]` |
 
-## Example Slide
-
-```typescript
-// src/slides/slides-en.ts
-import { SlideData } from '../engine/types'
-
-export const slidesEN: SlideData[] = [
-  {
-    type: 'title',
-    title: 'My Talk',
-    subtitle: 'A deep dive into something awesome',
-    tagline: 'Built with AutoDeck',
-    badge: 'v1.0',
-  },
-  {
-    type: 'stats',
-    title: 'By The Numbers',
-    stats: [
-      { label: 'Users', value: '12,000+', color: 'blue' },
-      { label: 'Uptime', value: '99.9%', color: 'green' },
-    ],
-  },
-  {
-    type: 'final',
-    title: 'Thank You',
-    tagline: 'Questions? Find me on GitHub → @hundia',
-  },
-]
-```
+---
 
 ## AI-Assisted Slide Creation
 
-AutoDeck includes `SKILL.md` — a tool-agnostic guide that any AI coding assistant can read:
+AutoDeck ships with `SKILL.md` — a tool-agnostic guide any AI coding assistant can read:
 
 ```
-# In Claude Code, Cursor, Copilot, Gemini:
+# In Claude Code, Cursor, Copilot, or Gemini:
 "Read SKILL.md and help me create slides for a talk about [your topic]"
 ```
 
-The AI will understand all 10 slide types, animations, multi-language patterns, and quality requirements. `SKILL.md` also includes generation recipes to produce a full TechBrief or UIMockup presentation from a codebase or design brief.
+The AI understands all 10 slide types, animations, multi-language patterns, and quality requirements. `SKILL.md` also includes generation recipes to produce a full TechBrief or UIMockup from a codebase or design brief.
 
-## Backgrounds
+---
 
-| Value | Effect |
-|-------|--------|
-| `particles` | Floating dots with connecting lines |
-| `circuits` | Animated circuit board traces |
-| `matrix` | Matrix rain columns |
-| `constellation` | Star field with constellations |
-| `hex` | Hexagonal grid pulse |
-| `waves` | Sine wave animation |
-| `gradient` | Color-shifting gradient |
-| `grid` | Subtle dot grid |
+## Contributing
 
-Set in `src/config.ts`:
-```typescript
-export const config: PresentationConfig = {
-  title: 'My Talk',
-  defaultBackground: 'particles', // ← change this
-  languages: [{ code: 'en', label: 'EN' }],
-}
-```
+PRs are welcome. Whether it's a new slide type, a fourth theme, a fix, or an example presentation — open an issue or submit a pull request. See `CLAUDE.md` for the Spec-Driven Development workflow used in this project.
 
-## Multi-Language
-
-```typescript
-// 1. Create src/slides/slides-fr.ts (copy slides-en.ts, translate)
-// 2. In src/config.ts:
-languages: [
-  { code: 'en', label: 'EN' },
-  { code: 'fr', label: 'FR' }, // ← add this
-]
-// 3. In src/App.tsx:
-import { slidesFR } from './slides/slides-fr'
-const slides = { en: slidesEN, fr: slidesFR }
-```
-
-RTL languages (Hebrew, Arabic, Farsi, Urdu) are auto-detected — the layout mirrors automatically.
-
-## Deploy to GitHub Pages
-
-1. Fork this repo
-2. Go to **Settings → Pages → Source: GitHub Actions**
-3. Push to `main` → auto-deploys to `https://your-username.github.io/AutoDeck/`
-
-For other platforms: `npm run build` → upload `dist/` to Vercel, Netlify, or any static host.
-
-## Custom Slide Types
-
-```typescript
-// 1. Create src/slides/components/MySlide.tsx
-import { SlideComponentProps } from '../../engine/types'
-
-interface MySlideData extends SlideData {
-  type: 'my-slide'
-  message: string
-}
-
-export function MySlide({ data, lang }: SlideComponentProps<MySlideData>) {
-  return <div className="text-white text-4xl">{data.message}</div>
-}
-
-// 2. Register in src/slides/registry.ts
-import { MySlide } from './components/MySlide'
-export const slideComponents = {
-  ...existing,
-  'my-slide': MySlide,
-}
-```
-
-## SDD Development
-
-This project uses [Spec-Driven Development](./CLAUDE.md). All development is tracked in `specs/backlog.md` and executed via Claude Code `/sprint-run`.
+---
 
 ## License
 
@@ -180,4 +105,4 @@ MIT — use it for any talk, conference, or demo.
 
 ---
 
-*Extracted from [AutoSpec](https://github.com/Hundia/autospec) — built across sprints 10–38.*
+*Extracted from [AutoSpec](https://github.com/Hundia/autospec) — built across sprints 10–47.*

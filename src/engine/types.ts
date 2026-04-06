@@ -41,6 +41,7 @@ export interface PresentationConfig {
   defaultLanguage: string;
   background: string;
   branding?: string;
+  brandingUrl?: string;
   keyboardHint?: Record<string, string>;
 }
 

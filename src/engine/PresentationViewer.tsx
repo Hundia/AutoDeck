@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Globe, Layers } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Globe, Layers, BookOpen, Palette, Share2 } from 'lucide-react';
 import BackgroundEffect from './BackgroundEffects';
 import LanguageDropdown from './LanguageDropdown';
 import ScrollProgressBar from './ScrollProgressBar';
-import type { SlideData, SlideComponentProps, PresentationConfig } from './types';
+import { CreationStoryDrawer } from './CreationStoryDrawer';
+import ShareModal from './ShareModal';
+import type { SlideData, SlideComponentProps, PresentationConfig, CreationStory } from './types';
+import { useTheme } from './ThemeContext';
+import { THEMES } from './themes';
+import type { ThemeId } from './themes';
 
 const RTL_LANGUAGES = ['he', 'ar', 'fa', 'ur'];
 
@@ -23,17 +28,22 @@ interface PresentationViewerProps {
   config: PresentationConfig;
   slides: Record<string, SlideData[]>;
   slideComponents: Record<string, React.ComponentType<SlideComponentProps>>;
+  creationStory?: CreationStory;
 }
 
 export default function PresentationViewer({
   config,
   slides,
   slideComponents,
+  creationStory,
 }: PresentationViewerProps) {
+  const { theme, setTheme } = useTheme();
   const [lang, setLang] = useState(config.defaultLanguage);
   const [bg, setBg] = useState(config.background);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const currentSlides = slides[lang] || slides[config.defaultLanguage] || [];
@@ -54,6 +64,14 @@ export default function PresentationViewer({
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if (drawerOpen || shareOpen) {
+      if (e.key === 'Escape') { setDrawerOpen(false); setShareOpen(false); }
+      return;
+    }
+    if (e.key === 'i' || e.key === 'I') {
+      if (creationStory) setDrawerOpen(prev => !prev);
+      return;
+    }
     if (e.key === 'ArrowRight') {
       if (isRTL) prevSlide(); else nextSlide();
     } else if (e.key === 'ArrowLeft') {
@@ -70,7 +88,7 @@ export default function PresentationViewer({
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlide, isRTL]);
+  }, [currentSlide, isRTL, drawerOpen, shareOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -109,7 +127,9 @@ export default function PresentationViewer({
     <div
       ref={scrollRef}
       dir={isRTL ? 'rtl' : 'ltr'}
-      className={`relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white ${isScrollable ? 'h-screen overflow-y-auto overflow-x-hidden' : 'min-h-screen overflow-hidden'}`}
+      data-theme={theme}
+      className={`relative text-white ${isScrollable ? 'h-screen overflow-y-auto overflow-x-hidden' : 'min-h-screen overflow-hidden'}`}
+      style={{ background: 'var(--theme-bg)' }}
     >
       <style>{`@keyframes floatingGrid { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }`}</style>
 
@@ -117,6 +137,13 @@ export default function PresentationViewer({
 
       {/* Language Selector */}
       <div className={`fixed top-4 z-50 flex items-center gap-2 ${isRTL ? 'left-4' : 'right-4'}`}>
+        <LanguageDropdown
+          value={theme}
+          onChange={(id) => setTheme(id as ThemeId)}
+          icon={<Palette size={14} />}
+          align="right"
+          options={THEMES.map(t => ({ id: t.id, label: t.label, previewColors: t.previewColors }))}
+        />
         <LanguageDropdown
           value={bg}
           onChange={setBg}
@@ -134,6 +161,13 @@ export default function PresentationViewer({
             options={config.languages}
           />
         )}
+        <button
+          onClick={() => setShareOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-white/70 hover:text-white text-xs font-medium transition-colors"
+          aria-label="Share"
+        >
+          <Share2 size={14} />
+        </button>
       </div>
 
       {/* Slide Counter */}
@@ -180,9 +214,10 @@ export default function PresentationViewer({
               }}
               className={`rounded-full transition-all ${
                 idx === currentSlide
-                  ? 'bg-blue-500 w-4 sm:w-8 h-1.5 sm:h-2'
+                  ? 'w-4 sm:w-8 h-1.5 sm:h-2'
                   : 'bg-white/30 hover:bg-white/50 w-1.5 sm:w-2 h-1.5 sm:h-2'
               }`}
+              style={idx === currentSlide ? { background: 'var(--theme-dot-active)' } : {}}
               aria-label={`Slide ${idx + 1}`}
             />
           ))}
@@ -200,15 +235,69 @@ export default function PresentationViewer({
 
       {/* Branding */}
       {config.branding && (
-        <div className={`fixed bottom-4 text-xs text-white/30 ${isRTL ? 'right-4' : 'left-4'}`}>
-          {config.branding}
-        </div>
+        creationStory ? (
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className={`fixed bottom-4 text-xs text-white/30 hover:text-white/60 transition-colors cursor-pointer ${isRTL ? 'right-4' : 'left-4'}`}
+          >
+            {config.branding}
+          </button>
+        ) : config.brandingUrl ? (
+          <a
+            href={config.brandingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`fixed bottom-4 text-xs text-white/30 hover:text-white/60 transition-colors ${isRTL ? 'right-4' : 'left-4'}`}
+          >
+            {config.branding}
+          </a>
+        ) : (
+          <div className={`fixed bottom-4 text-xs text-white/30 ${isRTL ? 'right-4' : 'left-4'}`}>
+            {config.branding}
+          </div>
+        )
       )}
 
       {/* Keyboard hint */}
       <div className={`fixed bottom-4 text-xs text-white/40 ${isRTL ? 'left-4' : 'right-4'}`}>
         {keyboardHint}
       </div>
+
+      {/* Creation Story trigger pill */}
+      {creationStory && (
+        <motion.button
+          onClick={() => setDrawerOpen(prev => !prev)}
+          className={`fixed bottom-20 z-50 flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-white/70 hover:text-white text-xs font-medium transition-colors ${isRTL ? 'left-4' : 'right-4'}`}
+          aria-label="How This Was Built"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.2, duration: 0.4, ease: 'easeOut' }}
+        >
+          <BookOpen size={14} />
+          <span>Creation Story</span>
+        </motion.button>
+      )}
+
+      {/* Creation Story drawer */}
+      {creationStory && (
+        <CreationStoryDrawer
+          story={creationStory}
+          isOpen={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          isRTL={isRTL}
+        />
+      )}
+
+      {/* Share modal */}
+      <AnimatePresence>
+        {shareOpen && (
+          <ShareModal
+            url={window.location.href}
+            title={config.title}
+            onClose={() => setShareOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

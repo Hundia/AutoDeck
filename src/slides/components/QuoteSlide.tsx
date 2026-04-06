@@ -22,7 +22,8 @@ export default function QuoteSlide({ data }: SlideComponentProps<QuoteSlideData>
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl font-bold mb-12 text-purple-400 tracking-wide"
+        className="text-3xl font-bold mb-12 tracking-wide"
+        style={{ color: 'var(--theme-accent-primary)' }}
       >
         {data.title}
       </motion.h2>
@@ -30,7 +31,7 @@ export default function QuoteSlide({ data }: SlideComponentProps<QuoteSlideData>
       {/* Typewriter question */}
       <div
         className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-12"
-        style={{ textShadow: '0 0 40px rgba(168,85,247,0.4)' }}
+        style={{ textShadow: '0 0 40px var(--theme-accent-glow)' }}
       >
         {chars.map((char, idx) => (
           <motion.span
@@ -53,7 +54,8 @@ export default function QuoteSlide({ data }: SlideComponentProps<QuoteSlideData>
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + chars.length * 0.03 + idx * 0.5, duration: 0.4 }}
-            className="text-lg text-purple-300/80 font-medium"
+            className="text-lg font-medium"
+            style={{ color: 'var(--theme-accent-secondary)', opacity: 0.8 }}
           >
             {point}
           </motion.div>

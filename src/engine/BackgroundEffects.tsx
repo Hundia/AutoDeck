@@ -81,8 +81,8 @@ const CircuitLines: React.FC = () => {
             y1={l.y1}
             x2={l.x2}
             y2={l.y2}
-            stroke="rgba(100,180,255,0.12)"
             strokeWidth={0.5}
+            style={{ stroke: 'var(--theme-bg-effect-color-1)', strokeOpacity: 0.4 }}
           />
         ))}
         {lines.map((l, i) => (
@@ -92,10 +92,10 @@ const CircuitLines: React.FC = () => {
             y1={l.y1}
             x2={l.x2}
             y2={l.y2}
-            stroke="rgba(100,180,255,0.5)"
             strokeWidth={1}
             strokeDasharray="20 980"
             style={{
+              stroke: 'var(--theme-bg-effect-color-1)',
               animation: `circuitPulse ${l.d}s linear infinite`,
               animationDelay: `${-i * 1.3}s`,
             }}
@@ -105,7 +105,7 @@ const CircuitLines: React.FC = () => {
           ['10%', '15%'], ['30%', '35%'], ['50%', '55%'], ['70%', '75%'], ['90%', '90%'],
           ['30%', '15%'], ['50%', '35%'], ['70%', '55%'], ['90%', '75%'], ['10%', '90%'],
         ].map(([cx, cy], i) => (
-          <circle key={`dot-${i}`} cx={cx} cy={cy} r={2.5} fill="rgba(100,180,255,0.25)" />
+          <circle key={`dot-${i}`} cx={cx} cy={cy} r={2.5} style={{ fill: 'var(--theme-bg-effect-color-1)' }} />
         ))}
       </svg>
     </>
@@ -128,7 +128,7 @@ const GradientPulse: React.FC = () => (
       className="absolute inset-0"
       style={{
         background:
-          'linear-gradient(45deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15), rgba(16,185,129,0.15), rgba(245,158,11,0.1), rgba(59,130,246,0.15))',
+          'linear-gradient(45deg, var(--theme-bg-effect-color-1), var(--theme-bg-effect-color-2), var(--theme-bg-effect-color-1))',
         backgroundSize: '400% 400%',
         animation: 'gradientPulse 15s ease infinite',
       }}
@@ -242,10 +242,10 @@ const Constellation: React.FC = () => {
 // ─── 7. Wave Mesh ───────────────────────────────────────────────────
 const WaveMesh: React.FC = () => {
   const waves = [
-    { color: 'rgba(59,130,246,0.1)', yOffset: 40, amplitude: 30, duration: 12 },
-    { color: 'rgba(139,92,246,0.08)', yOffset: 50, amplitude: 25, duration: 15 },
-    { color: 'rgba(16,185,129,0.08)', yOffset: 60, amplitude: 35, duration: 18 },
-    { color: 'rgba(245,158,11,0.06)', yOffset: 70, amplitude: 20, duration: 10 },
+    { color: 'var(--theme-bg-effect-color-1)', yOffset: 40, amplitude: 30, duration: 12 },
+    { color: 'var(--theme-bg-effect-color-2)', yOffset: 50, amplitude: 25, duration: 15 },
+    { color: 'var(--theme-bg-effect-color-1)', yOffset: 60, amplitude: 35, duration: 18 },
+    { color: 'var(--theme-bg-effect-color-2)', yOffset: 70, amplitude: 20, duration: 10 },
   ];
   return (
     <>
@@ -264,8 +264,8 @@ const WaveMesh: React.FC = () => {
             <path
               key={i}
               d={d}
-              fill={w.color}
               style={{
+                fill: w.color,
                 animation: `waveFloat${i + 1} ${w.duration}s ease-in-out infinite`,
                 willChange: 'transform',
               }}
@@ -316,9 +316,10 @@ const HexGrid: React.FC = () => {
             key={i}
             points={hexPath(hex.cx, hex.cy, 18)}
             fill="none"
-            stroke="rgba(100,180,255,0.12)"
             strokeWidth={0.5}
             style={{
+              stroke: 'var(--theme-bg-effect-color-1)',
+              strokeOpacity: 0.4,
               animation: `hexPulse ${4 + Math.random() * 4}s ease-in-out infinite`,
               animationDelay: `${hex.pulseDelay}s`,
             }}

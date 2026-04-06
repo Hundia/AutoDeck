@@ -41,7 +41,7 @@ export default function TimelineSlide({ data }: SlideComponentProps<TimelineSlid
       {/* Vertical timeline */}
       <div className="relative">
         {/* Connecting line */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/50 via-purple-500/50 to-green-500/50" />
+        <div className="absolute left-6 top-0 bottom-0 w-0.5" style={{ background: 'var(--theme-gradient)', opacity: 0.5 }} />
 
         <div className="space-y-6">
           {data.steps.map((step, idx) => {

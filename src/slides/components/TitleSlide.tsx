@@ -42,8 +42,8 @@ export default function TitleSlide({ data }: SlideComponentProps<TitleSlideData>
       {ambientDots.map((dot, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full bg-blue-400/20 pointer-events-none"
-          style={{ left: dot.x, top: dot.y, width: dot.size, height: dot.size }}
+          className="absolute rounded-full pointer-events-none"
+          style={{ left: dot.x, top: dot.y, width: dot.size, height: dot.size, background: 'var(--theme-accent-primary)', opacity: 0.2 }}
           animate={{
             x: [0, dot.xRange, 0],
             y: [0, dot.yRange, 0],
@@ -61,11 +61,11 @@ export default function TitleSlide({ data }: SlideComponentProps<TitleSlideData>
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className="text-7xl sm:text-9xl font-black mb-6 tracking-tight"
           style={{
-            background: 'linear-gradient(135deg, #60a5fa 0%, #a78bfa 40%, #22d3ee 80%)',
+            background: 'linear-gradient(135deg, var(--theme-accent-primary) 0%, var(--theme-accent-secondary) 40%, var(--theme-accent-primary) 80%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            filter: 'drop-shadow(0 0 30px rgba(96,165,250,0.4))',
+            filter: 'drop-shadow(0 0 30px var(--theme-accent-glow))',
           }}
         >
           {data.title}
@@ -99,7 +99,8 @@ export default function TitleSlide({ data }: SlideComponentProps<TitleSlideData>
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 + i * 0.15, duration: 0.4, ease: 'easeOut' }}
-              className="text-2xl sm:text-3xl font-semibold text-cyan-300"
+              className="text-2xl sm:text-3xl font-semibold"
+              style={{ color: 'var(--theme-accent-secondary)' }}
             >
               {word}
             </motion.span>

@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-06 (Sprint 46 complete)
+**Last Updated:** 2026-04-06 (Sprint 47 closed)
 
 ---
 
@@ -683,3 +683,124 @@ The landing page describes AutoDeck's capabilities but never shows the actual pr
 | `specs/backlog.md` | Update | All 46.x → ✅ Done; header date |
 
 **Total: 25 points, 9 tickets**
+
+---
+
+## Sprint 47: Make AutoDeck Go Viral (48 pts)
+
+**Theme:** Virality infrastructure — a shareable meta-presentation at `#/meta`, a Share modal on every presentation, GitHub star counter, deploy buttons, "By the Numbers" stats section, OG image generation, an interactive branding link engine change, and a README prose upgrade to attract stars and forks.
+**Status:** ✅ Done
+**Date:** 2026-04-06
+
+### Problem Statement
+
+AutoDeck has 7 polished showcase presentations and a well-documented landing page, but no viral loop. Visitors cannot share a presentation link with a preview image — no Open Graph tags means blank social previews on Twitter/LinkedIn. There is no one-click deploy path for new users, and the landing page shows no social proof from the repo itself. The branding watermark in every presentation is plain static text with no action. Sprint 47 closes all four gaps: a `#/meta` deck serves as AutoDeck's own pitch page and OG-image source; a Share modal gives every deck a native share/embed flow; a GitHub star counter and deploy buttons anchor social credibility on the landing page; and the branding block becomes an interactive link backed by a typed `brandingUrl` field in `PresentationConfig`.
+
+### Phase 1: Meta Presentation (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.1 | **`slides-meta-en.ts` — AutoDeck pitch deck data** — Create `src/slides/data/slides-meta-en.ts`. 8 slides: (1) `title` — "AutoDeck" / tagline "AI-generated. Framework-ready. Open source." / badge "11 Sprints"; (2) `stats` — 4 counters: 10 slide types, 7 showcase decks, 3 themes, ~443 pts invested; (3) `content` — feature pillars (Framer Motion, RTL, Theme System, Creation Story); (4) `diagram` arch — App → PresentationViewer → SlideRegistry → SlideComponent, `autoEdges: true`; (5) `code` — SKILL.md generation recipe snippet, `language: 'bash'`, `filename: 'SKILL.md'`; (6) `comparison` — Manual slide building vs AutoDeck AI generation; (7) `timeline` — Sprint 39→46 milestones; (8) `closing` — GitHub link + "Build Your First Deck" CTA. Background: `particles`. Export `slidesMetaEN`. `npm run build` exits 0. | PM | sonnet | 5 | ✅ | — | `src/slides/data/slides-meta-en.ts` |
+| 47.2 | **`creation-story-meta.ts` — meta creation story data** — Create `src/slides/data/creation-story-meta.ts`. Export `metaCreationStory: CreationStory` with 6 prompts covering: deck concept, stats slide numbers, diagram layout, code snippet selection, comparison framing, closing CTA. `frameworkNotes` for Claude Code. `npm run build` exits 0. | PM | haiku | 2 | ✅ | 47.1 | `src/slides/data/creation-story-meta.ts` |
+| 47.3 | **Wire `#/meta` route in `App.tsx`** — Import `slidesMetaEN` and `metaCreationStory`. Define `metaConfig: PresentationConfig` (`title: 'AutoDeck'`, `background: 'particles'`, `branding: 'Built with AutoDeck'`, `brandingUrl: 'https://github.com/Hundia/AutoDeck'`). Add `<Route path="/meta">` with full `PresentationViewer` wiring. `npm run build` exits 0. | Frontend | haiku | 1 | ✅ | 47.1, 47.2 | `src/App.tsx` |
+
+### Phase 2: Branding Link Engine Change (6 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.4 | **`PresentationConfig.brandingUrl` + interactive branding block** — (a) In `src/engine/types.ts`, add `brandingUrl?: string` field to `PresentationConfig` after `branding?: string`. (b) In `src/engine/PresentationViewer.tsx`, replace the branding `<div>` with a conditional: if `creationStory` defined → `<button>` that calls `setDrawerOpen(true)`; else if `brandingUrl` defined → `<a href={brandingUrl} target="_blank" rel="noopener noreferrer">`; else → original `<div>`. All three share existing `fixed bottom-4 text-xs text-white/30` classes. (c) Update `docs/engine/README.md`: add `brandingUrl` to `PresentationConfig` fields table; add `### Branding Block` section documenting the three-state rendering logic. `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | — | `src/engine/types.ts`, `src/engine/PresentationViewer.tsx`, `docs/engine/README.md` |
+| 47.5 | **Add `brandingUrl` to all existing configs** — In `src/App.tsx` and `src/config.ts`, add `brandingUrl: 'https://github.com/Hundia/AutoDeck'` to every `PresentationConfig` object that has `branding: 'Built with AutoDeck'`. `npm run build` exits 0. | Frontend | haiku | 1 | ✅ | 47.4 | `src/App.tsx`, `src/config.ts` |
+
+### Phase 3: Share Modal (10 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.6 | **`ShareModal.tsx` — share and embed modal component** — Create `src/engine/ShareModal.tsx`. Props: `url: string`, `title: string`, `onClose: () => void`. Modal overlay `bg-black/60`, centered card `bg-slate-900 border border-white/10 rounded-2xl p-6 w-full max-w-md`. Three tabs: **Link** (copy-to-clipboard button for `url`, green checkmark 2s reset), **Embed** (`<textarea>` with `<iframe>` snippet; beneath: `text-xs text-white/40` note "Note: Embedding requires the presentation to be deployed on a non-GitHub-Pages host (GitHub Pages restricts iframe embedding)."), **Social** (X and LinkedIn share URL `window.open` buttons). Close on backdrop click and `Escape` key. Framer Motion `AnimatePresence` scale-in. No new npm deps. `npm run build` exits 0. | Frontend | sonnet | 6 | ✅ | — | `src/engine/ShareModal.tsx` |
+| 47.7 | **Wire Share button into `PresentationViewer.tsx`** — Add `shareOpen` state. Import and render `<ShareModal>` inside `<AnimatePresence>` when open. Add Share button (Lucide `Share2` icon, size 14) as rightmost control in the existing control cluster (same pill style). Pass `url={window.location.href}` and `title={config.title}`. While `shareOpen` is true, suppress arrow/space key slide advance (same guard as `drawerOpen`). `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 47.6 | `src/engine/PresentationViewer.tsx` |
+
+### Phase 4: GitHub Stars + Gallery Featured Card (8 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.8 | **`GalleryEntry.featured` + meta gallery card** — (a) In `src/landing/galleryConfig.ts`, extend `GalleryEntry` interface with `featured?: boolean`. Prepend entry `{ id: 'meta', title: 'AutoDeck — The Framework', slideCount: 8, route: '#/meta', thumbnail: 'meta.png', featured: true }`. (b) In `src/landing/GallerySection.tsx`, replace any `id === 'meta'` magic check with `entry.featured === true`; render the featured card with `ring-2 ring-blue-500` and a "★ Featured" badge (`absolute top-2 right-2`). `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 47.3 | `src/landing/galleryConfig.ts`, `src/landing/GallerySection.tsx` |
+| 47.9 | **`GitHubStarCounter.tsx` — live star count with cache** — Create `src/landing/GitHubStarCounter.tsx`. On mount, fetch `https://api.github.com/repos/Hundia/AutoDeck` for `stargazers_count`. localStorage cache with 1-hour TTL: key `autodeck-gh-stars`, value `{ count: number, ts: number }` — if `Date.now() - ts < 3_600_000` use cached value, else fetch and update. Render: Lucide `Star` icon (yellow) + animated count (Framer Motion spring from 0). Skeleton pulse while loading. Show `'—'` on fetch error. No new npm deps. `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | — | `src/landing/GitHubStarCounter.tsx` |
+
+### Phase 5: Landing Page Viral Sections (10 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.10 | **`ByTheNumbersSection`** — Add `ByTheNumbersSection` function to `src/landing/LandingPage.tsx`. Four stat cards `grid-cols-2 md:grid-cols-4`: (1) GitHub Stars → `<GitHubStarCounter />`; (2) "7 Showcase Decks"; (3) "10 Built-In Types"; (4) "443 pts invested". Framer Motion `whileInView` entrance. Insert between `<GallerySection />` and `<FooterSection />`. Import `GitHubStarCounter` from `./GitHubStarCounter`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 47.9 | `src/landing/LandingPage.tsx` |
+| 47.11 | **`DeployButtonsSection`** — Add `DeployButtonsSection` function to `src/landing/LandingPage.tsx`. Four buttons: Vercel (`https://vercel.com/new/clone?repository-url=https://github.com/Hundia/AutoDeck`), Netlify (`https://app.netlify.com/start/deploy?repository=https://github.com/Hundia/AutoDeck`), Stackblitz (`https://stackblitz.com/github/Hundia/AutoDeck`), Codespaces (`https://github.com/codespaces/new?repo=Hundia/AutoDeck`). Each shows platform name + Lucide icon. Insert between `<HowItWorksSection />` and `<QuickStartSection />`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | — | `src/landing/LandingPage.tsx` |
+| 47.12 | **README revamp** — Rewrite `README.md`: (1) badge row (build status, license, stars shields.io badge, demo link); (2) one-sentence tagline; (3) features bullet list; (4) Quick Start 3-command block; (5) deploy table (Vercel/Netlify/Stackblitz/Codespaces); (6) presentations table with all 8 routes including `#/meta`; (7) Contributing + License. `npm run build` exits 0. | PM | haiku | 2 | ✅ | 47.3 | `README.md` |
+
+### Phase 6: OG Image + Meta Thumbnail (5 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.13 | **Capture `meta.png` thumbnail** — Add `{ route: '#/meta', name: 'meta' }` to `PRESENTATIONS` array in `scripts/gallery-capture.js`. Run `npm run build && npm run preview`, then `npm run gallery:capture`. Verify `public/thumbnails/meta.png` exists and is > 1 KB (1440×900 — consistent with other 7 gallery thumbnails). Commit. `npm run build` exits 0. | QA | haiku | 2 | ✅ | 47.3 | `scripts/gallery-capture.js`, `public/thumbnails/meta.png` |
+| 47.14 | **`public/og-image.png` + OG meta tags** — Create `scripts/og-capture.js`: Playwright viewport 1200×630, navigate to `http://localhost:4173/AutoDeck/#/meta`, `waitForLoadState('networkidle')`, `waitForTimeout(2000)`, screenshot to `public/og-image.png`. Add `"og:capture": "node scripts/og-capture.js"` to `package.json`. Run script. In `index.html` add: `<meta property="og:image" content="/AutoDeck/og-image.png" />`, `<meta property="og:title" content="AutoDeck — AI-Powered Presentation Framework" />`, `<meta property="og:description" content="Build stunning animated presentations with React + Framer Motion + AI." />`. Commit `public/og-image.png`. `npm run build` exits 0. | DevOps | haiku | 3 | ✅ | 47.3 | `scripts/og-capture.js`, `public/og-image.png`, `index.html`, `package.json` |
+
+### Phase 7: QA + Docs + Close (7 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 47.15 | **E2E Playwright verification** — Write and run `e2e-sprint47.js`. Assertions: (1) `#/meta` loads, 8 slides, no JS errors; (2) branding block is `<a>` pointing to GitHub; (3) Share button present on `#/presentation`; (4) Share modal opens, shows 3 tabs; (5) Embed tab contains iframe limitation note text; (6) `#/` — ByTheNumbers section present (4 stat tiles); (7) DeployButtonsSection — Vercel link present; (8) meta gallery card has `ring-2` class; (9) `public/thumbnails/meta.png` exists (fs.existsSync); (10) zero JS console errors on all 8 routes. Screenshots to `e2e-screenshots/sprint-47/`. | QA | sonnet | 4 | ✅ | 47.8, 47.13, 47.7, 47.10, 47.11 | `e2e-sprint47.js` |
+| 47.16 | **Add TC-UI-10/11/12 to `specs/05_qa_lead.md`** — Append: `TC-UI-10 | #/meta | Meta presentation loads 8 slides, branding renders as <a> pointing to GitHub |`; `TC-UI-11 | Share modal | Share button visible, modal opens with Link/Embed/Social tabs, iframe note present in Embed tab |`; `TC-UI-12 | / ByTheNumbers + Deploy | 4 stat tiles present, Vercel deploy link present, GitHub counter renders or shows dash |`. | QA | haiku | 1 | ✅ | 47.15 | `specs/05_qa_lead.md` |
+| 47.17 | **Sprint close + docs** — Update `docs/landing/README.md`: add `### ByTheNumbersSection` and `### DeployButtonsSection` entries. Update `docs/engine/README.md`: add `### ShareModal` section. Write `sprints/sprint-47/summary.md`. Update `specs/backlog.md` all 47.x → ✅ Done, header `Last Updated`. Commit + push. | PM | haiku | 2 | ✅ | 47.16 | `docs/landing/README.md`, `docs/engine/README.md`, `sprints/sprint-47/summary.md`, `specs/backlog.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|----------------|
+| Build gate | `npm run build` exits 0, zero TypeScript errors |
+| `#/meta` loads | 8 slides, `particles` background, no JS errors |
+| Branding as `<a>` | When `brandingUrl` set, branding renders `<a>` not `<div>` |
+| Branding as `<button>` | When `creationStory` present, branding opens drawer |
+| Share button | Present on all 8 presentation routes |
+| Share modal opens | Scale-in animation, 3 tabs visible |
+| Link tab copy | URL copied, green checkmark, 2s reset |
+| Embed tab note | Iframe limitation note present |
+| Share modal Escape | Modal closes, slide unchanged |
+| Arrow keys suppressed | `→` does not advance slides while modal open |
+| GitHub stars | Counter renders or shows `'—'` on rate-limit error |
+| localStorage TTL | Second render within 1h skips fetch |
+| ByTheNumbers | 4 stat tiles present on landing page |
+| DeployButtons | All 4 platform deep-links present |
+| Featured gallery card | meta card has `ring-2 ring-blue-500` and "★ Featured" badge |
+| `meta.png` exists | `public/thumbnails/meta.png` > 1 KB, 1440×900 |
+| `og-image.png` exists | `public/og-image.png` > 1 KB, 1200×630 |
+| OG tags in index.html | `og:image`, `og:title`, `og:description` present |
+| TC-UI-10/11/12 added | `specs/05_qa_lead.md` contains 3 new rows |
+| README badges | Stars badge + live demo link present |
+| All 8 routes | Zero JS console errors |
+
+### Docs Impact
+
+| Doc File | Action | Description |
+|----------|--------|-------------|
+| `src/slides/data/slides-meta-en.ts` | Create | 8-slide AutoDeck meta presentation |
+| `src/slides/data/creation-story-meta.ts` | Create | `metaCreationStory` — 6 prompts |
+| `src/App.tsx` | Update | `#/meta` route + `brandingUrl` on all configs |
+| `src/config.ts` | Update | `brandingUrl` on main config |
+| `src/engine/types.ts` | Update | `brandingUrl?: string` in `PresentationConfig` |
+| `src/engine/PresentationViewer.tsx` | Update | Branding conditional + Share button + ShareModal |
+| `src/engine/ShareModal.tsx` | Create | Share/embed modal component |
+| `src/landing/galleryConfig.ts` | Update | `featured?: boolean` on `GalleryEntry`; meta entry |
+| `src/landing/GallerySection.tsx` | Update | Featured card ring + badge |
+| `src/landing/GitHubStarCounter.tsx` | Create | Live star count + localStorage cache |
+| `src/landing/LandingPage.tsx` | Update | `ByTheNumbersSection` + `DeployButtonsSection` |
+| `scripts/gallery-capture.js` | Update | Add meta to PRESENTATIONS array |
+| `scripts/og-capture.js` | Create | 1200×630 OG image capture |
+| `public/thumbnails/meta.png` | Create | 1440×900 gallery thumbnail |
+| `public/og-image.png` | Create | 1200×630 OG social preview |
+| `index.html` | Update | OG meta tags |
+| `package.json` | Update | `og:capture` script |
+| `README.md` | Update | Badges, tagline, deploy table, presentations table |
+| `docs/engine/README.md` | Update | `brandingUrl` docs + ShareModal section |
+| `docs/landing/README.md` | Update | ByTheNumbers + DeployButtons sections |
+| `specs/05_qa_lead.md` | Update | TC-UI-10, TC-UI-11, TC-UI-12 |
+| `e2e-sprint47.js` | Create | Sprint 47 E2E assertions |
+| `sprints/sprint-47/summary.md` | Create | Sprint close summary |
+| `specs/backlog.md` | Update | All 47.x → ✅ Done; header updated |
+
+**Total: 48 points, 17 tickets**
