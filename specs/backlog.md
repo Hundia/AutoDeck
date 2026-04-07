@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-06 (Sprint 47 closed)
+**Last Updated:** 2026-04-07
 
 ---
 
@@ -804,3 +804,64 @@ AutoDeck has 7 polished showcase presentations and a well-documented landing pag
 | `specs/backlog.md` | Update | All 47.x → ✅ Done; header updated |
 
 **Total: 48 points, 17 tickets**
+
+---
+
+## Sprint 48: UIMockup Depth + Sivania Light Theme (35 pts)
+
+**Goal:** Enrich `#/uimockup` slides 6–7 with scrollable depth (real sprint-backlog block, activity feed, scroll invite arrow), and rework the Sivania theme into a light admin look matching the actual Sivania admin dashboard (parchment #f5f3ed, cream cards, terracotta headings, sage accents).
+**Status:** ✅ Done
+**Date:** 2026-04-07
+
+### Phase 1: Foundation — Types + Sivania Tokens + Scroll Arrow (13 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 48.1 | **`types.ts` — extend `BlockType`** — Add `'sprint-backlog' \| 'activity-feed' \| 'quick-actions'` to the `BlockType` union (line 74 of `src/engine/types.ts`). `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | `src/engine/types.ts` |
+| 48.2 | **`index.css` — Sivania token rework** — Replace all 16 values in `[data-theme="sivania"]` block: `--theme-bg: #f5f3ed`, `--theme-surface: #faf9f5`, `--theme-surface-border: #d8d0ba`, `--theme-text-primary: #2c1f14`, `--theme-text-secondary: #8e6a59`, `--theme-accent-primary: #698472`, `--theme-accent-secondary: #8e6a59`, `--theme-accent-glow: rgba(105,132,114,0.25)`, `--theme-nav-bg: rgba(250,249,245,0.85)`, `--theme-nav-border: rgba(216,208,186,0.8)`, `--theme-dot-active: #698472`, keep `--theme-font-display`/`--theme-font-body` unchanged, `--theme-bg-effect-color-1: rgba(105,132,114,0.12)`, `--theme-bg-effect-color-2: rgba(216,208,186,0.25)`, `--theme-gradient: linear-gradient(to bottom, #698472, #8e6a59)`. | Frontend | haiku | 3 | ✅ | — | `src/index.css` |
+| 48.3 | **`index.css` + `MockupSlide.tsx` — scoped text override** — Add `mockup-slide` class to MockupSlide root div. Add scoped CSS: `[data-theme="sivania"] .mockup-slide h2/p` overrides + `[data-theme="sivania"] .mockup-chrome` light chrome. No root `.text-white` override. No `color-mix()`. | Frontend | sonnet | 4 | ✅ | 48.2 | `src/index.css`, `src/slides/components/MockupSlide.tsx` |
+| 48.4 | **`themes.ts` — rename label + previewColors + docs** — `label: 'Sivania Light'`, `previewColors: ['#698472','#8e6a59','#f5f3ed']`, keep `id: 'sivania'`. Add Sivania Light section to `docs/engine/README.md`. | PM | haiku | 2 | ✅ | 48.2 | `src/engine/themes.ts`, `docs/engine/README.md` |
+| 48.11 | **`PresentationViewer.tsx` — `hasScrolled` state + `onScroll`** — Add `hasScrolled` boolean state, reset on slide change, set true at `scrollTop > 100`. | Frontend | haiku | 2 | ✅ | — | `src/engine/PresentationViewer.tsx` |
+| 48.12 | **`PresentationViewer.tsx` — scroll invite arrow overlay** — Fixed overlay when `isScrollable && !hasScrolled`: ChevronDown bounce animation (y:[0,10,0]) + "scroll to explore" label. `data-testid="scroll-invite-arrow"`. AnimatePresence exit. | Frontend | sonnet | 5 | ✅ | 48.11 | `src/engine/PresentationViewer.tsx` |
+
+### Phase 2: MockupSlide Engine (12 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 48.5 | **`MockupSlide.tsx` — scrollable content div + `mockup-chrome` class** — Change browser content wrapper to `overflow-y-auto max-h-[420px]` when `data.scrollable`. Add `mockup-chrome` class to BrowserChrome outer div. | Frontend | haiku | 2 | ✅ | — | `src/slides/components/MockupSlide.tsx` |
+| 48.6 | **`MockupSlide.tsx` — `sprint-backlog` block renderer** — Two sprint sections (Sprint 48 active, Sprint 47 done) with section headers, table headers, 4 ticket rows each. grid-cols-[60px_1fr_90px_40px]. Status badges: done=green-100, in-progress=orange-100, todo=slate-100, blocked=red-100. Framer Motion stagger. | Frontend | sonnet | 5 | ✅ | 48.1, 48.5 | `src/slides/components/MockupSlide.tsx` |
+| 48.7 | **`MockupSlide.tsx` — `activity-feed` block renderer** — 5 rows: colored dot + action text + timestamp. Stagger animation. | Frontend | sonnet | 3 | ✅ | 48.1 | `src/slides/components/MockupSlide.tsx` |
+| 48.8 | **`MockupSlide.tsx` — `quick-actions` block renderer** — 4 pill buttons: "New Ticket", "Start Sprint", "Export Report", "Archive Sprint". Stagger. | Frontend | haiku | 2 | ✅ | 48.1 | `src/slides/components/MockupSlide.tsx` |
+
+### Phase 3: Slide Data Enrichment (4 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 48.9 | **Enrich slide 6 (Dashboard)** — Add `scrollable: true` + 3 blocks after existing 4: `activity-feed`, `chart-bar` (velocity), `quick-actions`. Update subtitle. | PM | haiku | 2 | ✅ | 48.5, 48.7, 48.8 | `src/slides/data/slides-uimockup-en.ts` |
+| 48.10 | **Enrich slide 7 (Backlog)** — Add `scrollable: true`. Replace blocks with `[navbar, sprint-backlog]`. Update subtitle. | PM | haiku | 2 | ✅ | 48.5, 48.6 | `src/slides/data/slides-uimockup-en.ts` |
+
+### Phase 4: QA + Docs + Close (6 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 48.13 | **E2E Playwright** — `e2e-sprint48.js`: 11 assertions covering scroll arrow, sprint-backlog rows, Sivania parchment bg, h2 readability, activity-feed/quick-actions, zero JS errors on all 9 routes. | QA | sonnet | 4 | ✅ | 48.3, 48.4, 48.9, 48.10, 48.12 | `e2e-sprint48.js` |
+| 48.14 | **TC-UI-13 to `specs/05_qa_lead.md`** | QA | haiku | 1 | ✅ | 48.13 | `specs/05_qa_lead.md` |
+| 48.15 | **Docs update** — `docs/slides/README.md` + `SKILL.md`: 3 new block types, `scrollable: true` note. | PM | haiku | 1 | ✅ | 48.14 | `docs/slides/README.md`, `SKILL.md` |
+| 48.16 | **Sprint close** — summary.md + backlog ✅ Done + commit + push. | PM | haiku | 2 | ✅ | 48.15 | `specs/backlog.md`, `sprints/sprint-48/summary.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|----------------|
+| Build gate | `npm run build` exits 0, zero TypeScript errors |
+| Scroll arrow present | `[data-testid="scroll-invite-arrow"]` in DOM on scrollable slide |
+| Arrow disappears | Hidden after `scrollTop > 100` |
+| Arrow resets | Reappears on slide re-entry |
+| `sprint-backlog` renders | Two sections, "AD-471" text in DOM |
+| Status badges | done=green, in-progress=orange, todo=slate, blocked=red |
+| `activity-feed` 5 rows | Timestamps visible after scroll |
+| `quick-actions` 4 pills | Buttons visible after scroll |
+| Sivania bg parchment | `--theme-bg: #f5f3ed` not `#1a1a1a` |
+| Scoped override only | No root `[data-theme="sivania"] .text-white` in `index.css` |
+| Theme label | Dropdown shows "Sivania Light" |
+| Regression | Zero JS errors on all 9 routes |

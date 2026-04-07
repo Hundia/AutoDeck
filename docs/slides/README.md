@@ -76,7 +76,13 @@ Modes:
 }
 ```
 
-Available block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`, `image`.
+Available block types: `navbar`, `hero`, `card-grid`, `table`, `form`, `chart-bar`, `sidebar`, `text-block`, `image`, `sprint-backlog`, `activity-feed`, `quick-actions`.
+
+| Block type | Renders as |
+|-----------|-----------|
+| `sprint-backlog` | 2-sprint table with ticket rows, section headers, and status badges (done/in-progress/todo/blocked) |
+| `activity-feed` | 5-row activity log with colored dot, action text, and timestamp |
+| `quick-actions` | 4 pill buttons: "New Ticket", "Start Sprint", "Export Report", "Archive Sprint" |
 
 The `image` block renders a real image from a URL. Fields: `src` (required), `alt` (required), `caption?`, `aspectRatio?` (`'16/9'` | `'4/3'` | `'square'`).
 

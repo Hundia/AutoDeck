@@ -95,6 +95,11 @@ export const slideComponents = {
 | `sidebar` | Left nav rail + content | — |
 | `text-block` | Skeleton text lines | — |
 | `image` | Real image from URL | `src` (required), `alt` (required), `caption?`, `aspectRatio?` (`'16/9'`\|`'4/3'`\|`'square'`) |
+| `sprint-backlog` | 2-sprint table with ticket rows, section headers, and status badges (done/in-progress/todo/blocked) | — |
+| `activity-feed` | 5-row activity log with colored dot, action text, and timestamp | — |
+| `quick-actions` | 4 pill buttons: "New Ticket", "Start Sprint", "Export Report", "Archive Sprint" | — |
+
+> **`scrollable: true`** on `mockup` slides enables internal overflow scroll (max-h-[420px]) within the browser chrome. New block types: `sprint-backlog` (2-sprint table with ticket rows), `activity-feed` (5-row activity log), `quick-actions` (4 pill buttons).
 
 > ⚠️ **`src` must be a publicly accessible URL.**
 > - ✅ `https://images.unsplash.com/photo-abc?w=800` (public CDN)
