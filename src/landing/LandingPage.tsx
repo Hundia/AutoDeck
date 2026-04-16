@@ -12,6 +12,7 @@ import {
   Terminal,
   ExternalLink,
   BookOpen,
+  Pencil,
 } from 'lucide-react';
 
 // ─── Animation helpers ───────────────────────────────────────────────────────
@@ -249,6 +250,13 @@ const features = [
     border: 'border-pink-500/20',
     title: 'Zero Config',
     desc: 'React 18 + Vite + Tailwind. Clone and start in 30 seconds.',
+  },
+  {
+    icon: Pencil,
+    color: 'text-orange-400',
+    border: 'border-orange-500/20',
+    title: 'Edit Mode & LLM Notes',
+    desc: 'Toggle Edit Mode to annotate slides in-browser. Export notes as markdown and paste into /apply-slide-notes for batch AI edits.',
   },
 ];
 

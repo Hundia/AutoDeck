@@ -15,6 +15,7 @@
 - **3 runtime themes** — Aurora (blue-violet), Sivania (sage-terracotta), Noir (monochrome-cyan) — switchable live
 - **Framer Motion animations** — stagger, scroll-triggered, spring physics, word-by-word reveals
 - **Creation Story drawer** — every presentation ships with an AI creation narrative
+- **Edit Mode + LLM Notes** — developer workspace with per-slide annotations; export as markdown and apply via `/apply-slide-notes`
 - **Multi-language + RTL** — Hebrew, Arabic, Farsi, Urdu auto-detected and layout-mirrored
 - **Zero backend** — pure static React, deploy anywhere in under 2 minutes
 - **GitHub Pages CI/CD** — push to `main` → auto-deploy via GitHub Actions
@@ -93,6 +94,36 @@ The AI understands all 10 slide types, animations, multi-language patterns, and 
 
 ---
 
+## Edit Mode & LLM Notes
+
+AutoDeck's `PresentationViewer` has two distinct experiences:
+
+- **Live Mode** (default) — a clean, viewer-safe surface. Only the Share button and the Edit toggle are visible; theme, background, and language controls are absent from the DOM.
+- **Edit Mode** — a developer workspace that reveals all controls (theme, background, language, creation-story) plus a per-slide **Notes** panel.
+
+**Toggle:** click the Eye/Pencil pill in the top-right cluster, or press `E` anywhere in the viewer.
+
+**Slide Notes** are freeform text annotations persisted in `localStorage` per deck. They are designed as a structured LLM handoff: capture feedback while reviewing a deck, then export it all as a markdown blob and apply it in one batch.
+
+**LLM handoff workflow:**
+
+1. In Edit Mode, add notes to individual slides as you review the deck.
+2. Open the Notes panel and click **Export Notes for LLM** — copy to clipboard or download as `slide-notes.md`.
+3. In Claude Code, run `/apply-slide-notes` and paste the markdown blob; the skill proposes an edit per note and asks for confirmation before writing.
+
+**Opt-out for shared/production decks:** set `editModeEnabled: false` on `PresentationConfig` to remove the Edit toggle entirely — even a direct `localStorage` write cannot activate Edit Mode in that session.
+
+```typescript
+const config: PresentationConfig = {
+  title: 'Q3 Investor Deck',
+  editModeEnabled: false,   // Edit toggle hidden from all viewers
+}
+```
+
+Full guide: [`docs/engine/edit-mode.md`](docs/engine/edit-mode.md)
+
+---
+
 ## Contributing
 
 PRs are welcome. Whether it's a new slide type, a fourth theme, a fix, or an example presentation — open an issue or submit a pull request. See `CLAUDE.md` for the Spec-Driven Development workflow used in this project.
@@ -105,4 +136,4 @@ MIT — use it for any talk, conference, or demo.
 
 ---
 
-*Extracted from [AutoSpec](https://github.com/Hundia/autospec) — built across sprints 10–47.*
+*Extracted from [AutoSpec](https://github.com/Hundia/autospec) — built across sprints 10–49.*
