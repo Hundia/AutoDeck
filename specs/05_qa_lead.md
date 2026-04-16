@@ -35,6 +35,8 @@
 | TC-UI-11 | Share modal | Share button visible on all routes, modal opens with Link/Embed/Social tabs, iframe note present in Embed tab (data-testid="share-embed-note") |
 | TC-UI-12 | / ByTheNumbers + Deploy | 4 stat tiles present (GitHub Stars, Showcase Decks, Slide Types, Sprint Points), Deploy to Vercel link present, GitHubStarCounter renders or shows dash |
 | TC-UI-13 | #/uimockup slides 6-7 + Sivania Light | scroll-invite arrow present then hidden after scroll; sprint-backlog renders ticket rows with status badges; Sivania Light bg is parchment not near-black; h2 color readable on parchment; activity-feed and quick-actions visible after scroll |
+| TC-UI-14 | Edit Mode | Toggle hides/reveals theme+bg+lang+creation-story, EDIT MODE pill visible, E key works outside textareas |
+| TC-UI-15 | Slide Notes | Add/delete note persists in localStorage, count badge accurate, Export copies markdown with slide headers, deck isolation holds across routes |
 
 ## QA Rules
 - No ticket is ✅ Done without relevant test passing

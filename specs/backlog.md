@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-04-17
 
 ---
 
@@ -865,3 +865,150 @@ AutoDeck has 7 polished showcase presentations and a well-documented landing pag
 | Scoped override only | No root `[data-theme="sivania"] .text-white` in `index.css` |
 | Theme label | Dropdown shows "Sivania Light" |
 | Regression | Zero JS errors on all 9 routes |
+
+---
+
+## Sprint 49: Edit Mode + LLM Notes (49 pts)
+
+**Goal:** Split the PresentationViewer into a clean **Live Mode** and a developer-only **Edit Mode**. In Edit Mode, reveal all existing controls (theme, background, language, creation story) plus a NEW per-slide **Notes** feature — free-text annotations scoped to the current slide, persisted in localStorage, exportable as a single markdown blob that a future `/apply-slide-notes` skill can action.
+**Status:** ✅ Done
+**Date:** 2026-04-16
+
+### Problem Statement
+
+AutoDeck's current viewer surfaces every developer control (theme dropdown, background picker, language switcher, creation-story drawer) to every viewer of a shared deck. Iteration is also painful: when a developer spots a typo or wants a structural change, they must context-switch back to Claude Code and dictate it ("on slide 7, change the title to X and add a metric"). Sprint 49 closes both gaps. A Live/Edit toggle hides chrome from end-users in Live mode, and per-slide Notes give developers a structured way to capture edit intent in the moment — later replayable via a one-shot LLM export.
+
+### User Stories
+
+- As a **solo developer** preparing for a demo, I want to jot notes on individual slides while reviewing, so I can batch-apply them later without re-opening Claude Code.
+- As a **developer sharing a deck**, I want Live Mode to hide all editing controls, so viewers see only the clean presentation.
+- As a **team PM reviewing a contributor's deck**, I want to export all my notes as markdown, so an engineer can paste them into Claude Code and batch-execute the edits.
+- As a **developer switching themes mid-review**, I want theme/background/language controls available in Edit Mode, so I can tune the deck without leaving the viewer.
+
+### Technical Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Mode state storage | `useState` + `localStorage` key `autodeck-edit-mode` | No URL param — prevents accidental `?edit=1` leaks on share |
+| Notes storage | `localStorage` key `autodeck-notes-{routeSegment}` — one JSON array per deck | Keeps decks isolated; matches existing theme/language localStorage pattern |
+| Note identity | `slideIndex: number` (0-indexed) | Slides have no `id` field today; migrating to slideIds is out of scope and deferred |
+| LLM handoff | Primary: "Copy as Markdown" button to clipboard. Fallback: future `/apply-slide-notes` skill reads a JSON file committed to repo | React can't write to FS; clipboard is the zero-friction path |
+| Live-mode hiding | Edit-only controls render **nothing** in Live mode (not `hidden`, not disabled) | Prevents UI flash and keeps shared decks clean |
+| Opt-out for shared decks | New `editModeEnabled?: boolean` on `PresentationConfig` (default `true`) | Lets production-only configs hard-disable Edit toggle |
+| Toggle keyboard shortcut | `E` | `E` not currently bound in `PresentationViewer` keyhandler (verified) |
+| Panel animation | Framer Motion spring (`stiffness: 300, damping: 30`) matching `CreationStoryDrawer` | Consistency with existing drawer UX |
+
+### Schema Changes
+
+None (file-based project, no database).
+
+### Phase 1: Foundation — Types, Storage, Hook (10 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.1 | **`types.ts` — `SlideNote` + `editModeEnabled`** — Add `export interface SlideNote { id: string; slideIndex: number; text: string; createdAt: string; status: 'open' \| 'applied' \| 'dismissed'; }`. Add `editModeEnabled?: boolean` (default true) to `PresentationConfig` after `brandingUrl?`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | `src/engine/types.ts` |
+| 49.2 | **`editMode/notes.ts` — localStorage CRUD** — Create `src/engine/editMode/notes.ts`. Export pure functions: `getNotes(deckId)`, `getNotesForSlide(deckId, idx)`, `addNote(deckId, idx, text)` → returns new `SlideNote`, `updateNote(deckId, id, patch)`, `deleteNote(deckId, id)`, `clearAllNotes(deckId)`, `exportAsMarkdown(deckId, slides)` → markdown blob (header + one `## Slide {n}: {title}` section per slide that has notes, bullets with status pill). UUIDs via `crypto.randomUUID()`. Key pattern: `autodeck-notes-{deckId}`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 49.1 | `src/engine/editMode/notes.ts` |
+| 49.3 | **`useEditMode` hook** — Create `src/engine/editMode/useEditMode.ts`. Returns `{ editMode, setEditMode, toggle }`. Reads/writes `localStorage.autodeck-edit-mode`. Respects `config.editModeEnabled === false` (forces `editMode = false`, `setEditMode` becomes no-op). `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | 49.1 | `src/engine/editMode/useEditMode.ts` |
+| 49.4 | **Derive `deckId` from route** — In `PresentationViewer.tsx`, derive `deckId` from `useLocation().pathname` (first segment after `/`, e.g. `presentation`, `meta`, `techbrief`). Fallback `'default'`. Memoize. No UI change yet. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | — | `src/engine/PresentationViewer.tsx` |
+
+### Phase 2: Live/Edit Toggle + Visual Signal (9 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.5 | **`EditModeToggle.tsx`** — Create `src/engine/editMode/EditModeToggle.tsx`. Props `{ editMode, onToggle }`. Pill button matching existing cluster style (`bg-white/5 border border-white/10 rounded-full px-3 py-1.5`). Icons: Lucide `Eye` (Live) ↔ `Pencil` (Edit). Label `Live` / `Edit`. When `editMode`, border uses `var(--theme-accent-primary)` at 50% opacity and icon gets `drop-shadow` accent glow. `data-testid="edit-mode-toggle"`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 49.3 | `src/engine/editMode/EditModeToggle.tsx` |
+| 49.6 | **Wire toggle into `PresentationViewer`** — Import `useEditMode` + `EditModeToggle`. Place toggle as rightmost item in the top control cluster (after Share). Hide the toggle entirely when `config.editModeEnabled === false`. Suppress arrow/space advance when a new `notesPanelOpen` state is true (add the state even if unused this ticket — used in Phase 3). `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 49.5 | `src/engine/PresentationViewer.tsx` |
+| 49.7 | **"EDIT MODE" pill + keyboard `E`** — When `editMode` is true, render a fixed bottom-left pill: Lucide `Pencil` size 12 + text "EDIT MODE", classes `fixed bottom-4 left-4 z-40 px-3 py-1.5 bg-white/5 border rounded-full text-xs`, border color `var(--theme-accent-primary)`, text color `var(--theme-accent-primary)`. `data-testid="edit-mode-pill"`. Add `E` keybinding in the viewer's existing keyhandler — toggles edit mode, guarded by: not inside `<input>`/`<textarea>`, not when ShareModal/NotesPanel/Drawer open. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 49.6 | `src/engine/PresentationViewer.tsx` |
+
+### Phase 3: Edit-Mode-Only Controls (7 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.8 | **Gate theme/background/language/creation-story behind `editMode`** — In `PresentationViewer.tsx`, wrap the existing theme dropdown, background dropdown, language dropdown, and creation-story pill button in `{editMode && (...)}`. Share button and Edit toggle remain in Live mode. No changes to component internals. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 49.6 | `src/engine/PresentationViewer.tsx` |
+| 49.9 | **Live-mode smoke check** — Add `data-testid="control-cluster-live"` and `data-testid="control-cluster-edit"` on the respective wrappers so the E2E can assert live-mode cluster contains only Share + Toggle while edit-mode adds theme/bg/lang/creation-story. Also add a "Share in Live Mode only" note to the ShareModal body (`text-xs text-white/40`): "Shared links always open in Live Mode." No behavior change. `npm run build` exits 0. | Frontend | haiku | 3 | ✅ | 49.8 | `src/engine/PresentationViewer.tsx`, `src/engine/ShareModal.tsx` |
+
+### Phase 4: Slide Notes Panel (15 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.10 | **`NoteCard.tsx`** — Create `src/engine/editMode/NoteCard.tsx`. Props `{ note, onDelete, onStatusChange }`. Layout: note text (whitespace-pre-wrap, max 6 lines with scroll), status pill (`open`=amber, `applied`=sage, `dismissed`=slate), relative timestamp ("2 min ago" via simple helper), Lucide `Trash2` delete button. Uses theme tokens: `bg-[var(--theme-surface)]`, `border-[var(--theme-surface-border)]`, `text-[var(--theme-text-primary)]`. `data-testid="note-card-{id}"`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 49.2 | `src/engine/editMode/NoteCard.tsx` |
+| 49.11 | **`NoteEditor.tsx`** — Create `src/engine/editMode/NoteEditor.tsx`. Props `{ onSave, onCancel, initialText? }`. Textarea with 500-char soft limit (counter turns amber at 400, red at 500 but does not block), auto-focus on mount, Cmd/Ctrl+Enter = save, Escape = cancel. Primary + secondary buttons. `data-testid="note-editor"`, `data-testid="note-editor-textarea"`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | — | `src/engine/editMode/NoteEditor.tsx` |
+| 49.12 | **`SlideNotesPanel.tsx`** — Create `src/engine/editMode/SlideNotesPanel.tsx`. Right-side drawer (RTL flips to left), width 320px, full height, `z-50`. Framer Motion spring `{ stiffness: 300, damping: 30 }`. Header: "Notes" title, subtitle `Slide {currentIndex + 1} of {total} • {count} notes`, close [X]. Body: `<NoteEditor>` (when `isAdding`) + `<NoteCard>` list for current slide (newest first) + empty state "No notes on this slide yet." Sticky footer: "Add Note" button (when not editing) + "Export All" button + "Clear All for this Deck" link (red hover, confirm dialog). Escape closes panel. `data-testid="notes-panel"`. Uses `getNotesForSlide`/`addNote`/`deleteNote` from `notes.ts`. `npm run build` exits 0. | Frontend | sonnet | 5 | ✅ | 49.2, 49.10, 49.11 | `src/engine/editMode/SlideNotesPanel.tsx` |
+| 49.13 | **Wire Notes button + panel into `PresentationViewer`** — Add Lucide `StickyNote` button to the edit-mode-only cluster (between language and creation-story). Show total-notes-for-deck count as a superscript badge (`bg-amber-500 text-white rounded-full text-[10px] px-1.5`) when count > 0. Clicking opens `<SlideNotesPanel>` via `AnimatePresence`. `notesPanelOpen` state (already added in 49.6) now controls visibility. Suppress arrow/space/E keys while panel open. `data-testid="notes-button"`, `data-testid="notes-count-badge"`. `npm run build` exits 0. | Frontend | sonnet | 4 | ✅ | 49.8, 49.12 | `src/engine/PresentationViewer.tsx` |
+
+### Phase 5: LLM Handoff (5 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.14 | **`NotesExportModal.tsx`** — Create `src/engine/editMode/NotesExportModal.tsx`. Triggered by "Export All" in SlideNotesPanel. Modal overlay matching `ShareModal.tsx` style. Body: read-only `<textarea>` (monospace, 14 rows, `readOnly`) preloaded with `exportAsMarkdown(deckId, slides)`. "Copy to Clipboard" button → `navigator.clipboard.writeText` + green "Copied ✓" 2s reset. "Download as `slide-notes.md`" secondary button → Blob + `URL.createObjectURL` + `<a download>`. Friendly empty state when no notes: "No notes to export — your deck is all set." Escape + backdrop close. `data-testid="notes-export-modal"`. `npm run build` exits 0. | Frontend | sonnet | 3 | ✅ | 49.2, 49.12 | `src/engine/editMode/NotesExportModal.tsx` |
+| 49.15 | **`.claude/commands/apply-slide-notes.md` skill skeleton** — Create `.claude/commands/apply-slide-notes.md`. Workflow: (1) read clipboard or argument text (markdown blob from Export modal); (2) parse `## Slide {n}: {title}` + bullets; (3) locate deck file via `src/slides/data/slides-{name}-{lang}.ts` (ask user if ambiguous); (4) for each note, propose an Edit, show diff, ask confirmation; (5) mark notes as `applied` in localStorage (dev pastes updated blob back). MVP scope: parses + proposes edits, does NOT auto-write. Add to `/help` skill's listing. | PM | haiku | 2 | ✅ | 49.14 | `.claude/commands/apply-slide-notes.md`, `.claude/commands/help.md` |
+
+### Phase 6: i18n, QA, Docs, Close (3 pts)
+
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 49.16 | **E2E Playwright `e2e-sprint49.js`** — 14 assertions on `#/presentation` with zero JS errors: (1) Live mode default — only Share + Edit toggle visible in cluster; (2) theme/bg/lang NOT in Live DOM; (3) click toggle → edit mode; (4) EDIT MODE pill appears bottom-left; (5) theme + bg + lang + creation-story + notes buttons appear; (6) `E` key toggles mode (when not in textarea); (7) click Notes → panel opens from right; (8) Add Note → type → save → card appears; (9) count badge shows "1"; (10) navigate to next slide → panel shows 0 notes for that slide; (11) Export → modal opens → Copy → clipboard contains markdown with "Slide 1:" header; (12) refresh page → edit mode persists, notes persist; (13) navigate to `#/meta` → notes for `presentation` deck NOT shown (deck isolation); (14) verify Sivania theme: note-card text readable (parent resolves to `--theme-text-primary`). Screenshots to `e2e-screenshots/sprint-49/`. | QA | sonnet | 4 | ✅ | 49.13, 49.14 | `e2e-sprint49.js` |
+| 49.17 | **Sivania contrast hardening** — 49.16 assertion 14 passed on first run: note-card text in Sivania resolved to `rgb(44, 31, 20)` (≈#2c1f14) on parchment `#f5f3ed` — legible without override. No change to `src/index.css`. | Frontend | haiku | 1 | ✅ | 49.16 | `src/index.css` |
+| 49.18 | **i18n keys (en + he)** — Because AutoDeck uses per-language slide data files (not a string catalog), i18n for Edit Mode UI is handled via a minimal `editModeStrings` map inline in `src/engine/editMode/strings.ts`: 12 keys (`toggle-live`, `toggle-edit`, `mode-pill`, `notes-title`, `notes-slide-label`, `notes-count-suffix`, `add-note`, `empty-state`, `export-all`, `clear-all`, `export-copied`, `export-empty`). Provide `en` + `he` (RTL) values. Components import the map and select via current `lang`. `npm run build` exits 0. | Frontend | haiku | 2 | ✅ | 49.12 | `src/engine/editMode/strings.ts` |
+| 49.19 | **Docs + sprint close** — Create `docs/engine/edit-mode.md` (mode toggle, notes data model, localStorage keys, export format sample, `editModeEnabled` config flag, `E` keybinding, known limits — slideIndex not slideId, single-browser). Add "Edit Mode" section to `docs/engine/README.md`. Update `CLAUDE.md` "Current Sprint" to Sprint 49. Append `TC-UI-14` + `TC-UI-15` to `specs/05_qa_lead.md` (`TC-UI-14 \| Edit Mode \| Toggle hides/reveals theme+bg+lang+creation-story, EDIT MODE pill visible, E key works outside textareas`; `TC-UI-15 \| Slide Notes \| Add/delete note persists in localStorage, count badge accurate, Export copies markdown with slide headers, deck isolation holds across routes`). Write `sprints/sprint-49/summary.md`. Mark all 49.x → ✅ Done in backlog; update `Last Updated`. Commit + push. | PM | haiku | 2 | ✅ | 49.17, 49.18 | `docs/engine/edit-mode.md`, `docs/engine/README.md`, `CLAUDE.md`, `specs/05_qa_lead.md`, `sprints/sprint-49/summary.md`, `specs/backlog.md` |
+
+### QA Plan
+
+| Test | Pass Condition |
+|------|----------------|
+| Build gate | `npm run build` exits 0, zero TS errors |
+| Live mode default | First load on clean localStorage → Live mode, Edit toggle visible, theme/bg/lang/creation-story NOT in DOM |
+| Toggle → Edit | Click toggle → icon flips to Pencil, EDIT MODE pill bottom-left, edit controls appear |
+| `E` keybinding | `E` outside inputs toggles mode; `E` inside `<textarea>` types 'e' |
+| Notes button | Shown only in Edit mode; count badge accurate per deck |
+| Notes panel open | Spring slide-in from right (LTR) / left (RTL); closes on Escape + backdrop |
+| Add note | Text persists across page refresh; card visible on correct slide only |
+| Delete note | Card removed, localStorage updated, count badge decrements |
+| Navigate slides | Notes panel shows only current-slide notes; slide 2 has 0 when slide 1 has 2 |
+| Clear all | Confirmation dialog; removes all notes for deckId |
+| Export markdown | Clipboard contains `## Slide {n}` headers; empty state when 0 notes |
+| Deck isolation | Notes on `#/presentation` invisible on `#/meta` (different localStorage keys) |
+| `editModeEnabled: false` | Toggle hidden; editMode forced false; Notes panel unreachable |
+| Share modal note | "Shared links always open in Live Mode" copy present |
+| Sivania contrast | NoteCard text legible on parchment bg (WCAG AA 4.5:1) |
+| Regression | Zero JS errors on all 8 existing decks (`#/presentation`, `#/meta`, `#/techbrief`, `#/ferric`, `#/uimockup`, plus 3 others) |
+| RTL Hebrew | Panel slides in from left; export markdown unchanged (neutral ASCII) |
+
+### Docs Impact
+
+| Doc File | Action | Description |
+|----------|--------|-------------|
+| `src/engine/types.ts` | Update | `SlideNote` interface + `editModeEnabled?` on `PresentationConfig` |
+| `src/engine/editMode/notes.ts` | Create | localStorage CRUD + markdown export |
+| `src/engine/editMode/useEditMode.ts` | Create | Mode hook with config opt-out |
+| `src/engine/editMode/EditModeToggle.tsx` | Create | Live/Edit pill button |
+| `src/engine/editMode/NoteCard.tsx` | Create | Single note render |
+| `src/engine/editMode/NoteEditor.tsx` | Create | Note add/edit textarea |
+| `src/engine/editMode/SlideNotesPanel.tsx` | Create | Right-side drawer |
+| `src/engine/editMode/NotesExportModal.tsx` | Create | Markdown export modal |
+| `src/engine/editMode/strings.ts` | Create | en + he UI strings |
+| `src/engine/PresentationViewer.tsx` | Update | Mode gating, toggle wiring, panel + pill, `E` key, deckId derivation |
+| `src/engine/ShareModal.tsx` | Update | Add "always open in Live Mode" note |
+| `src/index.css` | Update (conditional) | Sivania `.note-card` contrast override if needed |
+| `.claude/commands/apply-slide-notes.md` | Create | Skill skeleton — parse export blob, propose edits |
+| `.claude/commands/help.md` | Update | List new skill |
+| `docs/engine/edit-mode.md` | Create | Feature guide + data model + known limits |
+| `docs/engine/README.md` | Update | Link to edit-mode.md, mention `editModeEnabled` config |
+| `CLAUDE.md` | Update | Current sprint → 49 |
+| `specs/05_qa_lead.md` | Update | TC-UI-14, TC-UI-15 |
+| `e2e-sprint49.js` | Create | 14 assertions |
+| `sprints/sprint-49/summary.md` | Create | Sprint close summary |
+| `specs/backlog.md` | Update | 49.x → ✅ Done, Last Updated |
+
+### i18n
+
+12 new strings in `src/engine/editMode/strings.ts` (en + he). Slide content itself unchanged.
+
+### Out of Scope (deferred to later sprints)
+
+- Migrating slide identity from `slideIndex` → `slideId` (requires touching every `slides-*.ts` file — separate sprint)
+- Multi-user collaborative notes (requires server)
+- JSON export/import of notes across devices
+- Auto-apply: skill edits slide files without human diff review
+- Email/Slack digest of pending notes
+
+**Total: 49 points, 19 tickets**

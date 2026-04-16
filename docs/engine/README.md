@@ -41,6 +41,21 @@ const config: PresentationConfig = {
 | `brandingUrl` | `string?` | URL to navigate to when branding is clicked (used only when no `creationStory` is present) |
 | `keyboardHint` | `Record<string, string>?` | Per-language keyboard navigation hint |
 
+### Sivania Light Theme
+
+Light admin aesthetic — parchment background, Cormorant Garamond display font, sage+terracotta palette.
+
+| Token | Value |
+|-------|-------|
+| `--theme-bg` | `#f5f3ed` (parchment) |
+| `--theme-surface` | `#faf9f5` (cream) |
+| `--theme-text-primary` | `#2c1f14` (dark brown) |
+| `--theme-accent-primary` | `#698472` (sage green) |
+| `--theme-accent-secondary` | `#8e6a59` (terracotta) |
+| `--theme-font-display` | Cormorant Garamond, serif |
+
+Note: MockupSlide components use the `.mockup-slide` scoped CSS class to ensure h2/p text is readable on the light background — see `[data-theme="sivania"] .mockup-slide` in index.css
+
 ### Branding Block
 
 The branding element in the bottom-left corner has three rendering states, resolved in priority order:
@@ -50,6 +65,12 @@ The branding element in the bottom-left corner has three rendering states, resol
 3. **Neither** — renders as a plain `<div>` (no interactivity).
 
 All three states share the same positioning class (`fixed bottom-4 left-4`, or `right-4` in RTL) and base style (`text-xs text-white/30`). The interactive states add `hover:text-white/60 transition-colors`.
+
+## Edit Mode
+
+AutoDeck ships a **Live/Edit Mode** toggle that hides developer controls (theme, background, language, creation story, notes) from shared viewers while giving solo developers a persistent workspace for jotting per-slide notes and exporting them as a markdown blob for LLM batch-application.
+
+See [edit-mode.md](edit-mode.md) for the full feature guide: mode toggle, `editModeEnabled` config flag, `SlideNote` data model, localStorage key naming, export format, `/apply-slide-notes` skill handoff, and known limitations.
 
 ## BackgroundEffects
 

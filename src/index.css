@@ -151,22 +151,35 @@ button, a {
 }
 
 [data-theme="sivania"] {
-  --theme-bg: #1a1a1a;
-  --theme-surface: #252525;
-  --theme-surface-border: #333333;
-  --theme-text-primary: #f5f0e8;
-  --theme-text-secondary: #9a8c7e;
+  --theme-bg: #f5f3ed;
+  --theme-surface: #faf9f5;
+  --theme-surface-border: #d8d0ba;
+  --theme-text-primary: #2c1f14;
+  --theme-text-secondary: #8e6a59;
   --theme-accent-primary: #698472;
   --theme-accent-secondary: #8e6a59;
-  --theme-accent-glow: rgba(105,132,114,0.3);
-  --theme-nav-bg: rgba(105,132,114,0.15);
-  --theme-nav-border: rgba(105,132,114,0.2);
+  --theme-accent-glow: rgba(105,132,114,0.25);
+  --theme-nav-bg: rgba(250,249,245,0.85);
+  --theme-nav-border: rgba(216,208,186,0.8);
   --theme-dot-active: #698472;
   --theme-font-display: 'Cormorant Garamond', serif;
   --theme-font-body: 'Inter', sans-serif;
-  --theme-bg-effect-color-1: rgba(105,132,114,0.2);
-  --theme-bg-effect-color-2: rgba(142,106,89,0.15);
+  --theme-bg-effect-color-1: rgba(105,132,114,0.12);
+  --theme-bg-effect-color-2: rgba(216,208,186,0.25);
   --theme-gradient: linear-gradient(to bottom, #698472, #8e6a59);
+}
+
+/* Sivania Light — MockupSlide readability overrides */
+[data-theme="sivania"] .mockup-slide h2 {
+  color: rgba(44, 31, 20, 1);
+}
+
+[data-theme="sivania"] .mockup-slide p {
+  color: rgba(142, 106, 89, 0.85);
+}
+
+[data-theme="sivania"] .mockup-chrome {
+  background: #e8e4da !important;
 }
 
 [data-theme="noir"] {

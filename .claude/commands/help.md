@@ -20,6 +20,7 @@ When this command is invoked, display the following:
 ### Ticket Operations
 | Command | Description |
 |---------|-------------|
+| `/apply-slide-notes` | Parse an Edit Mode notes export and propose edits to slide data files |
 | `/execute-ticket X.Y` | Execute a single ticket with QA + docs update |
 | `/qa-review X.Y` | QA review a completed ticket or sprint |
 | `/update-backlog [action]` | Add/update tickets, link docs, report bugs |

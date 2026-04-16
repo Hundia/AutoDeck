@@ -216,4 +216,4 @@ RTL is auto-detected for `he`, `ar`, `fa`, `ur` — layout mirrors, keyboard nav
 
 ## Current Sprint
 
-Sprint 39 is complete (April 2, 2026 — landing page, SDD bootstrap, GitHub Pages deploy). See `specs/backlog.md` for Sprint 40 planning.
+Sprint 49 is complete (April 17, 2026 — Edit Mode toggle, Slide Notes for LLM, `editModeEnabled` config flag, `/apply-slide-notes` skill). See `docs/engine/edit-mode.md`. See `specs/backlog.md` for Sprint 50 planning.

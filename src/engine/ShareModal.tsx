@@ -104,6 +104,7 @@ export default function ShareModal({ url, title, onClose }: ShareModalProps) {
               >
                 {linkCopied ? 'Copied ✓' : 'Copy Link'}
               </button>
+              <p className="text-xs text-white/40 mt-2">Shared links always open in Live Mode.</p>
             </div>
           )}
 

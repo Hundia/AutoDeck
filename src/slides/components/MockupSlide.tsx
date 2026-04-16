@@ -213,6 +213,144 @@ function renderBlock(block: MockupBlock, index: number) {
       );
     }
 
+    case 'activity-feed': {
+  const activities = [
+    { dot: 'bg-green-400', text: 'AD-471 moved to Done', time: '2m ago' },
+    { dot: 'bg-orange-400', text: 'AD-472 blocked — waiting on design', time: '1h ago' },
+    { dot: 'bg-slate-400', text: 'Sprint 48 started — 8 tickets', time: '4h ago' },
+    { dot: 'bg-amber-400', text: 'Deploy #142 succeeded', time: '1d ago' },
+    { dot: 'bg-green-400', text: 'AD-464 merged to main', time: '2d ago' },
+  ];
+  return (
+    <motion.div
+      key={block.type}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.3 }}
+    >
+      <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-wide bg-slate-50 border-b border-slate-100">
+        Recent Activity
+      </div>
+      {activities.map((a, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: delay + i * 0.08, duration: 0.2 }}
+          className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 last:border-0"
+        >
+          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${a.dot}`} />
+          <span className="text-[11px] text-slate-700 flex-1 truncate">{a.text}</span>
+          <span className="text-[10px] text-slate-400 flex-shrink-0">{a.time}</span>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
+    case 'quick-actions': {
+      const actions = ['New Ticket', 'Start Sprint', 'Export Report', 'Archive Sprint'];
+      return (
+        <motion.div
+          key={block.type}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay, duration: 0.3 }}
+          className="px-3 py-3 flex flex-wrap gap-2"
+        >
+          {actions.map((action, i) => (
+            <motion.button
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: delay + i * 0.08, duration: 0.2 }}
+              className="bg-slate-100 border border-slate-200 text-slate-700 text-[11px] px-3 py-1.5 rounded-full cursor-default"
+            >
+              {action}
+            </motion.button>
+          ))}
+        </motion.div>
+      );
+    }
+
+    case 'sprint-backlog': {
+      const sprints = [
+        {
+          name: 'Sprint 48 — Active',
+          dates: 'Apr 7–18',
+          pts: '24 pts',
+          status: 'active',
+          tickets: [
+            { id: 'AD-471', title: 'Scroll invite arrow', status: 'done', pts: 3 },
+            { id: 'AD-472', title: 'Backlog block renderer', status: 'in-progress', pts: 5 },
+            { id: 'AD-473', title: 'Sivania light tokens', status: 'todo', pts: 8 },
+            { id: 'AD-474', title: 'Sprint section header', status: 'done', pts: 2 },
+          ],
+        },
+        {
+          name: 'Sprint 47 — Done',
+          dates: 'Mar 24 – Apr 6',
+          pts: '48 pts',
+          status: 'done',
+          tickets: [
+            { id: 'AD-461', title: 'Gallery thumbnails', status: 'done', pts: 5 },
+            { id: 'AD-462', title: 'GallerySection grid', status: 'done', pts: 5 },
+            { id: 'AD-463', title: 'Featured card ring', status: 'done', pts: 3 },
+            { id: 'AD-464', title: 'TC-UI-09 QA spec', status: 'done', pts: 2 },
+          ],
+        },
+      ];
+
+      const badgeClass = (s: string) => {
+        if (s === 'done') return 'bg-green-100 text-green-700';
+        if (s === 'in-progress') return 'bg-orange-100 text-orange-700';
+        if (s === 'blocked') return 'bg-red-100 text-red-600';
+        return 'bg-slate-100 text-slate-500'; // todo
+      };
+
+      return (
+        <motion.div
+          key={block.type}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay, duration: 0.3 }}
+          className="text-xs"
+        >
+          {sprints.map((sprint, si) => (
+            <div key={si} className="mb-1">
+              {/* Sprint section header */}
+              <div className="bg-slate-100 px-3 py-1.5 flex justify-between items-center border-b border-slate-200">
+                <span className="font-semibold text-slate-700">{sprint.name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500">{sprint.dates}</span>
+                  <span className="bg-green-100 text-green-700 rounded-full px-2 py-0.5 text-[10px] font-medium">{sprint.pts}</span>
+                </div>
+              </div>
+              {/* Table header */}
+              <div className="grid grid-cols-[60px_1fr_90px_36px] bg-slate-50 px-3 py-1 border-b border-slate-200 text-[10px] font-semibold text-slate-500 uppercase tracking-wide">
+                <span>ID</span><span>Title</span><span>Status</span><span className="text-center">Pts</span>
+              </div>
+              {/* Ticket rows */}
+              {sprint.tickets.map((t, ti) => (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: delay + ti * 0.05, duration: 0.2 }}
+                  className={`grid grid-cols-[60px_1fr_90px_36px] px-3 py-1.5 border-b border-slate-100 items-center ${ti % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+                >
+                  <span className="font-mono text-[10px] text-slate-500">{t.id}</span>
+                  <span className="text-[11px] text-slate-700 truncate pr-2">{t.title}</span>
+                  <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full w-fit ${badgeClass(t.status)}`}>{t.status}</span>
+                  <span className="text-center text-[11px] text-slate-600 font-medium">{t.pts}</span>
+                </motion.div>
+              ))}
+            </div>
+          ))}
+        </motion.div>
+      );
+    }
+
     default:
       return null;
   }
@@ -220,7 +358,7 @@ function renderBlock(block: MockupBlock, index: number) {
 
 function BrowserChrome({ url }: { url?: string }) {
   return (
-    <div className="bg-slate-800 px-4 py-3 flex items-center gap-3 border-b border-slate-700/60">
+    <div className="mockup-chrome bg-slate-800 px-4 py-3 flex items-center gap-3 border-b border-slate-700/60">
       <div className="flex items-center gap-1.5">
         <div className="w-3 h-3 rounded-full bg-red-500/80" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
@@ -251,7 +389,7 @@ export default function MockupSlide({ data }: SlideComponentProps<MockupSlideDat
   const frames = data.frames ?? [];
 
   return (
-    <div className="max-w-5xl mx-auto w-full">
+    <div className="mockup-slide max-w-5xl mx-auto w-full">
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -280,7 +418,7 @@ export default function MockupSlide({ data }: SlideComponentProps<MockupSlideDat
           className="rounded-xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-black/40"
         >
           <BrowserChrome url={data.url} />
-          <div className="bg-slate-50 rounded-b-xl overflow-hidden">
+          <div className={`bg-slate-50 rounded-b-xl ${data.scrollable ? 'overflow-y-auto max-h-[420px]' : 'overflow-hidden'}`}>
             {blocks.map((block, i) => renderBlock(block, i))}
           </div>
         </motion.div>

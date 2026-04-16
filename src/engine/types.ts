@@ -35,6 +35,14 @@ export interface LanguageOption {
   label: string;
 }
 
+export interface SlideNote {
+  id: string;
+  slideIndex: number;
+  text: string;
+  createdAt: string;
+  status: 'open' | 'applied' | 'dismissed';
+}
+
 export interface PresentationConfig {
   title: string;
   languages: LanguageOption[];
@@ -42,6 +50,7 @@ export interface PresentationConfig {
   background: string;
   branding?: string;
   brandingUrl?: string;
+  editModeEnabled?: boolean;
   keyboardHint?: Record<string, string>;
 }
 
@@ -71,7 +80,7 @@ export interface DiagramSlideData extends SlideData {
   autoEdges?: boolean;
 }
 
-export type BlockType = 'navbar' | 'hero' | 'card-grid' | 'table' | 'form' | 'chart-bar' | 'sidebar' | 'text-block' | 'image';
+export type BlockType = 'navbar' | 'hero' | 'card-grid' | 'table' | 'form' | 'chart-bar' | 'sidebar' | 'text-block' | 'image' | 'sprint-backlog' | 'activity-feed' | 'quick-actions';
 
 export type MockupBlock =
   | { type: Exclude<BlockType, 'image'>; label?: string }

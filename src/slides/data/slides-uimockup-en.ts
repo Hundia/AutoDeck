@@ -79,7 +79,8 @@ export const slidesUimockupEN: SlideData[] = [
   {
     type: 'mockup',
     title: 'Dashboard Screen',
-    subtitle: 'The main analytics view — navbar, hero metrics, and card grid',
+    subtitle: 'Main analytics view — scroll to explore KPIs, activity, and quick actions',
+    scrollable: true,
     displayMode: 'browser',
     url: 'app.autodeck.io/dashboard',
     blocks: [
@@ -87,6 +88,9 @@ export const slidesUimockupEN: SlideData[] = [
       { type: 'hero', label: 'Metrics Hero' },
       { type: 'card-grid', label: 'KPI Cards' },
       { type: 'chart-bar', label: 'Deployment Chart' },
+      { type: 'activity-feed' },
+      { type: 'chart-bar', label: 'Team Velocity — Last 6 Sprints' },
+      { type: 'quick-actions' },
     ],
   },
 
@@ -94,13 +98,13 @@ export const slidesUimockupEN: SlideData[] = [
   {
     type: 'mockup',
     title: 'Backlog Screen',
-    subtitle: 'Sprint management view — sidebar navigation and ticket table',
+    subtitle: 'Sprint management — scroll through two sprint sections with real ticket rows',
+    scrollable: true,
     displayMode: 'browser',
     url: 'app.autodeck.io/backlog',
     blocks: [
       { type: 'navbar', label: 'Navigation' },
-      { type: 'sidebar', label: 'Sprint Sidebar' },
-      { type: 'table', label: 'Ticket Table' },
+      { type: 'sprint-backlog' },
     ],
   },
 
