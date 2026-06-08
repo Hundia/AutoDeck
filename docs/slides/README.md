@@ -94,6 +94,14 @@ The `image` block renders a real image from a URL. Fields: `src` (required), `al
 
 **`outputCommand?: string`** — The shell command displayed in the terminal output header as `$ [command]`. For example, `outputCommand: 'npm test'` renders as `$ npm test` above the output lines.
 
+### TimelineSlide RTL
+
+The vertical step rail (connecting line + number circles) is RTL-aware: in left-to-right decks it sits on the **left** with `pl-14` content padding; under a `dir="rtl"` ancestor (auto-set for `he`/`ar`/`fa`/`ur`) it mirrors to the **right** via Tailwind `rtl:` variants (`rtl:right-6`, `rtl:right-3`, `rtl:pr-14`). No per-slide flag is needed — author Hebrew steps and the rail flips automatically.
+
+## Authored Presentations Note
+
+The `#/demo-to-prod` deck (`src/slides/data/slides-demotoprod-he.ts`) is a Hebrew, RTL **editorial** Q&A. Its source is reflective executive prose that argues against hype-metrics, so it intentionally uses **no `stats` and no `code` slide** — `quote`/`comparison`/`timeline`/`content`/`final` only, with the speaker's own words and zero fabricated numbers. Use it as the reference when a deck's content should not be forced into product-pitch metrics.
+
 ## Creating Custom Slide Types
 
 See [SKILL.md](../../SKILL.md) for the complete guide.

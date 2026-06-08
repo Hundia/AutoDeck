@@ -3,7 +3,7 @@
 **Project:** AutoDeck — React + Framer Motion Presentation Framework  
 **Extracted from:** [AutoSpec](https://github.com/Hundia/autospec) — Sprints 10–38  
 **Repository:** https://github.com/Hundia/AutoDeck  
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-06-09
 
 ---
 
@@ -1012,3 +1012,51 @@ None (file-based project, no database).
 - Email/Slack digest of pending notes
 
 **Total: 49 points, 19 tickets**
+
+---
+
+## ✅ Sprint 50: "מהדמו לפרודקשן" — Dr. Yuval Dror Q&A Presentation
+
+**Goal:** Build a Hebrew (RTL) editorial Q&A presentation from Eli's interview answers to Dr. Yuval Dror on leading AI adoption, in the dark autospec aesthetic (Aurora + constellation), and publish it unlisted at `#/demo-to-prod` on GitHub Pages.
+**Points:** 29
+**Status:** ✅ Complete
+**Date:** 2026-06-09
+
+### Problem Statement
+Eli must answer Dr. Dror in person and wants to impress him with the AutoDeck framework. The source is reflective executive prose that argues against hype-metrics — so the deck must be editorial (his voice, no fabricated numbers), not a product pitch.
+
+### Technical Decisions
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Language | Hebrew-only, `defaultLanguage: 'he'` | Audience + source are Hebrew; RTL auto-handled |
+| Slide vocabulary | quote / comparison / timeline / content / final only | No real metrics or code in source; stats/code slides would betray the anti-hype thesis |
+| Theme / background | Aurora + constellation | Matches the mesmerizing dark autospec reference |
+| Visibility | Unlisted route `#/demo-to-prod`, no gallery card | User shares the link directly |
+
+### Tickets
+| ID | Ticket | Owner | Model | Pts | Status | Deps | Docs |
+|----|--------|-------|-------|-----|--------|------|------|
+| 50.1 | `src/slides/data/slides-demotoprod-he.ts` — author the full 12-slide Hebrew RTL deck per the slide map; editorial extraction in the speaker's own words, zero fabricated metrics | Frontend | sonnet | 8 | ✅ | — | — |
+| 50.2 | `src/slides/data/creation-story-demotoprod.ts` — creation-story drawer data (prompts/minutes) | Frontend | haiku | 2 | ✅ | — | — |
+| 50.3 | `src/App.tsx` — add `demoToProdConfig` (title „מהדמו לפרודקשן", `he` only, background `constellation`, branding, keyboardHint) + import slides/story + `/demo-to-prod` route | Frontend | haiku | 3 | ✅ | 50.1, 50.2 | — |
+| 50.4 | UI/UX + motion polish pass — run `/ui-ux-pro-max` review on Hebrew RTL typography, line-length, spacing, Aurora contrast; verify Framer Motion slide transitions feel premium in RTL (entrance stagger, no jank); apply refinements | Frontend | sonnet | 5 | ✅ | 50.3 | — |
+| 50.5 | Build gate — `npm run build` exits 0 with zero TS errors | Frontend | haiku | 2 | ✅ | 50.3 | — |
+| 50.6 | Playwright visual + RTL QA — load `#/demo-to-prod`, screenshot every slide, assert `dir="rtl"`, correct alignment, no overflow/clipping, reversed keyboard nav | Frontend | sonnet | 5 | ✅ | 50.5 | — |
+| 50.7 | Docs — document the deck (route, slide map, content-fidelity rule) in `docs/slides/` index + note in README presentations list | Frontend | haiku | 2 | ✅ | 50.6 | ✅ |
+| 50.8 | Deploy — commit + push `main`, GitHub Pages auto-deploy, verify live at `https://hundia.github.io/AutoDeck/#/demo-to-prod` | Frontend | haiku | 2 | ✅ | 50.7 | — |
+
+### QA Plan
+| Test | Pass Condition |
+|------|----------------|
+| TC-UI-16 Build gate | `npm run build` exits 0, no TS errors |
+| TC-UI-17 RTL visual | Every slide renders `dir="rtl"`; text right-aligned; no clipping/overflow at 1440×900 |
+| TC-UI-18 Keyboard nav | ← advances, → goes back (RTL-reversed); dots mirror order |
+| TC-UI-19 Content fidelity | All 12 slides present his actual words; no fabricated metrics; no stats/code slide |
+
+### Docs Impact
+| File | Action | Ticket |
+|------|--------|--------|
+| `docs/slides/README.md` (or presentations index) | Update — add demo-to-prod deck entry | 50.7 |
+| `README.md` | Update — list new presentation route | 50.7 |
+
+**Total: 29 points, 8 tickets**

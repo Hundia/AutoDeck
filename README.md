@@ -48,11 +48,12 @@ Open http://localhost:5173/AutoDeck/ and start editing `src/slides/slides-en.ts`
 
 ## Presentations
 
-Eight live presentations ship in the repo — each one a working example of a different use case:
+Nine live presentations ship in the repo — each one a working example of a different use case:
 
 | Presentation | Route | Description |
 |--------------|-------|-------------|
 | AutoDeck — The Framework | [#/meta](https://hundia.github.io/AutoDeck/#/meta) | AutoDeck pitching itself |
+| מהדמו לפרודקשן (Hebrew, RTL) | [#/demo-to-prod](https://hundia.github.io/AutoDeck/#/demo-to-prod) | Executive Q&A on leading AI adoption — editorial, right-to-left |
 | Acme Corp Demo | [#/presentation](https://hundia.github.io/AutoDeck/#/presentation) | Enterprise SaaS pitch deck |
 | AutoSpec TechBrief | [#/techbrief](https://hundia.github.io/AutoDeck/#/techbrief) | Technical architecture overview |
 | Dashboard Design System | [#/uimockup](https://hundia.github.io/AutoDeck/#/uimockup) | UI component showcase |

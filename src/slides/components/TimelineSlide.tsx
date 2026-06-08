@@ -40,8 +40,8 @@ export default function TimelineSlide({ data }: SlideComponentProps<TimelineSlid
 
       {/* Vertical timeline */}
       <div className="relative">
-        {/* Connecting line */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5" style={{ background: 'var(--theme-gradient)', opacity: 0.5 }} />
+        {/* Connecting line (mirrors to the right in RTL) */}
+        <div className="absolute left-6 rtl:left-auto rtl:right-6 top-0 bottom-0 w-0.5" style={{ background: 'var(--theme-gradient)', opacity: 0.5 }} />
 
         <div className="space-y-6">
           {data.steps.map((step, idx) => {
@@ -55,10 +55,10 @@ export default function TimelineSlide({ data }: SlideComponentProps<TimelineSlid
                 key={idx}
                 {...animProps}
                 transition={{ delay: useWhileInView ? 0.1 : 0.3 + idx * 0.15, duration: 0.5 }}
-                className="relative flex items-start gap-5 pl-14"
+                className="relative flex items-start gap-5 pl-14 rtl:pl-0 rtl:pr-14"
               >
-                {/* Step number circle */}
-                <div className="absolute left-3 w-7 h-7 rounded-full bg-slate-800 border-2 border-blue-500/60 flex items-center justify-center text-xs font-bold text-blue-400">
+                {/* Step number circle (mirrors to the right in RTL) */}
+                <div className="absolute left-3 rtl:left-auto rtl:right-3 w-7 h-7 rounded-full bg-slate-800 border-2 border-blue-500/60 flex items-center justify-center text-xs font-bold text-blue-400">
                   {step.number}
                 </div>
 

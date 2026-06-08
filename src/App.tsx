@@ -25,6 +25,8 @@ import { slidesQ2ReviewEN } from './slides/data/slides-q2review-en';
 import { q2ReviewCreationStory } from './slides/data/creation-story-q2review';
 import { slidesMetaEN } from './slides/data/slides-meta-en';
 import { metaCreationStory } from './slides/data/creation-story-meta';
+import { slidesDemoToProdHE } from './slides/data/slides-demotoprod-he';
+import { demoToProdCreationStory } from './slides/data/creation-story-demotoprod';
 
 const techBriefConfig: PresentationConfig = {
   title: 'AutoSpec TechBrief',
@@ -89,6 +91,18 @@ const metaConfig: PresentationConfig = {
   brandingUrl: 'https://github.com/Hundia/AutoDeck',
 };
 
+const demoToProdConfig: PresentationConfig = {
+  title: 'מהדמו לפרודקשן',
+  languages: [{ id: 'he', label: 'עברית' }],
+  defaultLanguage: 'he',
+  background: 'constellation',
+  branding: 'Built with AutoDeck',
+  brandingUrl: 'https://github.com/Hundia/AutoDeck',
+  keyboardHint: {
+    he: '← → לניווט',
+  },
+};
+
 export default function App() {
   const acmeSlides = { en: slidesEN, he: slidesHE };
   const techBriefSlides = { en: slidesTechbriefEN, he: slidesTechbriefHE };
@@ -131,6 +145,10 @@ export default function App() {
           <Route
             path="/meta"
             element={<PresentationViewer config={metaConfig} slides={{ en: slidesMetaEN }} slideComponents={slideComponents} creationStory={metaCreationStory} />}
+          />
+          <Route
+            path="/demo-to-prod"
+            element={<PresentationViewer config={demoToProdConfig} slides={{ he: slidesDemoToProdHE }} slideComponents={slideComponents} creationStory={demoToProdCreationStory} />}
           />
         </Routes>
       </HashRouter>
