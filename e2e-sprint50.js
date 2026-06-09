@@ -8,7 +8,7 @@
  *   TC-UI-19  Content fidelity: expected Hebrew headlines render on each slide
  *
  * The script spawns `vite preview` to serve dist/, navigates to
- * http://localhost:4173/AutoDeck/#/demo-to-prod, screenshots all 12 slides,
+ * http://localhost:4173/AutoDeck/#/demo-to-prod, screenshots all 19 slides,
  * then kills the server in a finally block.
  *
  * Animation timing notes:
@@ -32,36 +32,38 @@ const BASE = 'http://localhost:4173/AutoDeck';
 const OUT = path.join(__dirname, 'e2e-screenshots/sprint-50');
 fs.mkdirSync(OUT, { recursive: true });
 
-// Expected Hebrew headlines per slide (index 0-based).
+// Expected Hebrew headlines per slide (index 0-based), 19-slide deck.
 // Used to assert content fidelity (TC-UI-19) and disambiguate nav (TC-UI-18).
-// Slide 12 is the FinalSlide: tagline words render in separate inline-block spans,
-// so innerText concatenates them WITHOUT spaces ("כליאפשרלהתקין...").
-// We check for "תרבות" which is a standalone word unique to slide 12 (not in other slides).
+// Slide 19 is the FinalSlide: tagline words render in separate inline-block spans,
+// so innerText concatenates them WITHOUT spaces. We check unique word "הנדסית".
 const EXPECTED_HEADLINES = [
-  'מהדמו לפרודקשן',                      // slide 01 — title
-  'פתיח אישי',                           // slide 02 — quote title
-  'מי אני ומה הובלתי',                    // slide 03 — content
-  'ההבדל המהותי',                        // slide 04 — comparison
-  'האתגר הניהולי',                       // slide 05 — quote title
-  'פריצת הדרך',                          // slide 06 — timeline
-  'העצה החשובה ביותר',                   // slide 07 — quote title
-  'השאלות הקשות שמנהל חייב לשאול',        // slide 08 — content
-  'אשליית ההתקדמות',                     // slide 09 — comparison
-  'מה הייתי עושה אחרת',                  // slide 10 — comparison
-  'להתחיל מוקדם יותר',                   // slide 11 — content
-  'הנדסית',                              // slide 12 — final: "תרבות הנדסית צריך לבנות."
-                                         //   rendered as no-space inline spans; check unique word
+  'מהדמו לפרודקשן',                      // 01 — title
+  'פתיח אישי',                           // 02 — quote (intro)
+  'מי אני ומה הובלתי',                    // 03 — content↓ (Q1 identity + axes)
+  'הציר השני — מוצר',                     // 04 — content↓ (Q1 product axis)
+  'AI במוצר = הנדסת תוכנה',              // 05 — diagram (Q1 model→engineering→customer)
+  'האתגר הניהולי הגדול ביותר',           // 06 — quote (Q2)
+  'מאזור הנוחות — בלי פאניקה',           // 07 — content↓ (Q2)
+  'פריצת הדרך — המסע',                   // 08 — timeline↓ (Q3)
+  'ואז קרו שלושה דברים',                 // 09 — content↓ (Q3)
+  'העצה הניהולית החשובה ביותר',          // 10 — quote (Q4)
+  'השאלות הקשות שמנהל חייב לשאול',        // 11 — content↓ (Q4)
+  'AI הזיז את מרכז הכובד',               // 12 — content↓ (Q4 example)
+  'מה העובדים מבינים כשהמנהל באמת באירוע', // 13 — content↓ (Q4)
+  'ממה להימנע',                          // 14 — content↓ (Q5)
+  'אשליית ההתקדמות',                     // 15 — comparison (Q5)
+  'מה הייתי עושה אחרת',                  // 16 — content↓ (Q6)
+  'סיכון מידע מול סיכון למידה',          // 17 — comparison (Q6)
+  'בפועל — מה הייתי עושה אחרת',          // 18 — content↓ (Q6)
+  'הנדסית',                              // 19 — final tagline (unique word)
 ];
 
-// For QuoteSlides (slides 2, 5, 7 — 0-based indices 1, 4, 6):
-// The typewriter animation takes 0.5 + chars*0.03s. The last bullet of the
-// 4-point list appears at lastCharDelay + 3*0.5s ≈ 3.5s from slide entry.
-// We wait for the last bullet text to be present in the DOM before screenshotting.
-// Last bullet texts per QuoteSlide:
+// For QuoteSlides (0-based indices 1, 5, 9 → slides 02, 06, 10).
+// Typewriter + bullet stagger; we wait for the last bullet before screenshotting.
 const QUOTE_LAST_BULLETS = {
   1: 'ובאופן שבו מהנדסים מבינים את המקצוע שלהם',  // slide 02
-  4: 'האתגר: לא לגרום להם להשתמש',                // slide 05
-  6: 'אל תעשו outsourcing להבנה שלכם',             // slide 07
+  5: 'מה הערך שלי כמהנדס',                         // slide 06
+  9: 'אל תעשו outsourcing להבנה שלכם',             // slide 10
 };
 
 function startServer() {
@@ -159,10 +161,10 @@ async function run() {
       console.log(`  Root dir attribute: "${rootDir}"`);
       assert(rootDir === 'rtl', `TC-UI-17: Slide root has dir="rtl" (got: "${rootDir}")`);
 
-      // ── TC-UI-18 + TC-UI-19: Navigate through all 12 slides ────────────────
+      // ── TC-UI-18 + TC-UI-19: Navigate through all 19 slides ────────────────
       console.log('\n--- TC-UI-18 + TC-UI-19: Per-slide screenshots + headline + nav ---');
 
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 19; i++) {
         const slideNum = String(i + 1).padStart(2, '0');
         const expectedText = EXPECTED_HEADLINES[i];
         const screenshotPath = `${OUT}/slide-${slideNum}.png`;
@@ -189,7 +191,7 @@ async function run() {
         if (QUOTE_LAST_BULLETS[i]) {
           // QuoteSlide: wait for full typewriter + bullet animation cycle
           await page.waitForTimeout(4000);
-        } else if (i === 11) {
+        } else if (i === 18) {
           // FinalSlide: word-by-word animation
           await page.waitForTimeout(2500);
         } else {
@@ -246,7 +248,7 @@ async function run() {
 
         // TC-UI-18: Advance to next slide using RTL key (ArrowLeft = next in RTL)
         // But don't press after the last slide
-        if (i < 11) {
+        if (i < 18) {
           await page.keyboard.press('ArrowLeft');
           // Allow slide transition animation to complete
           await page.waitForTimeout(500);
@@ -254,7 +256,7 @@ async function run() {
       }
 
       // ── TC-UI-18: Dedicated keyboard nav assertion ─────────────────────────
-      // Open a fresh context (not reusing the post-loop page which is at slide 12)
+      // Open a fresh context (not reusing the post-loop page which is at slide 19)
       // to guarantee we start at slide 1 with clean state.
       console.log('\n--- TC-UI-18: Dedicated ArrowLeft RTL nav assertion ---');
       await ctx.close(); // close the loop context cleanly
@@ -273,12 +275,12 @@ async function run() {
         return counter ? counter.textContent.trim() : null;
       });
       console.log(`  Slide counter: "${slideCounterText}"`);
-      // Counter format is "currentSlide / total" e.g. "1 / 12"
-      assert(slideCounterText === '1 / 12', `TC-UI-18: After fresh load, counter shows "1 / 12" (got: "${slideCounterText}")`);
+      // Counter format is "currentSlide / total" e.g. "1 / 19"
+      assert(slideCounterText === '1 / 19', `TC-UI-18: After fresh load, counter shows "1 / 19" (got: "${slideCounterText}")`);
 
       // Also verify title-specific text only on slide 1: presenter name
-      const presenterVisible = await navPage.evaluate(() => document.body.innerText.includes('אלי הונדיה'));
-      assert(presenterVisible, 'TC-UI-18: Slide 1 presenter name "אלי הונדיה" visible (confirms slide 1)');
+      const presenterVisible = await navPage.evaluate(() => document.body.innerText.includes('אלי חונדיא'));
+      assert(presenterVisible, 'TC-UI-18: Slide 1 presenter name "אלי חונדיא" visible (confirms slide 1)');
 
       await navPage.keyboard.press('ArrowLeft');
       // Slide 2 is a QuoteSlide — title appears at 0.5s delay
@@ -289,7 +291,7 @@ async function run() {
       await navPage.keyboard.press('ArrowRight');
       // Back to slide 1 — presenter name is unique to slide 1
       await navPage.waitForTimeout(1000);
-      const backPresenter = await navPage.evaluate(() => document.body.innerText.includes('אלי הונדיה'));
+      const backPresenter = await navPage.evaluate(() => document.body.innerText.includes('אלי חונדיא'));
       assert(backPresenter, 'TC-UI-18: ArrowRight in RTL goes back to slide 1 (presenter name visible)');
 
       // ── JS error check ─────────────────────────────────────────────────────
@@ -299,8 +301,8 @@ async function run() {
       await navCtx.close();
     }
 
-    // ── Slide 6 (Timeline, scrollable): extra scroll screenshot ──────────────
-    console.log('\n=== Slide 6 Timeline scroll coverage ===');
+    // ── Slide 8 (Timeline, scrollable): extra scroll screenshot ──────────────
+    console.log('\n=== Slide 8 Timeline scroll coverage ===');
     {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'he-IL' });
       const page = await ctx.newPage();
@@ -309,8 +311,8 @@ async function run() {
       await waitForText(page, 'מהדמו לפרודקשן', 3000);
       await page.waitForTimeout(500);
 
-      // Navigate to slide 6 (5 ArrowLeft presses from slide 1)
-      for (let i = 0; i < 5; i++) {
+      // Navigate to slide 8 (7 ArrowLeft presses from slide 1)
+      for (let i = 0; i < 7; i++) {
         await page.keyboard.press('ArrowLeft');
         await page.waitForTimeout(500);
       }
@@ -319,8 +321,8 @@ async function run() {
       await page.waitForTimeout(500);
 
       const timelineHeadline = await page.evaluate(() => document.body.innerText.includes('פריצת הדרך'));
-      assert(timelineHeadline, 'Slide 06 timeline headline visible before scroll');
-      await page.screenshot({ path: `${OUT}/slide-06-timeline-top.png` });
+      assert(timelineHeadline, 'Slide 08 timeline headline visible before scroll');
+      await page.screenshot({ path: `${OUT}/slide-08-timeline-top.png` });
 
       // Scroll down in the root scroll container (scrollable slide)
       await page.evaluate(() => {
@@ -328,8 +330,8 @@ async function run() {
         if (root) root.scrollTop = 600;
       });
       await page.waitForTimeout(500);
-      await page.screenshot({ path: `${OUT}/slide-06-timeline-scrolled.png` });
-      console.log('  Timeline scroll screenshots captured (slide-06-timeline-top.png, slide-06-timeline-scrolled.png)');
+      await page.screenshot({ path: `${OUT}/slide-08-timeline-scrolled.png` });
+      console.log('  Timeline scroll screenshots captured (slide-08-timeline-top.png, slide-08-timeline-scrolled.png)');
 
       await ctx.close();
     }

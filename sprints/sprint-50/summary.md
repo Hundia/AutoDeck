@@ -6,9 +6,19 @@
 
 ## What Shipped
 
-A Hebrew (RTL) **editorial** Q&A presentation built from Eli's interview answers to Dr. Yuval Dror on leading AI adoption across ~85 engineers. Live (unlisted) at `#/demo-to-prod`, Aurora theme + constellation background.
+A Hebrew (RTL) **editorial** Q&A presentation built from Eli's interview answers to Dr. Yuval Dror on leading AI adoption across ~85 engineers. Live (unlisted) at `#/demo-to-prod`, Aurora theme + constellation background. Presenter: אלי חונדיא.
 
-12 slides: title → פתיח (quote) → Q1 identity (content) → "להתקין כלי / לבנות בית הנדסי" (comparison) → Q2 challenge (quote) → Q3 breakthrough journey (scrollable timeline) → Q4 advice (quote) → "השאלות הקשות" (content) → Q5 "אשליית ההתקדמות" (comparison) → Q6 "סיכון מידע / סיכון למידה" (comparison) → "מה הייתי עושה אחרת" (content) → final ("כלי אפשר להתקין — תרבות הנדסית צריך לבנות").
+**19 slides, organised strictly by question** — long answers span multiple scrollable (↓) slides so every point in the source document is represented:
+- Title → פתיח אישי (quote)
+- **Q1** (3): מי אני↓ · הציר השני—מוצר↓ · **diagram** "AI במוצר = הנדסת תוכנה" (model → engineering layers → capability → customer)
+- **Q2** (2): האתגר התודעתי (quote) · מאזור הנוחות↓
+- **Q3** (2): פריצת הדרך (timeline↓) · ואז קרו שלושה דברים↓
+- **Q4** (4): אל תנהלו מבחוץ (quote) · השאלות הקשות↓ · מרכז הכובד (דוגמת המשובים)↓ · מה העובדים מבינים↓
+- **Q5** (2): ממה להימנע↓ · אשליית ההתקדמות (comparison)
+- **Q6** (3): מה הייתי עושה אחרת↓ · סיכון מידע vs סיכון למידה (comparison) · בפועל↓
+- Final: "כלי אפשר להתקין — תרבות הנדסית צריך לבנות."
+
+Iteration note: the original 12-slide cut was expanded on the author's request to capture **all** document points, split each long answer into scrollable slides, and replace an abstract tool-vs-house comparison with the `diagram` that actually shows the product-AI message.
 
 ## Completed Tickets
 
